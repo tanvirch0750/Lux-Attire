@@ -12,6 +12,16 @@ const nextConfig = {
         hostname: 'img.freepik.com',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'chawkbazar.vercel.app',
+        port: '',
+      },
     ],
   },
 };
