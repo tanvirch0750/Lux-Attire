@@ -21,7 +21,7 @@ const NewArrivals = () => {
               src="https://img.freepik.com/free-photo/elegant-female-model-blouse-long-skirt-posing-indoor-shot-fascinating-curly-woman-wears-blue-coat_197531-5183.jpg?uid=R15161155&ga=GA1.1.911219905.1717681244&semt=ais_hybrid"
               width={750}
               height={750}
-              className="bg-gray-300 object-cover rounded-s-md w-full transition duration-200 ease-in rounded-md group-hover:rounded-b-none h-[300px] w-full"
+              className="bg-gray-300 object-cover rounded-s-md transition duration-200 ease-in rounded-md group-hover:rounded-b-none h-[300px] w-full"
             />
           </div>
           <div className="w-full overflow-hidden p-2 md:px-2.5 xl:px-4">
@@ -130,7 +130,7 @@ const NewArrivals = () => {
               src="https://img.freepik.com/free-photo/elegant-female-model-blouse-long-skirt-posing-indoor-shot-fascinating-curly-woman-wears-blue-coat_197531-5183.jpg?uid=R15161155&ga=GA1.1.911219905.1717681244&semt=ais_hybrid"
               width={750}
               height={750}
-              className="bg-gray-300 object-cover rounded-s-md w-full transition duration-200 ease-in rounded-md group-hover:rounded-b-none h-[300px] w-full"
+              className="bg-gray-300 object-cover rounded-s-md transition duration-200 ease-in rounded-md group-hover:rounded-b-none h-[300px] w-full"
             />
           </div>
           <div className="w-full overflow-hidden p-2 md:px-2.5 xl:px-4">

@@ -2,6 +2,7 @@ import CategoryGrid from './_components/Categories';
 import { Hero } from './_components/Hero';
 import Img from '@/assests/hero-two.jpg';
 import NewArrivals from './_components/NewArrivals';
+import SpecialOffer from './_components/special-offers/SpecialOffer';
 
 export default function HomePage() {
   const data = {
@@ -21,6 +22,9 @@ export default function HomePage() {
       </div>
       <div>
         <NewArrivals />
+      </div>
+      <div>
+        <SpecialOffer />
       </div>
     </>
   );
