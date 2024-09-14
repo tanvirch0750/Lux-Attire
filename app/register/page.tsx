@@ -10,7 +10,7 @@ export default function LoginPage() {
         {/* Hide image on small screens */}
         <div className="hidden md:block relative h-full">
           {/* Gradient overlay with a warm tone */}
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-brand/60 to-transparent z-10"></div>
           <Image
             src={RegisterImg}
             alt="login image"

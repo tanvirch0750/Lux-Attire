@@ -7,8 +7,7 @@ const SocialLogins = () => {
     <>
       <form action={doSocialLogin} className=" w-full">
         <Button
-          className=" w-full py-6"
-          variant="outline"
+          className=" w-full py-4 bg-brand/90 hover:bg-brand"
           type="submit"
           name="action"
           value="google"

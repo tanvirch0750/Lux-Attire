@@ -1,5 +1,7 @@
+import CategoryGrid from './_components/Categories';
 import { Hero } from './_components/Hero';
 import Img from '@/assests/hero-two.jpg';
+import NewArrivals from './_components/NewArrivals';
 
 export default function HomePage() {
   const data = {
@@ -14,6 +16,12 @@ export default function HomePage() {
   return (
     <>
       <Hero data={data} />
+      <div>
+        <CategoryGrid />
+      </div>
+      <div>
+        <NewArrivals />
+      </div>
     </>
   );
 }

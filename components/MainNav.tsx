@@ -37,7 +37,7 @@ export function MainNav({ items, children }: any) {
 
   return (
     <>
-      <div className="flex gap-6 pt-3 lg:gap-10 text-2xl font-bold text-[#eb3d00]">
+      <div className="flex gap-6 pt-3 lg:gap-10 text-2xl font-bold text-brand">
         <Link href="/">Luxe Attire</Link>
       </div>
       <div className="">
@@ -48,7 +48,7 @@ export function MainNav({ items, children }: any) {
                 key={index}
                 href={item.disabled ? '#' : item.href}
                 className={cn(
-                  'flex items-center text-lg font-medium transition-colors sm:text-sm text-primary hover:text-[#eb3d00]'
+                  'flex items-center text-lg font-medium transition-colors sm:text-sm text-primary hover:text-brand'
                 )}
               >
                 {item.title}
@@ -63,7 +63,7 @@ export function MainNav({ items, children }: any) {
       </div>
       <nav className="flex items-center gap-3">
         {!loginSession && (
-          <div className="items-center gap-3 hidden lg:flex pt-3">
+          <div className="items-center gap-3 hidden lg:flex ">
             <Link
               href="/login"
               className={cn(buttonVariants({ size: 'sm' }), 'px-8')}
@@ -73,8 +73,8 @@ export function MainNav({ items, children }: any) {
             <Link
               href="/register"
               className={cn(
-                buttonVariants({ size: 'sm', variant: 'outline' }),
-                'px-8'
+                buttonVariants({ size: 'sm' }),
+                'px-8 bg-brand hover:bg-brand/90'
               )}
             >
               Register

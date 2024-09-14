@@ -90,3 +90,94 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Global CSS */
+
+/* Parallax scrolling effect for the image */
+.parallax {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@keyframes zoom-in-out {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05); /* Zoom in slightly */
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-zoom-in-out {
+  animation: zoom-in-out 10s ease-in-out infinite; /* Slower, more elegant animation */
+}
+
+/* Fade-in and scale animation for content */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up 1s ease-in-out;
+}
+
+/* Button hover animation */
+@keyframes button-hover {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.btn-animated:hover {
+  animation: button-hover 0.3s forwards;
+  background-color: #d93600; /* Change the button color on hover */
+}
+
+@keyframes flash {
+  0% {
+    transform: scaleX(0) scaleY(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 0;
+  }
+}
+
+.flash-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.flash-effect::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  transform: scaleX(0) scaleY(0);
+  transform-origin: bottom left;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 1;
+}
+
+.flash-effect:hover::before {
+  transform: scaleX(1) scaleY(1);
+  opacity: 0;
+}
