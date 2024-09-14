@@ -37,16 +37,18 @@ export function MainNav({ items, children }: any) {
 
   return (
     <>
-      <div className="flex gap-6 pt-3 lg:gap-10">
-        <Link href="/">Lux Attire</Link>
+      <div className="flex gap-6 pt-3 lg:gap-10 text-2xl font-bold text-[#eb3d00]">
+        <Link href="/">Luxe Attire</Link>
+      </div>
+      <div className="">
         {items?.length ? (
-          <nav className="hidden gap-6 lg:flex">
+          <nav className="hidden gap-6 pt-3 lg:flex">
             {items?.map((item: any, index: any) => (
               <Link
                 key={index}
                 href={item.disabled ? '#' : item.href}
                 className={cn(
-                  'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm'
+                  'flex items-center text-lg font-medium transition-colors sm:text-sm text-primary hover:text-[#eb3d00]'
                 )}
               >
                 {item.title}
@@ -61,7 +63,7 @@ export function MainNav({ items, children }: any) {
       </div>
       <nav className="flex items-center gap-3">
         {!loginSession && (
-          <div className="items-center gap-3 hidden lg:flex">
+          <div className="items-center gap-3 hidden lg:flex pt-3">
             <Link
               href="/login"
               className={cn(buttonVariants({ size: 'sm' }), 'px-8')}

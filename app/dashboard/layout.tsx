@@ -23,7 +23,7 @@ const MainLayout = ({
 }>) => {
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="h-20 py-4 border-b">
+      <div className="h-20 py-4 border-b ">
         <div className="container flex mx-auto  items-center justify-between px-2">
           <SessionProvider>
             <MainNav items={navLinks} />
@@ -31,7 +31,7 @@ const MainLayout = ({
         </div>
       </div>
 
-      <main className="flex-1 pt-8 flex flex-col px-2">{children}</main>
+      <main className="flex-1 flex flex-col">{children}</main>
     </div>
   );
 };
