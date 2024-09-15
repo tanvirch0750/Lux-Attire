@@ -21,7 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 import { useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import { MobileNav } from './MobileNav';
 
 export function MainNav({ items, children }: any) {
@@ -29,7 +29,8 @@ export function MainNav({ items, children }: any) {
 
   const [showMobileMenu, setShowMobileMenu] = useState<any>(false);
   const [loginSession, setLoginSession] = useState<any>(null);
-  console.log(loginSession);
+  const pathname = usePathname();
+  const isActive = (path: string) => path === pathname;
 
   useEffect(() => {
     setLoginSession(session);
@@ -56,7 +57,9 @@ export function MainNav({ items, children }: any) {
                 key={index}
                 href={item.disabled ? '#' : item.href}
                 className={cn(
-                  'flex items-center text-lg font-medium transition-colors sm:text-sm text-primary hover:text-brand'
+                  `flex items-center text-[16px] font-medium transition-colors ${
+                    isActive(item.href) ? 'text-brand' : 'text-primary'
+                  } hover:text-brand`
                 )}
               >
                 {item.title}

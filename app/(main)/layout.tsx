@@ -12,8 +12,24 @@ const navLinks = [
     href: '/products',
   },
   {
-    title: 'Brands',
-    href: '/',
+    title: "Womens's Wear",
+    href: '/products/womens-wear',
+  },
+  {
+    title: "Men's Wear",
+    href: '/products/menswear',
+  },
+  {
+    title: "Kids's Wear",
+    href: '/products/kids-wear',
+  },
+  {
+    title: 'Traditional',
+    href: '/products/traditional-clothing',
+  },
+  {
+    title: 'Accessories',
+    href: '/products/accessories',
   },
 ];
 

@@ -39,10 +39,10 @@ const ProductPage = () => {
       <HeaderFilter />
 
       <section className="pb-24 pt-0">
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           <SideFilter />
           {/* Course grid */}
-          <div className="lg:col-span-3 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+          <div className="lg:col-span-4 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {products.map((category) => {
               return (
                 <Link key={category.id} href={`/courses/${category.id}`}>

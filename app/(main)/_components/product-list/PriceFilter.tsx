@@ -30,7 +30,7 @@ export default function PriceFilter() {
   return (
     <AccordionItem value="price">
       <AccordionTrigger className="py-3 text-sm text-gray-400 hover:text-gray-500">
-        <span className="font-medium text-primary text-lg">Price</span>
+        <span className="font-medium text-primary text-lg">Price Range</span>
       </AccordionTrigger>
 
       <AccordionContent className="pt-6 animate-none">
