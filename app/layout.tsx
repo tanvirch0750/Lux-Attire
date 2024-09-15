@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { dbConnect } from '@/db/service/mongo';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StoreProvider from './providers/StoreProvider';
 
 const josefin = Josefin_Sans({ subsets: ['latin'] });
 
@@ -21,10 +22,12 @@ export default async function RootLayout({
   const conn = await dbConnect();
   return (
     <html lang="en" className=" h-full">
-      <body className={cn(josefin.className)}>
-        {children}
-        <ToastContainer />
-      </body>
+      <StoreProvider>
+        <body className={cn(josefin.className)}>
+          {children}
+          <ToastContainer />
+        </body>
+      </StoreProvider>
     </html>
   );
 }
