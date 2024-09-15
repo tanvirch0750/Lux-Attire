@@ -74,10 +74,20 @@ const config: Config = {
             height: '0',
           },
         },
+        fadeSlideLeft: {
+          '0%': { opacity: '0', transform: 'translateX(-20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        fadeSlideRight: {
+          '0%': { opacity: '0', transform: 'translateX(20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-slide-left': 'fadeSlideLeft 1s ease-out',
+        'fade-slide-right': 'fadeSlideRight 1s ease-out',
       },
     },
   },

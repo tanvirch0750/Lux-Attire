@@ -14,6 +14,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'cdn-icons-png.freepik.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
         hostname: 'i.ibb.co.com',
         port: '',
       },

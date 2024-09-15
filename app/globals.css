@@ -128,8 +128,27 @@ body {
   }
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .fade-in-up {
   animation: fade-in-up 1s ease-in-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
 }
 
 /* Button hover animation */
@@ -189,7 +208,7 @@ body {
   --slide-height: 19rem;
   --slide-spacing: 1rem;
   --slide-size: 100%;
-  padding: 40px;
+  padding: 24px;
 }
 .embla__viewport {
   overflow: hidden;

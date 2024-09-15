@@ -3,6 +3,9 @@ import { Hero } from './_components/Hero';
 import Img from '@/assests/hero-two.jpg';
 import NewArrivals from './_components/NewArrivals';
 import SpecialOffer from './_components/special-offers/SpecialOffer';
+import NewsLetter from './_components/NewsLetter';
+import TopBrands from './_components/TopBrands';
+import ProductsShowcase from './_components/ProductShowcase';
 
 export default function HomePage() {
   const data = {
@@ -23,8 +26,17 @@ export default function HomePage() {
       <div>
         <NewArrivals />
       </div>
-      <div>
+      <div className="hidden md:block">
         <SpecialOffer />
+      </div>
+      <div>
+        <TopBrands />
+      </div>
+      <div>
+        <ProductsShowcase />
+      </div>
+      <div>
+        <NewsLetter />
       </div>
     </>
   );

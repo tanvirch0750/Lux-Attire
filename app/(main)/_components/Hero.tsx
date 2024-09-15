@@ -11,7 +11,7 @@ export const Hero = ({ data, variant, priority = false }: Props) => {
   const image = data.background_image;
 
   return (
-    <div className="relative flex items-center justify-center text-center mb-4 bg-primary mt-[-80px] h-screen">
+    <div className="relative flex items-center justify-center text-center mb-4 bg-primary mt-[-80px] h-screen ">
       {/* Parallax effect on the image */}
       <div className="absolute inset-0 overflow-hidden parallax">
         <Image

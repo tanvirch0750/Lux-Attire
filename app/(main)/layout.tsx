@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { SessionProvider } from 'next-auth/react';
 import { MainNav } from '@/components/MainNav';
+import Footer from '@/components/Footer';
 
 const navLinks = [
   {
@@ -32,6 +33,8 @@ const MainLayout = ({
       </div>
 
       <main className="flex-1 flex flex-col">{children}</main>
+
+      <Footer />
     </div>
   );
 };
