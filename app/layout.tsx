@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const josefin = Josefin_Sans({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Clothing',
+  title: 'Luxe Attire',
   description: 'Explore || Wear || buy || brand',
 };
 

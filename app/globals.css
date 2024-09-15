@@ -201,6 +201,45 @@ body {
   opacity: 0;
 }
 
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-bounce1 {
+  animation: bounce 0.6s infinite alternate;
+}
+
+.animate-bounce2 {
+  animation: bounce 0.6s infinite alternate 0.2s;
+}
+
+.animate-bounce3 {
+  animation: bounce 0.6s infinite alternate 0.4s;
+}
+
+/* Keyframes for the text animation */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide-up animation for the letters */
+.animate-slide-up {
+  opacity: 0;
+  animation: slideUp 0.5s forwards;
+}
+
 /* embla carousel start */
 .embla {
   max-width: 100%;

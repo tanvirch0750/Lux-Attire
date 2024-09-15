@@ -1,3 +1,3 @@
 export default function ProductsPage() {
-  return <div>all the products page</div>;
+  return <div className=" border-t">all the products page</div>;
 }
