@@ -47,7 +47,7 @@ const ProductPage = () => {
               return (
                 <Link key={category.id} href={`/courses/${category.id}`}>
                   <div
-                    className="group box-border overflow-hidden flex rounded-md cursor-pointer pb-2 lg:pb-3 flex-col items-start transition duration-200 ease-in-out transform hover:-translate-y-1 md:hover:-translate-y-1.5 hover:shadow-product bg-white"
+                    className="flash-effect group box-border overflow-hidden flex rounded-md cursor-pointer pb-2 lg:pb-3 flex-col items-start transition duration-200 ease-in-out transform hover:-translate-y-1 md:hover:-translate-y-1.5 hover:shadow-product bg-white"
                     role="button"
                     title="Roadster Women Round Neck"
                   >

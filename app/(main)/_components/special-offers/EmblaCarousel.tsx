@@ -39,7 +39,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
           {slides.map((item, index) => (
-            <div className="embla__slide" key={index}>
+            <div className="embla__slide flash-effect" key={index}>
               <div className="w-full">
                 <Image
                   src={item} // Your image source
