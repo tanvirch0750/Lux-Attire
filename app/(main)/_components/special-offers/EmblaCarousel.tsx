@@ -10,10 +10,10 @@ import {
   usePrevNextButtons,
 } from './EmblaCarouselArrowButton';
 import useEmblaCarousel from 'embla-carousel-react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 
 type PropType = {
-  slides: string[];
+  slides: StaticImageData[];
   options?: EmblaOptionsType;
 };
 
@@ -45,11 +45,11 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                   src={item} // Your image source
                   alt="slide images"
                   layout="responsive" // Ensures responsiveness
-                  width={1000} // Set a width proportional to the aspect ratio you desire
-                  height={500} // Adjust height for proper scaling
+                  width={1500} // Set a width proportional to the aspect ratio you desire
+                  height={1000} // Adjust height for proper scaling
                   objectFit="contain" // Ensures the image is not cropped
                   quality={100}
-                  className="!h-[450px] rounded-md"
+                  className="!h-[400px] rounded-md"
                 />
               </div>
             </div>

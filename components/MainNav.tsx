@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 // import { MobileNav } from "@/components/mobile-nav";
-// import { Logo } from "./logo";
+import Logo from '@/assests/luxe-attire-logo.png';
 import Image from 'next/image';
 import { X } from 'lucide-react';
 import { Command } from 'lucide-react';
@@ -37,12 +37,20 @@ export function MainNav({ items, children }: any) {
 
   return (
     <>
-      <div className="flex gap-6 pt-3 lg:gap-10 text-2xl font-bold text-brand">
-        <Link href="/">Luxe Attire</Link>
+      <div className="flex gap-6 lg:gap-10 text-2xl font-bold text-brand">
+        <Link href="/">
+          <Image
+            src={Logo}
+            width={500}
+            height={500}
+            alt="luxe attire logo"
+            className=" w-[120px] "
+          />
+        </Link>
       </div>
       <div className="">
         {items?.length ? (
-          <nav className="hidden gap-6 pt-3 lg:flex">
+          <nav className="hidden gap-6  lg:flex">
             {items?.map((item: any, index: any) => (
               <Link
                 key={index}

@@ -1,13 +1,36 @@
 import { EmblaOptionsType } from 'embla-carousel';
 import EmblaCarousel from './EmblaCarousel';
 
+import offerOne from '@/assests/1.png';
+import offerTwo from '@/assests/2.png';
+import offerThree from '@/assests/3.png';
+import offerFour from '@/assests/4.png';
+
 const OPTIONS: EmblaOptionsType = { dragFree: true, loop: true };
 const SLIDE_COUNT = 4;
-const SLIDES = [
-  'https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fslider%2Fbanner-2.jpg&w=1920&q=100',
-  'https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fbanner-7.jpg&w=1920&q=100',
-  'https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fbanner-2.jpg&w=1200&q=100',
-  'https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fslider%2Fbanner-1.jpg&w=1920&q=100',
+const SLIDES = [offerOne, offerTwo, offerThree, offerFour];
+
+const slideObj = [
+  {
+    img: offerOne,
+    title: 'Exclusive Deals Just for You!',
+    desc: 'Discover unparalleled offers on top fashion trends.',
+  },
+  {
+    img: offerTwo,
+    title: 'Seasonal Sale: Up to 50% Off!',
+    desc: 'Refresh your wardrobe with our exclusive deals',
+  },
+  {
+    img: offerThree,
+    title: 'Unlock Exclusive Savings Today!',
+    desc: 'Find amazing deals on premium fashion and accessories.',
+  },
+  {
+    img: offerFour,
+    title: 'Elevate Your Style with Special Offers!',
+    desc: 'Explore luxurious discounts on high-end clothing.',
+  },
 ];
 
 export default function SpecialOffer() {
