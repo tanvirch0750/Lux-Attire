@@ -16,20 +16,26 @@ const rootReducer = combineReducers({
   filters: filterReducer,
 });
 
-// Create a persisted reducer using the persistConfig
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const makeConfiguredStore = () =>
+  configureStore({
+    reducer: rootReducer,
+  });
 
 // Create the Redux store
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false, // Disable serializable check for redux-persist
-    }),
-});
+export const makeStore = () => {
+  const isServer = typeof window === 'undefined';
+  if (isServer) {
+    return makeConfiguredStore();
+  } else {
+    const persistedReducer = persistReducer(persistConfig, rootReducer);
+    let store: any = configureStore({
+      reducer: persistedReducer,
+    });
+    store.__persistor = persistStore(store);
+    return store;
+  }
+};
 
-// Create the persistor
-export const persistor = persistStore(store);
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];

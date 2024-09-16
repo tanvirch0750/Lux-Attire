@@ -22,12 +22,10 @@ export default async function RootLayout({
   const conn = await dbConnect();
   return (
     <html lang="en" className=" h-full">
-      <StoreProvider>
-        <body className={cn(josefin.className)}>
-          {children}
-          <ToastContainer />
-        </body>
-      </StoreProvider>
+      <body className={cn(josefin.className)}>
+        <StoreProvider>{children}</StoreProvider>
+        <ToastContainer />
+      </body>
     </html>
   );
 }
