@@ -1,6 +1,7 @@
 // import { useAppSelector } from '@/lib/hooks';
 
 import { RootState } from '@/lib/store';
+import Link from 'next/link';
 import { useSelector } from 'react-redux';
 
 export default function CartChekcout() {
@@ -19,9 +20,12 @@ export default function CartChekcout() {
         <button className="px-6 py-2 bg-primary text-white rounded-md">
           Back to shop
         </button>
-        <button className="px-6 py-2 bg-brand text-white rounded-md">
+        <Link
+          href="/checkout"
+          className="px-6 py-2 bg-brand text-white rounded-md"
+        >
           Continue to Checkout
-        </button>
+        </Link>
       </div>
     </div>
   );
