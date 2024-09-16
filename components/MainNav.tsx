@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 // import { MobileNav } from "@/components/mobile-nav";
 import Logo from '@/assests/luxe-attire-logo.png';
 import Image from 'next/image';
-import { X } from 'lucide-react';
+import { ShoppingCartIcon, X } from 'lucide-react';
 import { Command } from 'lucide-react';
 import { Button, buttonVariants } from './ui/button';
 import { Menu } from 'lucide-react';
@@ -23,6 +23,7 @@ import { useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { redirect, usePathname } from 'next/navigation';
 import { MobileNav } from './MobileNav';
+import Cart from './cart/Cart';
 
 export function MainNav({ items, children }: any) {
   const { data: session } = useSession();
@@ -31,6 +32,8 @@ export function MainNav({ items, children }: any) {
   const [loginSession, setLoginSession] = useState<any>(null);
   const pathname = usePathname();
   const isActive = (path: string) => path === pathname;
+
+  const cartCount = 3;
 
   useEffect(() => {
     setLoginSession(session);
@@ -73,25 +76,29 @@ export function MainNav({ items, children }: any) {
         )}
       </div>
       <nav className="flex items-center gap-3">
-        {!loginSession && (
-          <div className="items-center gap-3 hidden lg:flex ">
-            <Link
-              href="/login"
-              className={cn(buttonVariants({ size: 'sm' }), 'px-8')}
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className={cn(
-                buttonVariants({ size: 'sm' }),
-                'px-8 bg-brand hover:bg-brand/90'
-              )}
-            >
-              Register
-            </Link>
-          </div>
-        )}
+        <div className="items-center gap-3 hidden lg:flex ">
+          {!loginSession && (
+            <>
+              <Link
+                href="/login"
+                className={cn(buttonVariants({ size: 'sm' }), 'px-8')}
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className={cn(
+                  buttonVariants({ size: 'sm' }),
+                  'px-8 bg-brand hover:bg-brand/90'
+                )}
+              >
+                Register
+              </Link>
+            </>
+          )}
+          <Cart />
+        </div>
+
         {loginSession && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
