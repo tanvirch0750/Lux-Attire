@@ -37,7 +37,7 @@ const ActiveFilters = () => {
           <Button
             key={category}
             variant="ghost"
-            className="text-xs h-7 bg-muted rounded-full gap-1 text-sky-700"
+            className="text-sm h-7 bg-orange-100 rounded-full gap-1 text-brand"
             onClick={() => handleRemoveFilter('categories', category)}
           >
             {category}
@@ -51,7 +51,7 @@ const ActiveFilters = () => {
           <Button
             key={price}
             variant="ghost"
-            className="text-xs h-7 bg-muted rounded-full gap-1 text-sky-700"
+            className="text-sm h-7 bg-orange-100 rounded-full gap-1 text-brand"
             onClick={() => handleRemoveFilter('priceRanges', price)}
           >
             {price}
@@ -65,7 +65,7 @@ const ActiveFilters = () => {
           <Button
             key={color}
             variant="ghost"
-            className="text-xs h-7 bg-muted rounded-full gap-1 text-sky-700"
+            className="text-sm h-7 bg-orange-100 rounded-full gap-1 text-brand"
             onClick={() => handleRemoveFilter('color', color)}
           >
             {color}

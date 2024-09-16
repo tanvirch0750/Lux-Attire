@@ -1,6 +1,3 @@
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { BookOpen } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import HeaderFilter from '../_components/product-list/HeaderFilter';
@@ -45,7 +42,7 @@ const ProductPage = () => {
           <div className="lg:col-span-4 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {products.map((category) => {
               return (
-                <Link key={category.id} href={`/courses/${category.id}`}>
+                <Link key={category.id} href={`/products/menswear/123`}>
                   <div
                     className="flash-effect group box-border overflow-hidden flex rounded-md cursor-pointer pb-2 lg:pb-3 flex-col items-start transition duration-200 ease-in-out transform hover:-translate-y-1 md:hover:-translate-y-1.5 hover:shadow-product bg-white"
                     role="button"
