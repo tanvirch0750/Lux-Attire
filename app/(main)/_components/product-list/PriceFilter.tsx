@@ -7,8 +7,9 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { togglePriceRange } from '@/lib/features/filterSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 const PRICE_OPTIONS = [
   { label: 'Under 400', value: 'under 400' },
@@ -18,8 +19,8 @@ const PRICE_OPTIONS = [
 ];
 
 export default function PriceFilter() {
-  const dispatch = useAppDispatch();
-  const priceRanges = useAppSelector(
+  const dispatch = useDispatch();
+  const priceRanges = useSelector(
     (state: RootState) => state.filters.priceRanges
   );
 

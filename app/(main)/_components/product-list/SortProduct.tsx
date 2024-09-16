@@ -10,8 +10,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { setSort } from '@/lib/features/filterSlice';
+import { useDispatch } from 'react-redux';
 
-import { useAppDispatch } from '@/lib/hooks';
+// import { useAppDispatch } from '@/lib/hooks';
 
 const SORT_OPTIONS = [
   { label: 'Price: Low to High', value: 'price-asc' },
@@ -19,7 +20,7 @@ const SORT_OPTIONS = [
 ];
 
 const SortProduct = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const handleSortChange = (value: string) => {
     dispatch(setSort(value));

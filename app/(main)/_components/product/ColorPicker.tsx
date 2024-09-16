@@ -3,11 +3,16 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
-import { product } from '../../products/[category]/[id]/data';
 
-export function ColorPicker() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-
+export function ColorPicker({
+  colors,
+  setSelectedColor,
+  selectedColor,
+}: {
+  colors: any;
+  selectedColor: any;
+  setSelectedColor: any;
+}) {
   return (
     <div>
       <h2 className="text-sm font-medium text-gray-900">Color</h2>
@@ -19,7 +24,7 @@ export function ColorPicker() {
       >
         <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
         <div className="flex items-center space-x-3">
-          {product.colors.map((color) => (
+          {colors.map((color: any) => (
             <RadioGroup.Option
               key={color.name}
               value={color}

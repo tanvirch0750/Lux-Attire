@@ -7,8 +7,9 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toggleCategory } from '@/lib/features/filterSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CATEGORY_OPTIONS = [
   { id: 1, label: "Women's Collection", value: 'women-collection' },
@@ -20,8 +21,8 @@ const CATEGORY_OPTIONS = [
 ];
 
 export default function CategoryFilter() {
-  const dispatch = useAppDispatch();
-  const categories = useAppSelector(
+  const dispatch = useDispatch();
+  const categories = useSelector(
     (state: RootState) => state.filters.categories
   );
 

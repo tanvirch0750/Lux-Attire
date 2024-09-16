@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { reviews } from '../../products/[category]/[id]/data';
 import { StarIcon } from 'lucide-react';
 
-export function ProductDetailReviews() {
+export function ProductDetailReviews({ product }: any) {
   return (
     <div className="mt-4">
       <h2 className="sr-only">Reviews</h2>

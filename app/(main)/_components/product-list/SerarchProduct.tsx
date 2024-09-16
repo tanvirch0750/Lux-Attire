@@ -2,11 +2,12 @@
 
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useAppDispatch } from '@/lib/hooks';
+// import { useAppDispatch } from '@/lib/hooks';
 import { setSearch } from '@/lib/features/filterSlice';
+import { useDispatch } from 'react-redux';
 
 const SearchProduct = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSearch(e.target.value)); // Dispatch the search term to the Redux store

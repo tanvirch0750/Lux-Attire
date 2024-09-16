@@ -6,13 +6,14 @@ import {
   toggleColor,
   togglePriceRange,
 } from '@/lib/features/filterSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
 import { X } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ActiveFilters = () => {
-  const dispatch = useAppDispatch();
-  const { categories, colors, priceRanges } = useAppSelector(
+  const dispatch = useDispatch();
+  const { categories, colors, priceRanges } = useSelector(
     (state: RootState) => state.filters
   );
 

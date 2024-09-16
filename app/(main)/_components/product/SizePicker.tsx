@@ -3,12 +3,17 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
-import { product } from '../../products/[category]/[id]/data';
 import { SizeDescription } from './SizeDescription';
 
-export function SizePicker() {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
-
+export function SizePicker({
+  sizes,
+  selectedSize,
+  setSelectedSize,
+}: {
+  sizes: any;
+  selectedSize: any;
+  setSelectedSize: any;
+}) {
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between">
@@ -23,7 +28,7 @@ export function SizePicker() {
       >
         <RadioGroup.Label className="sr-only">Choose a size</RadioGroup.Label>
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {product.sizes.map((size) => (
+          {sizes?.map((size: any) => (
             <RadioGroup.Option
               key={size.name}
               value={size}

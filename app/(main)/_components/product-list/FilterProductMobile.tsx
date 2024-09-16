@@ -17,13 +17,14 @@ import {
 import { X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Filter } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
 import {
   toggleCategory,
   toggleColor,
   togglePriceRange,
 } from '@/lib/features/filterSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const PRICE_OPTIONS = [
   { label: 'Under 400', value: 'under 400' },
@@ -48,8 +49,8 @@ const COLOR_OPTIONS = [
 ];
 
 const FilterProductMobile = () => {
-  const dispatch = useAppDispatch();
-  const { categories, colors, priceRanges } = useAppSelector(
+  const dispatch = useDispatch();
+  const { categories, colors, priceRanges } = useSelector(
     (state: RootState) => state.filters
   );
 

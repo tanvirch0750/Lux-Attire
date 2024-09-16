@@ -23,7 +23,7 @@ import { useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { redirect, usePathname } from 'next/navigation';
 import { MobileNav } from './MobileNav';
-import Cart from './cart/Cart';
+import Cart from '../app/(main)/_components/cart/Cart';
 
 export function MainNav({ items, children }: any) {
   const { data: session } = useSession();

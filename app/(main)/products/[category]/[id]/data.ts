@@ -14,6 +14,7 @@ const category = [
 ];
 
 export const product = {
+  productId: 123,
   name: 'Basic Tee',
   price: 35,
   isAvailable: true,

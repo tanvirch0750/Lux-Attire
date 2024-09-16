@@ -2,20 +2,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface Props {
-  variant?: 'slim' | 'to-r' | string;
   data?: any;
-  priority?: boolean;
 }
 
-export const Hero = ({ data, variant, priority = false }: Props) => {
+export const Hero = ({ data }: Props) => {
   const image = data.background_image;
 
   return (
-    <div className="relative flex items-center justify-center text-center mb-4 bg-primary mt-[-80px] h-screen ">
+    <div className="relative flex items-center justify-center text-center mb-4  mt-[-80px] h-screen ">
       {/* Parallax effect on the image */}
       <div className="absolute inset-0 overflow-hidden parallax">
         <Image
           className="object-cover animate-zoom-in-out"
+          placeholder="blur"
           alt="img"
           src={image}
           fill

@@ -7,8 +7,9 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toggleColor } from '@/lib/features/filterSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 const COLOR_OPTIONS = [
   { label: 'Blue', value: 'blue' },
@@ -17,8 +18,8 @@ const COLOR_OPTIONS = [
 ];
 
 export default function ColorFilter() {
-  const dispatch = useAppDispatch();
-  const colors = useAppSelector((state: RootState) => state.filters.colors);
+  const dispatch = useDispatch();
+  const colors = useSelector((state: RootState) => state.filters.colors);
 
   const handleColorChange = (value: string) => {
     dispatch(toggleColor(value));
