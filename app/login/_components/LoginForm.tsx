@@ -76,7 +76,7 @@ export default function LoginForm({ className, ...props }: UserLoginFormProps) {
           });
           setIsLoading(false);
         } else {
-          router.push('/dashboard/my-orders');
+          router.push('/');
           setIsLoading(false);
         }
       }

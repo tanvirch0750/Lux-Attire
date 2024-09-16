@@ -6,7 +6,8 @@ const adminRoutes = [
   '/dashboard/products/add-product',
   '/dashboard/orders',
 ];
-const userRoutes = ['/dashboard/my-orders'];
+
+const userRoutes = ['/my-orders', '/checkout', '/my-profile'];
 
 export async function middleware(req: NextRequest) {
   // @ts-ignore
@@ -39,7 +40,13 @@ export async function middleware(req: NextRequest) {
 
   // If the user is logged in and tries to access login or register, redirect to a protected route
   if (token && authRestrictedRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
+    if (token.role === 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
+    if (token.role === 'user') {
+      return NextResponse.redirect(new URL('/products', req.url));
+    }
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   // Role-based access control for admin routes
@@ -66,8 +73,8 @@ export const config = {
     '/',
     '/login',
     '/register',
-    '/kids-wear',
-    '/traditional-clothing',
-    '/menswear',
+    '/my-orders',
+    '/checkout',
+    '/my-profile',
   ],
 };

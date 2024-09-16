@@ -1,5 +1,6 @@
 // import { useAppSelector } from '@/lib/hooks';
 
+import { SheetClose } from '@/components/ui/sheet';
 import { RootState } from '@/lib/store';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
@@ -17,15 +18,22 @@ export default function CartChekcout() {
         <p className="text-sm">Not including taxes and shipping costs</p>
       </div>
       <div className="flex justify-end space-x-4 mt-4">
-        <button className="px-6 py-2 bg-primary text-white rounded-md">
-          Back to shop
-        </button>
-        <Link
-          href="/checkout"
-          className="px-6 py-2 bg-brand text-white rounded-md"
-        >
-          Continue to Checkout
-        </Link>
+        <SheetClose asChild>
+          <Link
+            href="/products"
+            className="px-6 py-2 bg-primary text-white rounded-md"
+          >
+            Back to shop
+          </Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link
+            href="/checkout"
+            className="px-6 py-2 bg-brand text-white rounded-md"
+          >
+            Continue to Checkout
+          </Link>
+        </SheetClose>
       </div>
     </div>
   );

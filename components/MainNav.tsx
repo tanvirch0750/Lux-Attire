@@ -102,7 +102,7 @@ export function MainNav({ items, children }: any) {
         {loginSession && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="cursor-pointer">
+              <div className="cursor-pointer pl-6">
                 <Avatar>
                   <AvatarImage
                     src={
@@ -125,7 +125,7 @@ export function MainNav({ items, children }: any) {
                     <Link href="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer" asChild>
-                    <Link href="/dashboard/my-orders">My Orders</Link>
+                    <Link href="/my-orders">My Orders</Link>
                   </DropdownMenuItem>
                 </>
               )}
