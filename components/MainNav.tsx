@@ -122,7 +122,7 @@ export function MainNav({ items, children }: any) {
                 <>
                   {' '}
                   <DropdownMenuItem className="cursor-pointer" asChild>
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/my-profile">My Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer" asChild>
                     <Link href="/my-orders">My Orders</Link>
@@ -134,7 +134,7 @@ export function MainNav({ items, children }: any) {
                 <>
                   {' '}
                   <DropdownMenuItem className="cursor-pointer" asChild>
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/my-profile">My Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer" asChild>
                     <Link href="/dashboard/products">Products</Link>
