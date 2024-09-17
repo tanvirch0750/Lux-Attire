@@ -4,17 +4,30 @@ import React from 'react';
 
 const OrderSummaryPage = () => {
   return (
-    <div className=" border-t">
+    <div className=" border-t mb-24">
       <MaxWidthWrapper className="pt-12">
         {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-base text-brand mb-2">Thank You!</h1>
           <h2 className="text-3xl font-bold text-gray-800">It’s on the way</h2>
-          <p className="mt-2">
-            Your order with{' '}
-            <span className="font-bold text-brand">Id #10234987</span> has
-            shipped and will be with you soon.
-          </p>
+          <div className=" flex items-center flex-col md:flex-row justify-between">
+            <p className="mt-2">
+              Your order with{' '}
+              <span className="font-bold text-brand">Id #10234987</span> has
+              shipped and will be with you soon.
+            </p>
+            <p className=" flex items-center gap-3">
+              <span>
+                Order Status:{' '}
+                <span className="text-brand font-semibold">Pending</span>
+              </span>{' '}
+              <span>|</span>
+              <span>
+                Payment Status:{' '}
+                <span className=" text-green-500 font-semibold">Confirmed</span>
+              </span>
+            </p>
+          </div>
         </div>
 
         {/* Order Items Section */}

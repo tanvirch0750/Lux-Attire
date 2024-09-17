@@ -35,7 +35,7 @@ export default function HomePage() {
       <div>
         <ProductsShowcase />
       </div>
-      <div>
+      <div className=" mb-20">
         <NewsLetter />
       </div>
     </>

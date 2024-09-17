@@ -2,13 +2,19 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCartIcon } from 'lucide-react';
 import { CartItems } from './CartItems';
 import { ScrollArea } from '../../../../components/ui/scroll-area';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import CartChekcout from './CartChekcout';
 // import { useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
 import { useSelector } from 'react-redux';
 import EmptyCartImg from '@/assests/empty-cart.png';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Cart() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -51,12 +57,14 @@ export default function Cart() {
                 <p className="text-gray-600 mb-8">
                   Looks like you haven't added anything to your cart yet.
                 </p>
-                <button
-                  onClick={() => (window.location.href = '/products')}
-                  className="px-6 py-3 bg-brand text-white font-semibold rounded-md shadow hover:bg-brand/90 transition duration-300"
-                >
-                  Start Shopping
-                </button>
+                <SheetClose asChild>
+                  <Link
+                    href="/products"
+                    className="px-6 py-3 bg-brand text-white font-semibold rounded-md shadow hover:bg-brand/90 transition duration-300"
+                  >
+                    Start Shopping
+                  </Link>
+                </SheetClose>
               </div>
             </div>
           </div>

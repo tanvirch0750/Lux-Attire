@@ -86,7 +86,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="grid lg:grid-cols-2 gap-10">
+    <div className="grid lg:grid-cols-2 gap-10 mb-20">
       <div className="px-4 pt-8">
         {/* Order Summary */}
         <p className="text-xl font-medium">Order Summary</p>
