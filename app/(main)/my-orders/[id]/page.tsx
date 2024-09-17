@@ -1,6 +1,8 @@
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React from 'react';
+import { AddaReview } from '../../_components/my-orders/AddReview';
 
 const OrderSummaryPage = () => {
   return (
@@ -43,7 +45,7 @@ const OrderSummaryPage = () => {
                 <img
                   src="https://via.placeholder.com/100"
                   alt="Product"
-                  className="w-24 h-24 object-cover"
+                  className="w-24 h-[105px] object-cover rounded-md"
                 />
                 <div>
                   <div className=" fle flex-col items-center">
@@ -53,9 +55,10 @@ const OrderSummaryPage = () => {
                       <span className="font-semibold">XL</span>
                     </p>
                   </div>
-                  <p className="mt-6">
-                    Quantity: <span className="">01</span> | Price:{' '}
-                    <span className="">$32.00</span>
+                  <p className="mt-6 text-gray-600">
+                    Quantity: <span className="font-semibold">01</span> | Price:{' '}
+                    <span className=" font-semibold">$32.00</span>
+                    <AddaReview />
                   </p>
                 </div>
               </div>
@@ -81,8 +84,8 @@ const OrderSummaryPage = () => {
         </div>
 
         {/* Shipping and Payment Method */}
-        <div className="bg-gray-100 p-6 rounded-lg mt-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-gray-100 p-8 rounded-lg mt-12">
+          <div className="flex flex-col md:flex-row gap-6 justify-between">
             <div>
               <h4 className="font-bold">Shipping Method</h4>
               <p className=" mt-2 text-gray-600">
@@ -123,12 +126,11 @@ const OrderSummaryPage = () => {
         </div>
 
         {/* Continue Shopping Button */}
-        <div className="text-center mt-6">
-          <Link
-            href="/products"
-            className="px-6 py-2 bg-brand text-white rounded-md hover:bg-brand/90"
-          >
-            Continue Shopping
+        <div className="text-center mt-6 flex justify-end">
+          <Link href="/products" className="px-6 py-2">
+            <Button className="bg-brand  hover:bg-brand/90">
+              Continue Shopping
+            </Button>
           </Link>
         </div>
       </MaxWidthWrapper>

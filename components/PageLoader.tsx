@@ -3,7 +3,7 @@ import React from 'react';
 const PageLoader = () => {
   const text = 'Luxe Attire';
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen space-y-4">
+    <div className="flex flex-col justify-center items-center min-h-screen space-y-4 mt-[-100px]">
       {/* Bouncing dots animation */}
       <div className="flex space-x-2">
         <div className="w-4 h-4 bg-brand rounded-full animate-bounce1"></div>
