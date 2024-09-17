@@ -41,7 +41,7 @@ const MainLayout = ({
   return (
     <div className="flex min-h-screen flex-col ">
       <div className="h-20 py-4 z-50 bg-white/60 ">
-        <div className="container flex mx-auto h-full  items-center justify-between px-2">
+        <div className="px-6 flex mx-auto h-full  items-center justify-between">
           <SessionProvider>
             <MainNav items={navLinks} />
           </SessionProvider>
