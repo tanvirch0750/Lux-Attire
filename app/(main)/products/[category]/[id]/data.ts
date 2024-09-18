@@ -1,8 +1,4 @@
 import { CurrencyIcon, GlobeIcon } from 'lucide-react';
-import product0 from '../public/product-page-0.jpg';
-import product1 from '../public/product-page-1.jpg';
-import product2 from '../public/product-page-2.jpg';
-import relatedProduct0 from '../public/product-related-0.jpg';
 
 const category = [
   { id: 1, label: "Women's Collection", value: 'women-collection' },

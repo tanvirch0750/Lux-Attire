@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { ceredntialLogin } from '@/app/actions/auth';
+import { ceredntialLogin } from '@/app/actions-and-queries/auth';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import SocialLogins from '@/app/register/_components/SocialLogings';

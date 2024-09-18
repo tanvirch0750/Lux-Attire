@@ -130,21 +130,21 @@ export const navItems: NavItem[] = [
     label: 'category',
   },
   {
-    title: 'Profile',
-    href: '/dashboard/profile',
-    icon: 'profile',
-    label: 'profile',
+    title: 'Products',
+    href: '/dashboard/products',
+    icon: 'product',
+    label: 'Products',
   },
-  //   {
-  //     title: 'Products',
-  //     href: '/dashboard/products',
-  //     icon: 'prduct',
-  //     label: 'Products',
-  //   },
   {
     title: 'Orders',
     href: '/dashboard/orders',
     icon: 'orders',
     label: 'orders',
+  },
+  {
+    title: 'Profile',
+    href: '/dashboard/profile',
+    icon: 'profile',
+    label: 'profile',
   },
 ];

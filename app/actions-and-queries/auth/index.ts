@@ -17,11 +17,6 @@ export async function ceredntialLogin(formData: {
     console.log('login res', response);
     return response;
   } catch (error: any) {
-    console.log(
-      'errrorrrrrrrrrrrrrrrrrrrrrrrr 💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥',
-      error.type
-    );
-
     if (error.type === 'CallbackRouteError' || 'CredentialsSignin') {
       throw new Error('Invalid Credentials');
     } else {
