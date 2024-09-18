@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 const adminRoutes = [
+  '/dashboard',
   '/dashboard/products',
   '/dashboard/products/add-product',
   '/dashboard/orders',

@@ -7,10 +7,8 @@ import { cn } from '@/lib/utils';
 // import { MobileNav } from "@/components/mobile-nav";
 import Logo from '@/assests/luxe-attire-logo.png';
 import Image from 'next/image';
-import { ShoppingCartIcon, X } from 'lucide-react';
-import { Command } from 'lucide-react';
-import { Button, buttonVariants } from './ui/button';
-import { Menu } from 'lucide-react';
+import { buttonVariants } from './ui/button';
+import { Menu, X } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 import { useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { MobileNav } from './MobileNav';
 import Cart from '../app/(main)/_components/cart/Cart';
 
@@ -134,7 +132,7 @@ export function MainNav({ items, children }: any) {
                 <>
                   {' '}
                   <DropdownMenuItem className="cursor-pointer" asChild>
-                    <Link href="/my-profile">My Profile</Link>
+                    <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer" asChild>
                     <Link href="/dashboard/products">Products</Link>

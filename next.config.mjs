@@ -27,6 +27,11 @@ const nextConfig = {
         hostname: 'chawkbazar.vercel.app',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+      },
     ],
   },
 };

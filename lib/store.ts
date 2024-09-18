@@ -3,6 +3,7 @@ import filterReducer from './features/filterSlice';
 import cartReducer from './features/cartSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import sidebarSlice from './features/sidebarSlice';
 
 // Create a persist config
 const persistConfig = {
@@ -14,6 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   cart: cartReducer,
   filters: filterReducer,
+  sidebar: sidebarSlice,
 });
 
 const makeConfiguredStore = () =>
