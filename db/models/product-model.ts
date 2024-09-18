@@ -86,6 +86,5 @@ const productSchema = new Schema<ProductDocument>({
   },
 });
 
-// Export the Product model using the formula
 export const Product =
   models.Product ?? model<ProductDocument>('Product', productSchema);
