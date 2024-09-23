@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 
 // Create a new category
 export const createCategory = async (categoryData: ICategory) => {
+  console.log(categoryData);
   try {
     const newCategory = new Category(categoryData);
     await newCategory.save();

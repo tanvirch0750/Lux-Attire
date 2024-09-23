@@ -21,18 +21,18 @@ export function DataTableRowActions<TData>({
     <div className="flex items-center w-[100px] gap-2">
       {/* <EditCategory category={category} /> */}
       <Button
-        className=" px-1 py-1 bg-green-100 text-green-500"
-        size="icon"
+        className=" px-2 bg-green-100 text-green-500 hover:bg-gray-200"
+        size="sm"
         onClick={handleDeleteCategory}
       >
-        <Edit2Icon size={20} />
+        <Edit2Icon size={16} />
       </Button>
       <Button
-        className=" px-1 py-1 bg-red-100 text-red-500"
-        size="icon"
+        className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
+        size="sm"
         onClick={handleDeleteCategory}
       >
-        <Trash2Icon size={20} />
+        <Trash2Icon size={16} />
       </Button>
     </div>
   );

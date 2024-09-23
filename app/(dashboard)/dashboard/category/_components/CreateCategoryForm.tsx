@@ -2,8 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import React from 'react';
+import { useCreateOrUpdate } from '@/hooks/useCreateOrUpdate';
+import { Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 interface CategoryFormValues {
   label: string;
@@ -11,9 +14,12 @@ interface CategoryFormValues {
 }
 
 const CreateCategoryForm = () => {
+  const { loading, error, fetchCreateOrUpdate } = useCreateOrUpdate();
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CategoryFormValues>({
     defaultValues: {
@@ -22,9 +28,24 @@ const CreateCategoryForm = () => {
     },
   });
 
-  const handleCreateCategory: SubmitHandler<CategoryFormValues> = (data) => {
-    console.log(data);
-    // Call API to create category with data (id, label, value)
+  const handleCreateCategory: SubmitHandler<CategoryFormValues> = async (
+    data
+  ) => {
+    const result = await fetchCreateOrUpdate('/api/category', {
+      method: 'POST',
+      body: data,
+    });
+
+    if (result) {
+      toast.success('Category created successfully', {
+        position: 'top-center',
+      });
+      reset();
+    } else {
+      toast.error('Category creation failed', {
+        position: 'top-center',
+      });
+    }
   };
 
   return (
@@ -41,10 +62,10 @@ const CreateCategoryForm = () => {
           id="label"
           type="text"
           {...register('label', { required: 'Label is required' })}
-          className={`mt-1 block w-full py-2 px-3 border ${
+          className={`mt-1 block w-full py-2 px-3 border text-md ${
             errors.label ? 'border-red-500' : 'border-gray-300'
           } rounded-md shadow-sm`}
-          placeholder="Enter Category Label"
+          placeholder="Women's Collection"
         />
         {errors.label && (
           <p className="mt-1 text-sm text-red-600">{errors.label.message}</p>
@@ -60,10 +81,10 @@ const CreateCategoryForm = () => {
           id="value"
           type="text"
           {...register('value', { required: 'Value is required' })}
-          className={`mt-1 block w-full py-2 px-3 border ${
+          className={`mt-1 block w-full py-2 px-3 border text-md ${
             errors.value ? 'border-red-500' : 'border-gray-300'
           } rounded-md shadow-sm`}
-          placeholder="Enter Category Value"
+          placeholder="women-collection"
         />
         {errors.value && (
           <p className="mt-1 text-sm text-red-600">{errors.value.message}</p>
@@ -75,8 +96,16 @@ const CreateCategoryForm = () => {
         <Button
           type="submit"
           className="w-full px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand/90"
+          disabled={loading}
         >
-          Create Category
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </>
+          ) : (
+            <> Create Category</>
+          )}
         </Button>
       </div>
     </form>
