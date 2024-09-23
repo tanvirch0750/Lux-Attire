@@ -4,6 +4,7 @@ import { Schema, model, models } from 'mongoose';
 export interface ICategory {
   label: string;
   value: string;
+  _id?: string;
 }
 
 // Define the Mongoose schema for Category
