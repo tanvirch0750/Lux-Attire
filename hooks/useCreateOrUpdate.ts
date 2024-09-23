@@ -30,11 +30,16 @@ export const useCreateOrUpdate = (): UseCreateOrUpdate => {
         body: options.body ? JSON.stringify(options.body) : null,
       });
 
+      // Extract the response body
+      const result = await response.json();
+
+      // If the response is not ok, check for the error message in the body
       if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
+        const errorMessage = result.message || `Error: ${response.statusText}`;
+        throw new Error(errorMessage);
       }
 
-      const result = await response.json();
+      // Return the result if successful
       return result;
     } catch (err: any) {
       setError(err.message || 'Something went wrong');

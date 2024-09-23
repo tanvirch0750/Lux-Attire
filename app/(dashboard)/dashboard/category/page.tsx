@@ -1,28 +1,12 @@
-import { Button } from '@/components/ui/button';
 import PageContainer from '../../_components/layout/PageContainer';
-import CreateCategoryForm from './_components/CreateCategoryForm';
-import Link from 'next/link';
 import PageHeader from '../../_components/PageHeader';
 import { DataTable } from './_components/data-table';
-import { ICategory } from '@/db/models/category-model';
 import { columns } from './_components/columns';
+import { getAllCategories } from '@/db/actions-and-queries/category/category-queries';
 
-const data: ICategory[] = [
-  {
-    label: 'Womel Collection',
-    value: 'women-collection',
-  },
-  {
-    label: 'Men Collection',
-    value: 'men-collection',
-  },
-  {
-    label: 'Kids Collection',
-    value: 'kids-collection',
-  },
-];
+export default async function CategoryPage() {
+  let data = await getAllCategories();
 
-export default function CategoryPage() {
   return (
     <PageContainer>
       <PageHeader

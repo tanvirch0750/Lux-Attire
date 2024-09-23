@@ -1,10 +1,11 @@
 import { Category, ICategory } from '@/db/models/category-model';
 import { Document, Types } from 'mongoose';
+import { unstable_cache } from 'next/cache';
 
 // Get all categories
 export const getAllCategories = async () => {
   try {
-    const categories = await Category.find({});
+    const categories = await Category.find({}).sort({ createdAt: -1 });
     return categories;
   } catch (error) {
     throw new Error('Error fetching categories: ' + (error as Error).message);

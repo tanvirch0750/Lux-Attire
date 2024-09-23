@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { doSocialLogin } from '@/app/actions-and-queries/auth';
+import { doSocialLogin } from '@/db/actions-and-queries/auth';
 
 const SocialLogins = () => {
   return (

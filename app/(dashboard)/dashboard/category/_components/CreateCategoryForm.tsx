@@ -1,5 +1,6 @@
 'use client';
 
+import { createCategoryAction } from '@/app/actions/category/category';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCreateOrUpdate } from '@/hooks/useCreateOrUpdate';
@@ -14,7 +15,7 @@ interface CategoryFormValues {
 }
 
 const CreateCategoryForm = () => {
-  const { loading, error, fetchCreateOrUpdate } = useCreateOrUpdate();
+  const [loading, setLoding] = useState(false);
 
   const {
     register,
@@ -31,20 +32,30 @@ const CreateCategoryForm = () => {
   const handleCreateCategory: SubmitHandler<CategoryFormValues> = async (
     data
   ) => {
-    const result = await fetchCreateOrUpdate('/api/category', {
-      method: 'POST',
-      body: data,
-    });
+    try {
+      setLoding(true);
 
-    if (result) {
-      toast.success('Category created successfully', {
+      const result = await createCategoryAction(data);
+
+      if (result.status === 200) {
+        toast.success('Category created successfully', {
+          position: 'top-center',
+        });
+        reset();
+      }
+
+      if (result.status === 404) {
+        toast.error(result?.error, {
+          position: 'top-center',
+        });
+        reset();
+      }
+    } catch (error) {
+      toast.error('Category Creation Failed, Something went wrong', {
         position: 'top-center',
       });
-      reset();
-    } else {
-      toast.error('Category creation failed', {
-        position: 'top-center',
-      });
+    } finally {
+      setLoding(false);
     }
   };
 
