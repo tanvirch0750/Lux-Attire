@@ -1,8 +1,13 @@
-import React, { useEffect } from 'react';
+'use client';
+
+import { updateCategoryAction } from '@/app/actions/category/category';
+import LoadingButton from '@/components/LodingButton';
+import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 interface CategoryFormValues {
-  id: number;
+  id: string;
   label: string;
   value: string;
 }
@@ -14,6 +19,8 @@ interface UpdateCategoryFormProps {
 const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
   initialData,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -27,9 +34,35 @@ const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
     },
   });
 
-  const handleUpdateCategory: SubmitHandler<CategoryFormValues> = (data) => {
-    console.log('Updated category data:', data);
-    // Call API to update the category in the backend
+  const handleUpdateCategory: SubmitHandler<CategoryFormValues> = async (
+    data
+  ) => {
+    try {
+      setLoading(true);
+
+      const result = await updateCategoryAction(data?.id, {
+        label: data?.label,
+        value: data?.value,
+      });
+
+      if (result.status === 200) {
+        toast.success('Category updated successfully', {
+          position: 'top-center',
+        });
+      }
+
+      if (result.status === 404) {
+        toast.error(result?.error, {
+          position: 'top-center',
+        });
+      }
+    } catch (error) {
+      toast.error('Category updation Failed, Something went wrong', {
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Use useEffect to set initial values if not passed via defaultValues prop
@@ -53,15 +86,13 @@ const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
         </label>
         <input
           id="id"
-          type="number"
+          type="text"
           {...register('id', {
             required: 'Category ID is required',
-            valueAsNumber: true,
           })}
-          className={`mt-1 block w-full py-2 px-3 border ${
+          className={`mt-1 block w-full py-2 px-3 ${
             errors.id ? 'border-red-500' : 'border-gray-300'
           } rounded-md shadow-sm bg-gray-100 cursor-not-allowed`}
-          readOnly
         />
         {errors.id && (
           <p className="mt-1 text-sm text-red-600">{errors.id.message}</p>
@@ -108,12 +139,12 @@ const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
 
       {/* Submit Button */}
       <div className="mt-6">
-        <button
+        <LoadingButton
+          isLoading={loading}
+          label="Update Category"
+          loadingLabel="Please Wait"
           type="submit"
-          className="w-full px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand/90"
-        >
-          Update Category
-        </button>
+        />
       </div>
     </form>
   );

@@ -21,6 +21,6 @@ export const getCategoryById = async (categoryId: Types.ObjectId) => {
     }
     return category;
   } catch (error) {
-    throw new Error('Error fetching category: ' + (error as Error).message);
+    throw new Error('Error fetching category');
   }
 };

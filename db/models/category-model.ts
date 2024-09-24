@@ -4,6 +4,7 @@ import { Schema, model, models } from 'mongoose';
 export interface ICategory {
   label: string;
   value: string;
+  isDeleted?: string;
   _id?: string;
 }
 
@@ -13,11 +14,16 @@ const categorySchema = new Schema<ICategory>(
     label: {
       type: String,
       required: true,
+      unique: true,
     },
     value: {
       type: String,
       required: true,
       unique: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false, // By default, a product is not deleted
     },
   },
   {
