@@ -32,4 +32,4 @@ const categorySchema = new Schema<ICategory>(
 );
 
 // Export the Category model using the formula
-export const Category = models.Category ?? model('Category', categorySchema);
+export const Category = models?.Category ?? model('Category', categorySchema);

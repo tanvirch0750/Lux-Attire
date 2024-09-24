@@ -1,4 +1,3 @@
-// src/validation/productSchema.ts
 import { z } from 'zod';
 
 export const productSchema = z.object({
@@ -28,7 +27,10 @@ export const productSchema = z.object({
   sizes: z
     .array(
       z.object({
-        name: z.string().min(1, 'Size name is required'),
+        name: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'], {
+          errorMap: () => ({ message: 'Invalid size name' }),
+        }),
+
         inStock: z.boolean(),
       })
     )

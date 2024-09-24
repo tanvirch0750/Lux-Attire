@@ -94,17 +94,6 @@ export function DataTableRowActions<TData>({
         </Button>
       </Link>
       {category?.isDeleted ? (
-        // <Button
-        //   className=" px-2 bg-orange-100 text-orange-500 hover:bg-orange-200"
-        //   size="sm"
-        //   onClick={handleUndoDeleteCategory}
-        // >
-        //   {loading ? (
-        //     <Loader2 size={16} className="animate-spin" />
-        //   ) : (
-        //     <Undo2Icon size={16} />
-        //   )}
-        // </Button>
         <ConfirmDialog
           triggerType="undo-delete"
           title="Are you sure?"
@@ -115,17 +104,6 @@ export function DataTableRowActions<TData>({
           isLoading={loading}
         />
       ) : (
-        // <Button
-        //   className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
-        //   size="sm"
-        //   onClick={handleDeleteCategory}
-        // >
-        //   {loading ? (
-        //     <Loader2 size={16} className="animate-spin" />
-        //   ) : (
-        //     <Trash2Icon size={16} />
-        //   )}
-        // </Button>
         <ConfirmDialog
           triggerType="confirm-delete"
           title="Are you sure?"

@@ -2,19 +2,23 @@
 
 import { Product, IProduct } from '@/db/models/product-model';
 import { Types } from 'mongoose';
+import { revalidatePath } from 'next/cache';
 
 // Create a new product (only admin can create)
-export const createProduct = async (productData: IProduct, role: string) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can create products');
-  }
-
+export const createProduct = async (productData: IProduct) => {
   try {
     const newProduct = new Product(productData);
     await newProduct.save();
-    return newProduct;
-  } catch (error) {
-    throw new Error('Error creating product: ' + (error as Error).message);
+
+    revalidatePath('/dashboard/products', 'page');
+
+    return JSON.parse(JSON.stringify(newProduct));
+  } catch (error: any) {
+    // Check if the error is a duplicate key error (E11000)
+    if (error.code === 11000) {
+      throw new Error('Product already exists'); // Custom error message
+    }
+    throw new Error('Error creating product');
   }
 };
 

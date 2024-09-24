@@ -11,7 +11,11 @@ import { Reviews } from '@/app/(main)/_components/product/Reviews';
 import { SizePicker } from '@/app/(main)/_components/product/SizePicker';
 import { product } from './data';
 
-export default async function Example({ params }: { params: { id: string } }) {
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   return (
     <div className="bg-white border-t">
       <main className="mx-auto mt-8 max-w-2xl px-4 pb-16 sm:px-6 sm:pb-24 lg:max-w-7xl lg:px-2">

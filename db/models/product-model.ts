@@ -3,7 +3,6 @@ import { Schema, model, models, Document, Types } from 'mongoose';
 // Product interface
 export interface IProduct {
   category: Types.ObjectId;
-  productId: number;
   name: string;
   price: number;
   isAvailable: boolean;
@@ -27,6 +26,34 @@ export interface IProduct {
   isDeleted: boolean;
 }
 
+// Product interface
+export interface IProductFrontend {
+  category: Types.ObjectId;
+  productId: number;
+  name: string;
+  price: number;
+  isAvailable: boolean;
+  images: {
+    id: number;
+    imageSrc: string;
+    imageAlt: string;
+    primary: boolean;
+  }[];
+  colors: {
+    name: string;
+    bgColor: string;
+    selectedColor: string;
+  }[];
+  sizes: {
+    name: string;
+    inStock: boolean;
+  }[];
+  description: string;
+  details: string[];
+  isDeleted: boolean;
+  _id?: string;
+}
+
 // Mongoose document type for Product, which includes IProduct fields
 export interface ProductDocument extends IProduct, Document {}
 
@@ -36,11 +63,6 @@ const productSchema = new Schema<ProductDocument>({
     type: Schema.Types.ObjectId,
     ref: 'Category',
     required: true,
-  },
-  productId: {
-    type: Number,
-    required: true,
-    unique: true,
   },
   name: {
     type: String,
