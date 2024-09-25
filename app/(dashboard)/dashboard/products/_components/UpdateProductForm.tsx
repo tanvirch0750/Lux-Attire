@@ -1,7 +1,12 @@
 'use client';
 
-import React from 'react';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import React, { useState } from 'react';
+import {
+  useForm,
+  Controller,
+  useFieldArray,
+  SubmitHandler,
+} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '../validation/productSchema';
 import { NumberInput } from './NumberInput';
@@ -9,8 +14,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Types } from 'mongoose';
+import { ICategory } from '@/db/models/category-model';
+import { SizeDescription } from '@/app/(main)/_components/product/SizeDescription';
+import { updateProdcutAction } from '@/app/actions/product/product';
+import { IProduct } from '@/db/models/product-model';
+import { toast } from 'react-toastify';
+import { Loader2 } from 'lucide-react';
 
-interface IProductFormInputs {
+export interface IProductFormInputs {
+  _id?: string | Types.ObjectId;
   category: string;
   name: string;
   price: number;
@@ -29,23 +42,14 @@ interface IProductFormInputs {
 
 interface UpdateProductFormProps {
   initialData: IProductFormInputs;
-  onSubmit: (data: IProductFormInputs) => void;
+  categories: ICategory[];
 }
-
-// Example categories (replace with your data)
-const categories = [
-  { id: '1', label: "Women's Collection", value: 'women-collection' },
-  { id: '2', label: 'Active Wear', value: 'active-wear' },
-  { id: '3', label: 'Kids Wear', value: 'kids-wear' },
-  { id: '4', label: 'Traditional Clothing', value: 'traditional-clothing' },
-  { id: '5', label: "Men's Wear", value: 'men-wear' },
-  { id: '6', label: 'Accessories', value: 'accessories' },
-];
 
 const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
   initialData,
-  onSubmit,
+  categories,
 }) => {
+  const [loading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -94,9 +98,42 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
     name: 'details',
   });
 
+  const handleUpdateProduct: SubmitHandler<IProductFormInputs> = async (
+    data
+  ) => {
+    console.log('Submitted data:', data);
+
+    try {
+      setLoading(true);
+
+      const result = await updateProdcutAction(
+        initialData?._id!,
+        data as unknown as IProduct
+      );
+
+      if (result.status === 200) {
+        toast.success('Product updated successfully', {
+          position: 'top-center',
+        });
+      }
+
+      if (result.status === 404) {
+        toast.error(result?.error, {
+          position: 'top-center',
+        });
+      }
+    } catch (error) {
+      toast.error('Product updation Failed, Something went wrong', {
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleUpdateProduct)}
       className="space-y-6 p-8 bg-white rounded"
     >
       {/* Name */}
@@ -150,10 +187,9 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
             errors.category ? 'border-red-500' : 'border-gray-300'
           } rounded-md shadow-sm`}
         >
-          <option value="">Select a category</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.value}>
-              {cat.label}
+          {categories?.map((cat) => (
+            <option key={cat?._id} value={cat?._id}>
+              {cat?.label}
             </option>
           ))}
         </select>
@@ -165,7 +201,16 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
       {/* Available */}
       <div className="mb-4">
         <label htmlFor="isAvailable" className="flex items-center">
-          <Checkbox {...register('isAvailable')} />
+          <Controller
+            name="isAvailable"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={(value: boolean) => field.onChange(value)}
+              />
+            )}
+          />
           <span className=" font-medium text-gray-700 ml-2">Is Available</span>
         </label>
         {errors.isAvailable && (
@@ -182,10 +227,11 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
           <div key={field.id} className="mb-2 flex items-center">
             <Input
               {...register(`images.${index}.id` as const)}
-              type="string"
+              type="text"
               className="mr-2 block w-16 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
               placeholder="ID"
             />
+
             <Input
               {...register(`images.${index}.imageSrc` as const)}
               type="text"
@@ -198,9 +244,16 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
               className="mr-2 block w-1/3 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
               placeholder="Image Alt"
             />
-            <Checkbox
-              {...register(`images.${index}.primary` as const)}
-              className="mr-2 h-4 w-4"
+            <Controller
+              name={`images.${index}.primary`}
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(value: boolean) => field.onChange(value)}
+                  className="mr-2 h-4 w-4"
+                />
+              )}
             />
             <span>Primary</span>
             <button
@@ -212,6 +265,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
             </button>
           </div>
         ))}
+
         <button
           type="button"
           onClick={() =>
@@ -268,59 +322,35 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
 
       {/* Sizes */}
       <div className="mb-4">
-        <label className="block font-medium text-gray-700">Sizes</label>
-        {sizeFields.map((field, index) => (
-          <div key={field.id} className="mb-2 flex items-center">
-            <Input
-              {...register(`sizes.${index}.name` as const)}
-              type="text"
-              className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Size"
-            />
-            <Checkbox
-              {...register(`sizes.${index}.inStock` as const)}
-              className="mr-2 h-4 w-4"
-            />
-            <span>In Stock</span>
-            <button
-              type="button"
-              onClick={() => removeSize(index)}
-              className="ml-2 text-red-600 hover:text-red-800"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => appendSize({ name: '', inStock: false })}
-          className="text-brand hover:text-brand/90 text-sm"
-        >
-          Add Size
-        </button>
-      </div>
-
-      {/* Description */}
-      <div className="mb-4">
-        <label
-          htmlFor="description"
-          className="block font-medium text-gray-700"
-        >
-          Description
+        <label className="block font-medium text-gray-700 mb-1">
+          Sizes (<SizeDescription />)
         </label>
-        <Textarea
-          id="description"
-          {...register('description')}
-          className={`mt-1 block w-full py-2 px-3 border ${
-            errors.description ? 'border-red-500' : 'border-gray-300'
-          } rounded-md shadow-sm`}
-          placeholder="Description"
-        />
-        {errors.description && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.description.message}
-          </p>
-        )}
+
+        <div className=" grid grid-cols-1 md:grid-cols-3 gap-2">
+          {sizeFields.map((field, index) => (
+            <div key={field.id} className="mb-2 flex items-center">
+              <Input
+                {...register(`sizes.${index}.name` as const)}
+                type="text"
+                className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
+                placeholder="Size Name"
+              />
+
+              <Controller
+                name={`sizes.${index}.inStock`}
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(value: boolean) => field.onChange(value)}
+                    className="mr-2 h-4 w-4"
+                  />
+                )}
+              />
+              <span>In Stock</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Details */}
@@ -353,18 +383,48 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
         </button>
       </div>
 
-      <Button type="submit" className="w-full bg-brand text-white py-2">
-        Update Product
-      </Button>
+      {/* Description */}
+      <div className="mb-4">
+        <label
+          htmlFor="description"
+          className="block font-medium text-gray-700"
+        >
+          Description
+        </label>
+        <Textarea
+          id="description"
+          {...register('description')}
+          className={`mt-1 block w-full py-2 px-3 border ${
+            errors.description ? 'border-red-500' : 'border-gray-300'
+          } rounded-md shadow-sm`}
+          placeholder="Description"
+        />
+        {errors.description && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.description.message}
+          </p>
+        )}
+      </div>
+
+      {/* Submit Button */}
+      <div>
+        <Button
+          type="submit"
+          className="w-full px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand/90"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Updating Product
+            </>
+          ) : (
+            <> Update Product</>
+          )}
+        </Button>
+      </div>
     </form>
   );
 };
 
 export default UpdateProductForm;
-
-{
-  /* <UpdateProductForm
-  initialData={productData} // Pass the existing product data here
-  onSubmit={handleProductUpdate} // Callback for submitting updated data
-/> */
-}

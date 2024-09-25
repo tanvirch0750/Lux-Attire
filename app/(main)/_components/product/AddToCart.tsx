@@ -21,7 +21,7 @@ export default function AddToCart({
 
   // Check if the product is already in the cart
   const isProductInCart = cartItems.some(
-    (item) => item.productId === productId
+    (item: any) => item.productId === productId
   );
 
   // Check if size and color are selected

@@ -21,6 +21,7 @@ import { IProduct } from '@/db/models/product-model';
 import { toast } from 'react-toastify';
 import LoadingButton from '@/components/LodingButton';
 import { Loader2 } from 'lucide-react';
+import { Types } from 'mongoose';
 
 interface IProductFormInputs {
   category: string;
@@ -56,9 +57,9 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
       name: '',
       price: 0,
       isAvailable: true,
-      images: [{ id: '1', imageSrc: '', imageAlt: '', primary: true }],
+      images: [{ id: '1', imageSrc: '', imageAlt: '', primary: false }],
       colors: [{ name: '', bgColor: '', selectedColor: '' }],
-      sizes: sizeList?.map((size) => ({ name: size, inStock: true })),
+      sizes: sizeList?.map((size) => ({ name: size, inStock: false })),
       description: '',
       details: ['product details'],
     },
@@ -221,7 +222,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
           <div key={field.id} className="mb-2 flex items-center">
             <Input
               {...register(`images.${index}.id` as const)}
-              type="string"
+              type="text"
               className="mr-2 block w-16 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
               placeholder="ID"
             />
@@ -237,9 +238,16 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
               className="mr-2 block w-1/3 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
               placeholder="Image Alt"
             />
-            <Checkbox
-              {...register(`images.${index}.primary` as const)}
-              className="mr-2 h-4 w-4"
+            <Controller
+              control={control}
+              name={`images.${index}.primary`}
+              render={({ field }) => (
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(value: boolean) => field.onChange(value)}
+                  className="mr-2 h-4 w-4"
+                />
+              )}
             />
             <span>Primary</span>
             <button
@@ -311,7 +319,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
           Sizes (<SizeDescription />)
         </label>
 
-        <div className=" grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           {sizeFields.map((field, index) => (
             <div key={field.id} className="mb-2 flex items-center">
               <Input
@@ -320,27 +328,20 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                 className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
                 placeholder="Size Name"
               />
-              <Checkbox
-                {...register(`sizes.${index}.inStock` as const)}
-                className="mr-2 h-4 w-4"
+              <Controller
+                control={control}
+                name={`sizes.${index}.inStock`}
+                render={({ field }) => (
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(value: boolean) => field.onChange(value)}
+                    className="mr-2 h-4 w-4"
+                  />
+                )}
               />
               <span>In Stock</span>
-              {/* <button
-              type="button"
-              onClick={() => removeSize(index)}
-              className="ml-2 text-red-600 hover:text-red-800"
-            >
-              Remove
-            </button> */}
             </div>
           ))}
-          {/* <button
-          type="button"
-          onClick={() => appendSize({ name: '', inStock: true })}
-          className="text-brand hover:text-brand/90 text-sm"
-        >
-          Add Size
-        </button> */}
         </div>
       </div>
 

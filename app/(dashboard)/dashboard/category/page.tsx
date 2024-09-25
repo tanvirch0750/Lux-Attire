@@ -7,8 +7,10 @@ import { getAllCategories } from '@/db/actions-and-queries/category/category-que
 export default async function CategoryPage() {
   let data = await getAllCategories();
 
+  console.log(data);
+
   return (
-    <PageContainer>
+    <PageContainer scrollable>
       <PageHeader
         btnLabel="Create Category"
         btnLink="/dashboard/category/create"

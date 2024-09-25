@@ -1,16 +1,35 @@
-import { getAllCategories } from '@/db/actions-and-queries/category/category-queries';
 import PageContainer from '../../_components/layout/PageContainer';
-import ProductForm from './_components/CreateProductForm';
-import { ICategory } from '@/db/models/category-model';
+import PageHeader from '../../_components/PageHeader';
+import { getAllProducts } from '@/db/actions-and-queries/products/products-queries';
+import { DataTable } from './_components/data-table';
+import { columns } from './_components/columns';
 
-export default async function ProductListPage() {
-  const categories = await getAllCategories();
+export default async function ProductPage() {
+  const productsData = await getAllProducts();
+  const simplifiedData = productsData?.map((product) => ({
+    _id: product?._id,
+    category: product?.category ? product.category.label : null,
+    name: product?.name,
+    price: product?.price,
+    isAvailable: product?.isAvailable,
+    image: product?.images[0]?.imageSrc,
+    isDeleted: product?.isDeleted,
+  }));
 
   return (
     <PageContainer scrollable>
-      <h2 className=" text-primary text-2xl mb-5">Create Product</h2>
+      <PageHeader
+        btnLabel="Create Product"
+        btnLink="/dashboard/products/create"
+        heading="Products List"
+      />
 
-      <ProductForm categories={categories as ICategory[]} />
+      <div className=" pb-10">
+        <DataTable
+          data={simplifiedData?.length ? simplifiedData : []}
+          columns={columns}
+        />
+      </div>
     </PageContainer>
   );
 }

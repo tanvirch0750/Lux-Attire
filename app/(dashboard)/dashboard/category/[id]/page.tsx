@@ -20,7 +20,7 @@ export default async function UpdateCategoryPage({
   };
 
   return (
-    <PageContainer>
+    <PageContainer scrollable>
       <PageHeader
         btnLabel="Category List"
         btnLink="/dashboard/category"

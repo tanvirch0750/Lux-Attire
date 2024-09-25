@@ -24,39 +24,34 @@ export const createProduct = async (productData: IProduct) => {
 
 // Update a product by ID (only admin can update)
 export const updateProductById = async (
-  productId: Types.ObjectId,
-  updateData: Partial<IProduct>,
-  role: string
+  productId: Types.ObjectId | string,
+  updateData: Partial<IProduct>
 ) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can update products');
-  }
-
   try {
-    const updatedProduct = await Product.findOneAndUpdate(
-      { _id: productId, isDeleted: false },
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
       updateData,
       { new: true, runValidators: true }
     );
-
     if (!updatedProduct) {
-      throw new Error('Product not found or is deleted');
+      throw new Error('Product not found');
     }
-    return updatedProduct;
-  } catch (error) {
-    throw new Error('Error updating product: ' + (error as Error).message);
+
+    revalidatePath('/dashboard/products', 'page');
+    revalidatePath('/dashboard/products/[id]', 'page');
+
+    return JSON.parse(JSON.stringify(updatedProduct));
+  } catch (error: any) {
+    // Check if the error is a duplicate key error (E11000)
+    if (error.code === 11000) {
+      throw new Error('Product already exists');
+    }
+    throw new Error('Error updating Product');
   }
 };
 
 // Soft delete a product by updating isDeleted to true
-export const deleteProductById = async (
-  productId: Types.ObjectId,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can delete products');
-  }
-
+export const deleteProductById = async (productId: Types.ObjectId | string) => {
   try {
     const deletedProduct = await Product.findOneAndUpdate(
       { _id: productId, isDeleted: false },
@@ -68,21 +63,17 @@ export const deleteProductById = async (
       throw new Error('Product not found or is already deleted');
     }
 
-    return deletedProduct;
+    revalidatePath('/dashboard/products', 'page');
+    revalidatePath('/dashboard/products/[id]', 'page');
+
+    return JSON.parse(JSON.stringify(deletedProduct));
   } catch (error) {
-    throw new Error('Error deleting product: ' + (error as Error).message);
+    throw new Error('Error deleting product');
   }
 };
 
 // Undo delete functionality by setting isDeleted to false
-export const undoDeleteProduct = async (
-  productId: Types.ObjectId,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can undo product deletion');
-  }
-
+export const undoDeleteProduct = async (productId: Types.ObjectId | string) => {
   try {
     const restoredProduct = await Product.findOneAndUpdate(
       { _id: productId, isDeleted: true },
@@ -91,13 +82,14 @@ export const undoDeleteProduct = async (
     );
 
     if (!restoredProduct) {
-      throw new Error('Product not found or is not deleted');
+      throw new Error('product not found or is not deleted');
     }
 
-    return restoredProduct;
+    revalidatePath('/dashboard/products', 'page');
+    revalidatePath('/dashboard/products/[id]', 'page');
+
+    return JSON.parse(JSON.stringify(restoredProduct));
   } catch (error) {
-    throw new Error(
-      'Error undoing product deletion: ' + (error as Error).message
-    );
+    throw new Error('Error undoing product deletion');
   }
 };

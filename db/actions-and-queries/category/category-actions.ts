@@ -42,7 +42,7 @@ export const updateCategoryById = async (
     if (error.code === 11000) {
       throw new Error('Category already exists');
     }
-    throw new Error('Error creating category');
+    throw new Error('Error updating category');
   }
 };
 

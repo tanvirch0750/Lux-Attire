@@ -80,7 +80,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className=" mt-8">
           <AlertDialogCancel onClick={() => setOpen(false)}>
             {cancelText}
           </AlertDialogCancel>

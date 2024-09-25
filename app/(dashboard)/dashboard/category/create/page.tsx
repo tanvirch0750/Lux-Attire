@@ -4,7 +4,7 @@ import PageHeader from '@/app/(dashboard)/_components/PageHeader';
 
 export default function CreateCategoryPage() {
   return (
-    <PageContainer>
+    <PageContainer scrollable>
       <PageHeader
         btnLabel="Category List"
         btnLink="/dashboard/category"
