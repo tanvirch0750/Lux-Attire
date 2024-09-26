@@ -26,6 +26,7 @@ export default async function UpdateProductPage({
     images:
       product?.images.map((image: any, index: number) => ({
         id: image?.id || `${index}`,
+        color: image?.color || '',
         imageSrc: image?.imageSrc || '',
         imageAlt: image?.imageAlt || '',
         primary: image?.primary || false,

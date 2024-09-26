@@ -9,6 +9,7 @@ export const productSchema = z.object({
     .array(
       z.object({
         id: z.string(),
+        color: z.string(),
         imageSrc: z.string().url('Invalid image URL'),
         imageAlt: z.string().min(1, 'Image alt text is required'),
         primary: z.boolean(),

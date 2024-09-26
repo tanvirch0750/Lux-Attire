@@ -21,8 +21,7 @@ export default function AvailableDeatilsAdmin({ product }: { product: any }) {
         selectedSize={selectedSize}
         setSelectedSize={setSelectedSize}
       />
-      <p>Available</p>
-      <p>Not deleted</p>
+
       <Link
         href="/dashboard/edit/id"
         className={`mt-8 flex w-full items-center justify-center rounded-md 

@@ -14,6 +14,7 @@ export const createProduct = async (productData: IProduct) => {
 
     return JSON.parse(JSON.stringify(newProduct));
   } catch (error: any) {
+    console.log(error);
     // Check if the error is a duplicate key error (E11000)
     if (error.code === 11000) {
       throw new Error('Product already exists'); // Custom error message

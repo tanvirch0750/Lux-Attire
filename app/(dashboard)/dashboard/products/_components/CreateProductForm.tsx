@@ -21,7 +21,9 @@ import { IProduct } from '@/db/models/product-model';
 import { toast } from 'react-toastify';
 import LoadingButton from '@/components/LodingButton';
 import { Loader2 } from 'lucide-react';
-import { Types } from 'mongoose';
+
+import { CldUploadWidget } from 'next-cloudinary';
+import Image from 'next/image';
 
 interface IProductFormInputs {
   category: string;
@@ -32,6 +34,7 @@ interface IProductFormInputs {
     id: string;
     imageSrc: string;
     imageAlt: string;
+    color: string;
     primary: boolean;
   }[];
   colors: { name: string; bgColor: string; selectedColor: string }[];
@@ -57,7 +60,9 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
       name: '',
       price: 0,
       isAvailable: true,
-      images: [{ id: '1', imageSrc: '', imageAlt: '', primary: false }],
+      images: [
+        { id: '1', color: '', imageAlt: '', imageSrc: '', primary: false },
+      ],
       colors: [{ name: '', bgColor: '', selectedColor: '' }],
       sizes: sizeList?.map((size) => ({ name: size, inStock: false })),
       description: '',
@@ -137,7 +142,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
   return (
     <form
       onSubmit={handleSubmit(handleCreateProduct)}
-      className="space-y-6 p-8 bg-white  rounded"
+      className="space-y-6 p-2 md:p-8 bg-white  rounded"
     >
       {/* Name */}
       <div className="mb-4">
@@ -219,52 +224,116 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
       <div className="mb-4">
         <label className="block font-medium text-gray-700">Images</label>
         {imageFields.map((field, index) => (
-          <div key={field.id} className="mb-2 flex items-center">
-            <Input
-              {...register(`images.${index}.id` as const)}
-              type="text"
-              className="mr-2 block w-16 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="ID"
-            />
-            <Input
-              {...register(`images.${index}.imageSrc` as const)}
-              type="text"
-              className="mr-2 block w-1/3 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Image Source"
-            />
-            <Input
-              {...register(`images.${index}.imageAlt` as const)}
-              type="text"
-              className="mr-2 block w-1/3 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Image Alt"
-            />
-            <Controller
-              control={control}
-              name={`images.${index}.primary`}
-              render={({ field }) => (
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={(value: boolean) => field.onChange(value)}
-                  className="mr-2 h-4 w-4"
-                />
-              )}
-            />
-            <span>Primary</span>
-            <button
-              type="button"
-              onClick={() => removeImage(index)}
-              className="ml-2 text-red-600 hover:text-red-800"
-            >
-              Remove
-            </button>
+          <div
+            key={field.id}
+            className="mb-2 grid grid-cols-12 lg:grid-cols-15 gap-3 border items-center p-3 rounded-md"
+          >
+            <div className="col-span-6 lg:col-span-1">
+              <Input
+                {...register(`images.${index}.id` as const)}
+                type="text"
+                className="mr-2 block py-2 px-3 border border-gray-300 rounded-md shadow-sm w-full"
+                placeholder="ID"
+              />
+            </div>
+            <div className="col-span-6 lg:col-span-2">
+              <Input
+                {...register(`images.${index}.color` as const)}
+                type="text"
+                className="mr-2 block py-2 px-3 border border-gray-300 rounded-md shadow-sm"
+                placeholder="Product Color"
+              />
+            </div>
+            <div className="col-span-6 lg:col-span-2">
+              <Input
+                {...register(`images.${index}.imageAlt` as const)}
+                type="text"
+                className="mr-2 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm"
+                placeholder="Image Alt"
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div className="col-span-6 lg:col-span-3">
+              <Controller
+                control={control}
+                name={`images.${index}.imageSrc`}
+                render={({ field }) => (
+                  <>
+                    {/* Conditionally render Upload Button or Image */}
+                    {!field.value ? (
+                      <CldUploadWidget
+                        uploadPreset="luxe-attire"
+                        onSuccess={(result) => {
+                          // @ts-ignore
+                          const imageUrl = result?.info?.url;
+                          console.log('Uploaded Image URL:', imageUrl);
+
+                          // Set the imageSrc field for this particular image index
+                          field.onChange(imageUrl); // Ensure this updates the value in the form
+                        }}
+                      >
+                        {({ open }) => (
+                          <Button
+                            className="bg-brand hover:bg-brand/90"
+                            onClick={() => open()}
+                          >
+                            Upload an Image
+                          </Button>
+                        )}
+                      </CldUploadWidget>
+                    ) : (
+                      <>
+                        {/* Show uploaded image */}
+                        <Image
+                          src={field.value}
+                          alt={field.value}
+                          width={100}
+                          height={80}
+                          className="mt-2 w-24 h-20 object-cover"
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+              />
+            </div>
+
+            <div className="col-span-6 md:col-span-3 flex items-center gap-2">
+              <Controller
+                control={control}
+                name={`images.${index}.primary`}
+                render={({ field }) => (
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(value: boolean) => field.onChange(value)}
+                    className="mr-2 h-4 w-4"
+                  />
+                )}
+              />
+              <span>Primary</span>
+              <button
+                type="button"
+                onClick={() => removeImage(index)}
+                className="ml-2 text-red-600 hover:text-red-800"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         ))}
         <button
           type="button"
           onClick={() =>
-            appendImage({ id: '', imageSrc: '', imageAlt: '', primary: false })
+            appendImage({
+              id: '',
+              imageSrc: '',
+              imageAlt: '',
+              color: '',
+              primary: false,
+            })
           }
-          className="text-brand hover:text-brand/90 text-sm"
+          className="mt-2 text-brand hover:text-brand/90 text-sm"
         >
           Add Image
         </button>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function ProductCard() {
   return (
-    <Link href="/products/123">
+    <Link href="/products/womens-collection/123">
       <div
         className="group box-border overflow-hidden flex rounded-md cursor-pointer pb-2 lg:pb-3 flex-col items-start transition duration-200 ease-in-out transform hover:-translate-y-1 md:hover:-translate-y-1.5 hover:shadow-product bg-white"
         role="button"

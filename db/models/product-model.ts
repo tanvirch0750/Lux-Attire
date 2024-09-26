@@ -37,6 +37,7 @@ export interface IProductFrontend {
     id: string;
     imageSrc: string;
     imageAlt: string;
+    color: string;
     primary: boolean;
   }[];
   colors: {
@@ -82,6 +83,7 @@ const productSchema = new Schema<ProductDocument>(
         id: { type: String, required: true },
         imageSrc: { type: String, required: true },
         imageAlt: { type: String, required: true },
+        color: { type: String, required: true },
         primary: { type: Boolean, required: true },
       },
     ],
