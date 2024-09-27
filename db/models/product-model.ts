@@ -26,6 +26,13 @@ export interface IProduct {
   isDeleted: boolean;
 }
 
+export interface ICategory {
+  label: string;
+  value: string;
+  isDeleted?: string;
+  _id?: string;
+}
+
 // Product interface
 export interface IProductFrontend {
   category: Types.ObjectId;
@@ -54,6 +61,34 @@ export interface IProductFrontend {
   isDeleted: boolean;
   _id?: string;
 }
+
+export type TProduct = {
+  category: ICategory;
+  productId: string;
+  name: string;
+  price: number;
+  isAvailable: boolean;
+  images: {
+    id: string;
+    imageSrc: string;
+    imageAlt: string;
+    color: string;
+    primary: boolean;
+  }[];
+  colors: {
+    name: string;
+    bgColor: string;
+    selectedColor: string;
+  }[];
+  sizes: {
+    name: string;
+    inStock: boolean;
+  }[];
+  description: string;
+  details: string[];
+  isDeleted: boolean;
+  _id?: string;
+};
 
 // Mongoose document type for Product, which includes IProduct fields
 export interface ProductDocument extends IProduct, Document {}

@@ -1,3 +1,4 @@
+import { IProduct } from '@/db/models/product-model';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ICartItem {
@@ -6,7 +7,7 @@ export interface ICartItem {
   price: number;
   image: string;
   quantity: number;
-  color: string;
+  color: IProduct['colors'];
   size: string;
 }
 

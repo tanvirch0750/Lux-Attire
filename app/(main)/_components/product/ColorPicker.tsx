@@ -1,8 +1,8 @@
 'use client';
 
 import clsx from 'clsx';
-import { useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
+import { IProduct, TProduct } from '@/db/models/product-model';
 
 export function ColorPicker({
   colors,
@@ -24,16 +24,18 @@ export function ColorPicker({
       >
         <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
         <div className="flex items-center space-x-3">
-          {colors.map((color: any) => (
+          {colors?.map((color: IProduct['colors'][0]) => (
             <RadioGroup.Option
-              key={color.name}
+              key={color.name} // Use _id as a unique key
               value={color}
               className={({ active, checked }) =>
                 clsx(
-                  color.selectedColor,
-                  active && checked ? 'ring ring-offset-1' : '',
-                  !active && checked ? 'ring-2' : '',
-                  'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none'
+                  active && checked
+                    ? `ring ring-offset-1 ring-[${color.selectedColor}]` // Active and checked state
+                    : checked
+                    ? `ring-2 ring-[${color.selectedColor}]` // Just checked state
+                    : '', // No ring if not selected
+                  `relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-[${color?.selectedColor}]`
                 )
               }
             >
@@ -42,10 +44,8 @@ export function ColorPicker({
               </RadioGroup.Label>
               <span
                 aria-hidden="true"
-                className={clsx(
-                  color.bgColor,
-                  'h-8 w-8 rounded-full border border-black border-opacity-10'
-                )}
+                style={{ backgroundColor: color.bgColor }} // Inline style for dynamic background color
+                className="h-8 w-8 rounded-full border border-black border-opacity-10"
               />
             </RadioGroup.Option>
           ))}

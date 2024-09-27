@@ -1,27 +1,40 @@
 'use client';
 
-import { addItem } from '@/lib/features/cartSlice';
+import { ICartItem, addItem } from '@/lib/features/cartSlice';
 import { RootState } from '@/lib/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { ColorPicker } from './ColorPicker';
 import { SizePicker } from './SizePicker';
-import { useState } from 'react';
+
+import { IProduct, TProduct } from '@/db/models/product-model';
+import {
+  setSelectedColor,
+  setSelectedSize,
+} from '@/lib/features/colorAndSizeSlice';
 
 export default function AddToCart({
   productId,
-  product,
+  colors,
+  sizes,
 }: {
   productId: string;
-  product: any;
+  colors: TProduct['colors'];
+  sizes: TProduct['sizes'];
 }) {
   const dispatch = useDispatch();
+
+  // Get selected color and size from the Redux store
+  const selectedColor = useSelector(
+    (state: RootState) => state.selectedColorAndSize.selectedColor
+  );
+  const selectedSize = useSelector(
+    (state: RootState) => state.selectedColorAndSize.selectedSize
+  );
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
 
   // Check if the product is already in the cart
   const isProductInCart = cartItems.some(
-    (item: any) => item.productId === productId
+    (item: ICartItem) => item.productId === productId
   );
 
   // Check if size and color are selected
@@ -37,14 +50,14 @@ export default function AddToCart({
 
   const handleAddToCart = () => {
     if (!isButtonDisabled) {
-      const cartProduct = {
+      const cartProduct: ICartItem = {
         productId: productId,
-        name: 'Winter jacket',
-        price: 500,
+        name: 'Winter jacket', // Replace with the actual product name
+        price: 500, // Replace with the actual product price
         size: selectedSize,
         color: selectedColor,
         image:
-          'https://img.freepik.com/free-photo/young-caucasian-girl-wearing-black-t-shirt-isolated-orange-wall_141793-36030.jpg?t=st=1726480118~exp=1726483718~hmac=a80ca7bb30c18474fa6438832d6b2fb0e195e080f7835e884005941a20e9faf9&w=740',
+          'https://img.freepik.com/free-photo/young-caucasian-girl-wearing-black-t-shirt-isolated-orange-wall_141793-36030.jpg?t=st=1726480118~exp=1726483718~hmac=a80ca7bb30c18474fa6438832d6b2fb0e195e080f7835e884005941a20e9faf9&w=740', // Replace with actual product image
         quantity: 1,
       };
 
@@ -52,17 +65,26 @@ export default function AddToCart({
     }
   };
 
+  // Dispatch the selected color and size using Redux actions
+  const handleColorChange = (color: IProduct['colors'][0]) => {
+    dispatch(setSelectedColor(color));
+  };
+
+  const handleSizeChange = (size: string) => {
+    dispatch(setSelectedSize(size));
+  };
+
   return (
     <>
       <ColorPicker
-        colors={product?.colors}
+        colors={colors}
         selectedColor={selectedColor}
-        setSelectedColor={setSelectedColor}
+        setSelectedColor={handleColorChange} // Use Redux handler
       />
       <SizePicker
-        sizes={product?.sizes}
+        sizes={sizes}
         selectedSize={selectedSize}
-        setSelectedSize={setSelectedSize}
+        setSelectedSize={handleSizeChange} // Use Redux handler
       />
       <button
         onClick={handleAddToCart}

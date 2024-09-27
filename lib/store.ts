@@ -4,6 +4,7 @@ import cartReducer from './features/cartSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import sidebarSlice from './features/sidebarSlice';
+import colorSlice from './features/colorAndSizeSlice';
 
 // Create a persist config
 const persistConfig = {
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   filters: filterReducer,
   sidebar: sidebarSlice,
+  selectedColorAndSize: colorSlice,
 });
 
 const makeConfiguredStore = () =>

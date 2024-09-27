@@ -1,15 +1,31 @@
+'use client';
+
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
+import Image from 'next/image'; // Or the correct image component
+import { RootState } from '@/lib/store';
+import { TProduct } from '@/db/models/product-model';
 
-import Image from 'next/image';
-import { product } from '../../products/[category]/[id]/data';
+export function ImageGallery({ images }: { images: TProduct['images'] }) {
+  // Get the selected color from the Redux store
+  const selectedColor = useSelector(
+    (state: RootState) => state.selectedColorAndSize.selectedColor.bgColor
+  );
 
-export function ImageGallery() {
+  // Sort images: priority to selectedColor, then primary, then others
+  const sortedImages = [...images].sort((a, b) => {
+    if (selectedColor && a.color === selectedColor) return -1;
+    if (selectedColor && b.color === selectedColor) return 1;
+    return a.primary ? -1 : 1;
+  });
+
   return (
     <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0">
       <h2 className="sr-only">Images</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-8">
-        {product.images.map((image) => (
+      {/* Adjust the grid structure */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-4">
+        {sortedImages.map((image, index) => (
           <Image
             key={image.id}
             src={image.imageSrc}
@@ -17,60 +33,14 @@ export function ImageGallery() {
             width={1000}
             height={1000}
             className={clsx(
-              image.primary ? 'lg:col-span-2 lg:row-span-2' : 'hidden lg:block',
-              'rounded-lg'
+              // If it's the first image or matches the selected color, make it span larger
+              index === 0 || image.color === selectedColor
+                ? 'lg:col-span-2 lg:row-span-2'
+                : 'lg:col-span-1 lg:row-span-1',
+              'rounded-lg object-cover'
             )}
           />
         ))}
-      </div>
-    </div>
-  );
-}
-
-export function ImageGalleryTwoColumns() {
-  return (
-    <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0">
-      <h2 className="sr-only">Images</h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-8">
-        {product.images.map((image) => {
-          if (image.primary) return null;
-          return (
-            <Image
-              key={image.id}
-              src={image.imageSrc}
-              alt={image.imageAlt}
-              className="lg:block rounded-lg"
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-export function ImageGalleryReversed() {
-  return (
-    <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0">
-      <h2 className="sr-only">Images</h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-8">
-        {product.images
-          .slice()
-          .reverse()
-          .map((image) => (
-            <Image
-              key={image.id}
-              src={image.imageSrc}
-              alt={image.imageAlt}
-              className={clsx(
-                image.primary
-                  ? 'lg:col-span-2 lg:row-span-2'
-                  : 'hidden lg:block',
-                'rounded-lg'
-              )}
-            />
-          ))}
       </div>
     </div>
   );

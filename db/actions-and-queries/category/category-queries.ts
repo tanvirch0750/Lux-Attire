@@ -1,6 +1,5 @@
-import { Category, ICategory } from '@/db/models/category-model';
-import { Document, Types } from 'mongoose';
-import { unstable_cache } from 'next/cache';
+import { Category } from '@/db/models/category-model';
+import { Types } from 'mongoose';
 
 // Get all categories
 export const getAllCategories = async () => {

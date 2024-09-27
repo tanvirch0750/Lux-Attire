@@ -1,5 +1,5 @@
-import { Category } from '@/db/models/category-model';
-import { Product, IProduct } from '@/db/models/product-model';
+import { Product } from '@/db/models/product-model';
+
 import { Types } from 'mongoose';
 
 // Get all products (only those that are not deleted)
@@ -8,9 +8,25 @@ export const getAllProducts = async () => {
     const products = await Product.find({})
       .sort({ createdAt: -1 })
       .populate('category');
-    console.log('products', products);
-    return products;
+
+    return JSON.parse(JSON.stringify(products));
   } catch (error) {
+    throw new Error('Error fetching products: ' + (error as Error).message);
+  }
+};
+
+// Get all available products (only those that are not deleted)
+export const getAllAvailableProducts = async () => {
+  try {
+    const products = await Product.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
+      .populate('category');
+
+    // await new Promise((res: any) => setTimeout(res, 3000));
+
+    return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    console.log(error);
     throw new Error('Error fetching products: ' + (error as Error).message);
   }
 };
@@ -25,9 +41,9 @@ export const getProductById = async (productId: Types.ObjectId | string) => {
     if (!product) {
       throw new Error('Product not found');
     }
-    return product;
+    return JSON.parse(JSON.stringify(product));
   } catch (error) {
-    throw new Error('Error fetching product: ' + (error as Error).message);
+    throw new Error('Unable to fetch products');
   }
 };
 
@@ -41,7 +57,7 @@ export const getProductByIdAdmin = async (
     if (!product) {
       throw new Error('Product not found');
     }
-    return product;
+    return JSON.parse(JSON.stringify(product));
   } catch (error) {
     throw new Error('Error fetching product: ' + (error as Error).message);
   }
