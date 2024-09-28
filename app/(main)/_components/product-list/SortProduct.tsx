@@ -9,8 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { setSort } from '@/lib/features/filterSlice';
-import { useDispatch } from 'react-redux';
+
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 // import { useAppDispatch } from '@/lib/hooks';
 
@@ -20,10 +20,15 @@ const SORT_OPTIONS = [
 ];
 
 const SortProduct = () => {
-  const dispatch = useDispatch();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   const handleSortChange = (value: string) => {
-    dispatch(setSort(value));
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('sort', value);
+
+    router.replace(`${pathName}?${params.toString()}`, { scroll: false });
   };
 
   return (

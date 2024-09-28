@@ -6,28 +6,43 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toggleCategory } from '@/lib/features/filterSlice';
-// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { RootState } from '@/lib/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const CATEGORY_OPTIONS = [
-  { id: 1, label: "Women's Collection", value: 'women-collection' },
+  { id: 1, label: "Women's Collection", value: 'womens-collection' },
   { id: 3, label: 'Active Wear', value: 'active-wear' },
   { id: 4, label: 'Kids Wear', value: 'kids-wear' },
   { id: 5, label: 'Traditional Clothing', value: 'traditional-clothing' },
-  { id: 6, label: "Men's Wear", value: 'men-wear' },
+  { id: 6, label: "Men's Collection", value: 'mens-collection' },
   { id: 7, label: 'Accessories', value: 'accessories' },
 ];
 
 export default function CategoryFilter() {
-  const dispatch = useDispatch();
-  const categories = useSelector(
-    (state: RootState) => state.filters.categories
-  );
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   const handleCategoryChange = (value: string) => {
-    dispatch(toggleCategory(value));
+    const params = new URLSearchParams(searchParams.toString());
+    if (params.has('category')) {
+      const categories = params.getAll('category');
+      if (categories.includes(value)) {
+        params.delete('category');
+        categories.forEach((category) => {
+          if (category !== value) {
+            params.append('category', category);
+          }
+        });
+      } else {
+        params.append('category', value);
+      }
+    } else {
+      params.append('category', value);
+    }
+
+    router.replace(`${pathName}?${params.toString()}`, {
+      scroll: false,
+    });
   };
 
   return (
@@ -41,11 +56,12 @@ export default function CategoryFilter() {
           {CATEGORY_OPTIONS.map((option) => (
             <li key={option.value} className="flex items-center">
               <Checkbox
-                // @ts-ignore
-                type="checkbox"
                 id={`category-${option.id}`}
                 onCheckedChange={() => handleCategoryChange(option.value)}
-                checked={categories.includes(option.value)}
+                checked={
+                  searchParams.has('category') &&
+                  searchParams.getAll('category').includes(option.value)
+                }
               />
               <label
                 htmlFor={`category-${option.id}`}

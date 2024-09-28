@@ -6,26 +6,42 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
-import { togglePriceRange } from '@/lib/features/filterSlice';
-// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { RootState } from '@/lib/store';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const PRICE_OPTIONS = [
-  { label: 'Under 400', value: 'under 400' },
-  { label: '400 - 800', value: '400-800' },
-  { label: '800 - 1200', value: '800-1200' },
-  { label: 'Above 1200', value: 'above 1200' },
+  { label: 'Under 100', value: 'under-100' },
+  { label: '100 - 200', value: '100-200' },
+  { label: '201 - 300', value: '201-300' },
+  { label: 'Above 300', value: 'above-300' },
 ];
 
 export default function PriceFilter() {
-  const dispatch = useDispatch();
-  const priceRanges = useSelector(
-    (state: RootState) => state.filters.priceRanges
-  );
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   const handlePriceRangeChange = (value: string) => {
-    dispatch(togglePriceRange(value));
+    const params = new URLSearchParams(searchParams.toString());
+    if (params.has('price')) {
+      const priceRanges = params.getAll('price');
+      if (priceRanges.includes(value)) {
+        params.delete('price');
+        priceRanges.forEach((range) => {
+          if (range !== value) {
+            params.append('price', range);
+          }
+        });
+      } else {
+        params.append('price', value);
+      }
+    } else {
+      params.append('price', value);
+    }
+
+    router.replace(`${pathName}?${params.toString()}`, {
+      scroll: false,
+    });
   };
 
   return (
@@ -39,11 +55,12 @@ export default function PriceFilter() {
           {PRICE_OPTIONS.map((option) => (
             <li key={option.value} className="flex items-center">
               <Checkbox
-                // @ts-ignore
-                type="checkbox"
                 id={`price-${option.value}`}
                 onCheckedChange={() => handlePriceRangeChange(option.value)}
-                checked={priceRanges.includes(option.value)}
+                checked={
+                  searchParams.has('price') &&
+                  searchParams.getAll('price').includes(option.value)
+                }
               />
               <label
                 htmlFor={`price-${option.value}`}

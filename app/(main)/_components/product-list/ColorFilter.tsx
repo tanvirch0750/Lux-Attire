@@ -6,23 +6,47 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toggleColor } from '@/lib/features/filterSlice';
-// import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { RootState } from '@/lib/store';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const COLOR_OPTIONS = [
   { label: 'Blue', value: 'blue' },
   { label: 'Red', value: 'red' },
+  { label: 'Black', value: 'black' },
   { label: 'Yellow', value: 'yellow' },
+  { label: 'Green', value: 'green' },
+  { label: 'White', value: 'white' },
+  { label: 'Orange', value: 'orange' },
+  { label: 'Pink', value: 'pink' },
+  { label: 'Purple', value: 'purple' },
 ];
 
 export default function ColorFilter() {
-  const dispatch = useDispatch();
-  const colors = useSelector((state: RootState) => state.filters.colors);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   const handleColorChange = (value: string) => {
-    dispatch(toggleColor(value));
+    const params = new URLSearchParams(searchParams.toString());
+    if (params.has('color')) {
+      const colors = params.getAll('color');
+      if (colors.includes(value)) {
+        params.delete('color');
+        colors.forEach((color) => {
+          if (color !== value) {
+            params.append('color', color);
+          }
+        });
+      } else {
+        params.append('color', value);
+      }
+    } else {
+      params.append('color', value);
+    }
+
+    router.replace(`${pathName}?${params.toString()}`, {
+      scroll: false,
+    });
   };
 
   return (
@@ -36,11 +60,12 @@ export default function ColorFilter() {
           {COLOR_OPTIONS.map((option) => (
             <li key={option.value} className="flex items-center">
               <Checkbox
-                // @ts-ignore
-                type="checkbox"
                 id={`color-${option.value}`}
                 onCheckedChange={() => handleColorChange(option.value)}
-                checked={colors.includes(option.value)}
+                checked={
+                  searchParams.has('color') &&
+                  searchParams.getAll('color').includes(option.value)
+                }
               />
               <label
                 htmlFor={`color-${option.value}`}

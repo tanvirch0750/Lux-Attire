@@ -1,9 +1,11 @@
+import { IFilters } from '../../products/page';
 import ActiveFilters from './ActiveFilters';
 import FilterProductMobile from './FilterProductMobile';
 import SearchProduct from './SerarchProduct';
 import SortProduct from './SortProduct';
 
-export default function HeaderFilter() {
+export default function HeaderFilter({ filters }: { filters: IFilters }) {
+  console.log(filters);
   return (
     <>
       {/* header filter */}

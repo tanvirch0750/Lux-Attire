@@ -32,11 +32,17 @@ export const makeStore = () => {
     return makeConfiguredStore();
   } else {
     const persistedReducer = persistReducer(persistConfig, rootReducer);
-    let store: any = configureStore({
+    const store = configureStore({
       reducer: persistedReducer,
     });
-    store.__persistor = persistStore(store);
-    return store;
+    // store.__persistor = persistStore(store);
+    // return store;
+
+    // Assert store type to include __persistor
+    const typedStore = store as typeof store & { __persistor?: unknown };
+    typedStore.__persistor = persistStore(typedStore);
+
+    return typedStore;
   }
 };
 

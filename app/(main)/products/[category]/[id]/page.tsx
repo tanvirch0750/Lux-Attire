@@ -6,22 +6,13 @@ import { ProductDetails } from '@/app/(main)/_components/product/ProductDetails'
 import { ProductHeading } from '@/app/(main)/_components/product/ProductHeading';
 import { RelatedProducts } from '@/app/(main)/_components/product/RelatedProducts';
 import { Reviews } from '@/app/(main)/_components/product/Reviews';
-import {
-  getAllAvailableProducts,
-  getProductById,
-} from '@/db/actions-and-queries/products/products-queries';
-import { IProductFrontend, TProduct } from '@/db/models/product-model';
+import { getProductById } from '@/db/actions-and-queries/products/products-queries';
+import { TProduct } from '@/db/models/product-model';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product: TProduct = await getProductById(params?.id);
 
-  return { title: `Product ${product?.name}` };
-}
-
-export async function generateStaticParams() {
-  const products: IProductFrontend[] = await getAllAvailableProducts();
-  const ids = products?.map((product) => ({ id: String(product?._id) }));
-  return ids;
+  return { title: `${product?.name}` };
 }
 
 export default async function ProductDetailPage({

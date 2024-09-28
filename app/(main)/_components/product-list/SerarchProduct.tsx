@@ -2,15 +2,30 @@
 
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-// import { useAppDispatch } from '@/lib/hooks';
-import { setSearch } from '@/lib/features/filterSlice';
-import { useDispatch } from 'react-redux';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const SearchProduct = () => {
-  const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathName = usePathname();
+  const [searchValue, setSearchValue] = useState('');
+
+  useEffect(() => {
+    // Get the 'search' parameter from the URL
+    const searchParam = searchParams.get('search');
+    if (searchParam) {
+      setSearchValue(searchParam);
+    }
+  }, [searchParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearch(e.target.value)); // Dispatch the search term to the Redux store
+    const value = e.target.value;
+    setSearchValue(value); // Update local state
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('search', value);
+
+    router.replace(`${pathName}?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -20,7 +35,8 @@ const SearchProduct = () => {
         type="text"
         placeholder="Search Products..."
         className="pl-8 pr-3 py-2 text-sm border-primary/30 lg:w-72"
-        onChange={handleSearchChange} // Handle search input change
+        value={searchValue} // Bind the input value to local state
+        onChange={handleSearchChange}
       />
     </div>
   );

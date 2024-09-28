@@ -27,6 +27,16 @@ export default function ProductCard({ product }: { product: TProduct }) {
           <p className="text-body text-xs lg:text-sm leading-normal xl:leading-relaxed max-w-[250px] truncate">
             {product.description?.substring(0, 100)}...
           </p>
+          <p className=" mt-2 text-sm text-gray-700 ">
+            <span className="font-semibold">Colors:</span>{' '}
+            {product?.colors?.map((color, index) => (
+              <span key={color.bgColor}>
+                {color.name}
+                {index < product.colors.length - 1 ? ', ' : ''}{' '}
+                {/* Add comma only if it's not the last color */}
+              </span>
+            ))}
+          </p>
           <div className="font-semibold text-sm sm:text-base mt-1.5 flex flex-wrap gap-x-2 lg:text-lg lg:mt-2.5 text-heading">
             <span className="inline-block false">${product?.price}</span>
           </div>
