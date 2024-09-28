@@ -2,6 +2,7 @@ import { TProduct } from '@/db/models/product-model';
 import ProductCard from './ProductCard';
 import { getAllAvailableProducts } from '@/db/actions-and-queries/products/products-queries';
 import { IFilters } from '../../products/page';
+import NoProductsFound from './NoProductsFound';
 
 // export type Filters = {
 //   search: string;
@@ -78,7 +79,12 @@ export default async function ProductList({ filters }: { filters: IFilters }) {
       return 0;
     });
 
-  if (!products?.length) return null;
+  if (!filteredProducts?.length)
+    return (
+      <div className="lg:col-span-4 flex flex-col flex-1 justify-center items-center h-full w-full">
+        <NoProductsFound />
+      </div>
+    );
 
   return (
     <div className="lg:col-span-4 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
