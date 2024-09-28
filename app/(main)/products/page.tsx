@@ -54,8 +54,6 @@ const ProductsPage = async ({
     filters.priceRanges = [filters.priceRanges];
   }
 
-  console.log(filters);
-
   return (
     <section
       id="courses"
@@ -71,6 +69,7 @@ const ProductsPage = async ({
             fallback={
               <Loader text="Loding Products" className="lg:col-span-4" />
             }
+            key={filters?.search || filters.sort}
           >
             <ProductList filters={filters} />
           </Suspense>
