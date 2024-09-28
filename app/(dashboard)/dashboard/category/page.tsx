@@ -5,7 +5,7 @@ import { columns } from './_components/columns';
 import { getAllCategories } from '@/db/actions-and-queries/category/category-queries';
 
 export default async function CategoryPage() {
-  let data = await getAllCategories();
+  const data = await getAllCategories();
 
   console.log(data);
 

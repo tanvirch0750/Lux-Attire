@@ -1,11 +1,12 @@
 import HeaderFilter from '../_components/product-list/HeaderFilter';
 import SideFilter from '../_components/product-list/SideFilter';
-import { getAllAvailableProducts } from '@/db/actions-and-queries/products/products-queries';
 import ProductList from '../_components/product-list/ProductList';
 import { Suspense } from 'react';
 import Loader from '@/components/Loader';
 
-const ProductPage = async () => {
+export const revalidate = 3600;
+
+const ProductsPage = async () => {
   return (
     <section
       id="courses"
@@ -30,4 +31,4 @@ const ProductPage = async () => {
   );
 };
 
-export default ProductPage;
+export default ProductsPage;

@@ -4,6 +4,10 @@ import { Product, IProduct } from '@/db/models/product-model';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 
+interface MongoError extends Error {
+  code?: number;
+}
+
 // Create a new product (only admin can create)
 export const createProduct = async (productData: IProduct) => {
   try {
@@ -11,12 +15,14 @@ export const createProduct = async (productData: IProduct) => {
     await newProduct.save();
 
     revalidatePath('/dashboard/products', 'page');
+    revalidatePath('/products', 'page');
 
     return JSON.parse(JSON.stringify(newProduct));
-  } catch (error: any) {
-    console.log(error);
+  } catch (error) {
+    const typedError = error as MongoError;
+    console.log(typedError);
     // Check if the error is a duplicate key error (E11000)
-    if (error.code === 11000) {
+    if (typedError.code === 11000) {
       throw new Error('Product already exists'); // Custom error message
     }
     throw new Error('Error creating product');
@@ -38,13 +44,15 @@ export const updateProductById = async (
       throw new Error('Product not found');
     }
 
-    revalidatePath('/dashboard/products', 'page');
+    revalidatePath('/dashboard/products');
     revalidatePath('/dashboard/products/[id]', 'page');
+    revalidatePath('/products', 'page');
 
     return JSON.parse(JSON.stringify(updatedProduct));
-  } catch (error: any) {
+  } catch (error) {
+    const typedError = error as MongoError;
     // Check if the error is a duplicate key error (E11000)
-    if (error.code === 11000) {
+    if (typedError.code === 11000) {
       throw new Error('Product already exists');
     }
     throw new Error('Error updating Product');
@@ -66,6 +74,7 @@ export const deleteProductById = async (productId: Types.ObjectId | string) => {
 
     revalidatePath('/dashboard/products', 'page');
     revalidatePath('/dashboard/products/[id]', 'page');
+    revalidatePath('/products', 'page');
 
     return JSON.parse(JSON.stringify(deletedProduct));
   } catch (error) {
@@ -88,6 +97,8 @@ export const undoDeleteProduct = async (productId: Types.ObjectId | string) => {
 
     revalidatePath('/dashboard/products', 'page');
     revalidatePath('/dashboard/products/[id]', 'page');
+    revalidatePath('/products', 'page');
+    revalidatePath('/products/[id]', 'page');
 
     return JSON.parse(JSON.stringify(restoredProduct));
   } catch (error) {
