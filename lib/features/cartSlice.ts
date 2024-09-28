@@ -1,14 +1,14 @@
-import { IProduct } from '@/db/models/product-model';
+import { IProduct, TProduct } from '@/db/models/product-model';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ICartItem {
   productId: string;
   name: string;
   price: number;
-  image: string;
+  image: TProduct['images'][0];
   quantity: number;
-  color: IProduct['colors'];
-  size: string;
+  color: TProduct['colors'][0];
+  size: TProduct['sizes'][0];
 }
 
 interface CartState {

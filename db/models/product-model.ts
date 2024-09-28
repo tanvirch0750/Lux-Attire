@@ -11,6 +11,7 @@ export interface IProduct {
     imageSrc: string;
     imageAlt: string;
     primary: boolean;
+    color: string;
   }[];
   colors: {
     name: string;

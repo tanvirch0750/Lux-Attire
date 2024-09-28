@@ -8,6 +8,7 @@ import { SizePicker } from './SizePicker';
 
 import { IProduct, TProduct } from '@/db/models/product-model';
 import {
+  resetSelectedSizeAndColor,
   setSelectedColor,
   setSelectedSize,
 } from '@/lib/features/colorAndSizeSlice';
@@ -16,10 +17,16 @@ export default function AddToCart({
   productId,
   colors,
   sizes,
+  images,
+  price,
+  name,
 }: {
   productId: string;
   colors: TProduct['colors'];
   sizes: TProduct['sizes'];
+  images: TProduct['images'];
+  price: number;
+  name: string;
 }) {
   const dispatch = useDispatch();
 
@@ -30,6 +37,9 @@ export default function AddToCart({
   const selectedSize = useSelector(
     (state: RootState) => state.selectedColorAndSize.selectedSize
   );
+  const selectedImage = useSelector(
+    (state: RootState) => state.selectedColorAndSize.selectedImage
+  );
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
   // Check if the product is already in the cart
@@ -38,7 +48,7 @@ export default function AddToCart({
   );
 
   // Check if size and color are selected
-  const isSizeAndColorSelected = selectedSize && selectedColor;
+  const isSizeAndColorSelected = selectedSize && selectedColor?.name;
 
   // Determine button state and text
   const isButtonDisabled = !isSizeAndColorSelected || isProductInCart;
@@ -52,22 +62,22 @@ export default function AddToCart({
     if (!isButtonDisabled) {
       const cartProduct: ICartItem = {
         productId: productId,
-        name: 'Winter jacket', // Replace with the actual product name
-        price: 500, // Replace with the actual product price
+        name,
+        price,
         size: selectedSize,
         color: selectedColor,
-        image:
-          'https://img.freepik.com/free-photo/young-caucasian-girl-wearing-black-t-shirt-isolated-orange-wall_141793-36030.jpg?t=st=1726480118~exp=1726483718~hmac=a80ca7bb30c18474fa6438832d6b2fb0e195e080f7835e884005941a20e9faf9&w=740', // Replace with actual product image
+        image: selectedImage,
         quantity: 1,
       };
 
       dispatch(addItem(cartProduct));
+      dispatch(resetSelectedSizeAndColor());
     }
   };
 
   // Dispatch the selected color and size using Redux actions
   const handleColorChange = (color: IProduct['colors'][0]) => {
-    dispatch(setSelectedColor(color));
+    dispatch(setSelectedColor({ color, images }));
   };
 
   const handleSizeChange = (size: string) => {

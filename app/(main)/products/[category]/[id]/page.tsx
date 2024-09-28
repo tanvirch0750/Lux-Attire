@@ -35,6 +35,9 @@ export default async function ProductDetailPage({
                 colors={product?.colors}
                 sizes={product?.sizes}
                 productId={params?.id}
+                images={product?.images}
+                price={product?.price}
+                name={product?.name}
               />
             </form>
 
