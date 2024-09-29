@@ -7,6 +7,7 @@ import {
   updateProductById,
 } from '@/db/actions-and-queries/products/products-action';
 import { IProduct } from '@/db/models/product-model';
+import { isErrorWithMessage } from '@/lib/utils';
 import { Types } from 'mongoose';
 
 export async function createProductAction(data: IProduct) {
@@ -16,9 +17,9 @@ export async function createProductAction(data: IProduct) {
       data: product,
       status: 200,
     };
-  } catch (e: any) {
+  } catch (e: unknown) {
     return {
-      error: e?.message,
+      error: isErrorWithMessage(e) ? e.message : 'Unknown error occurred',
       status: 404,
     };
   }
@@ -34,9 +35,9 @@ export async function updateProdcutAction(
       data: product,
       status: 200,
     };
-  } catch (e: any) {
+  } catch (e: unknown) {
     return {
-      error: e?.message,
+      error: isErrorWithMessage(e) ? e.message : 'Unknown error occurred',
       status: 404,
     };
   }
@@ -49,9 +50,9 @@ export async function deleteProductAction(productId: Types.ObjectId | string) {
       data: product,
       status: 200,
     };
-  } catch (e: any) {
+  } catch (e: unknown) {
     return {
-      error: e?.message,
+      error: isErrorWithMessage(e) ? e.message : 'Unknown error occurred',
       status: 404,
     };
   }
@@ -66,9 +67,9 @@ export async function undoDeleteProductAction(
       data: product,
       status: 200,
     };
-  } catch (e: any) {
+  } catch (e: unknown) {
     return {
-      error: e?.message,
+      error: isErrorWithMessage(e) ? e.message : 'Unknown error occurred',
       status: 404,
     };
   }

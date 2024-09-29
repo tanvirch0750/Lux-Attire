@@ -19,7 +19,6 @@ import { ICategory } from '@/db/models/category-model';
 import { createProductAction } from '@/app/actions/product/product';
 import { IProduct } from '@/db/models/product-model';
 import { toast } from 'react-toastify';
-import LoadingButton from '@/components/LodingButton';
 import { Loader2 } from 'lucide-react';
 
 import { CldUploadWidget } from 'next-cloudinary';
@@ -88,11 +87,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
     name: 'colors',
   });
 
-  const {
-    fields: sizeFields,
-    append: appendSize,
-    remove: removeSize,
-  } = useFieldArray({
+  const { fields: sizeFields } = useFieldArray({
     control,
     name: 'sizes',
   });

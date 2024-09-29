@@ -1,5 +1,6 @@
-import { User } from '@/db/models/user-model';
+import { IUser, User } from '@/db/models/user-model';
 import { Types } from 'mongoose';
+import { revalidatePath } from 'next/cache';
 
 function isMongoError(error: unknown): error is { code: number } {
   return typeof error === 'object' && error !== null && 'code' in error;
@@ -7,7 +8,7 @@ function isMongoError(error: unknown): error is { code: number } {
 
 export const updateUserById = async (
   userId: Types.ObjectId | string,
-  updateData: Partial<typeof User>
+  updateData: Partial<IUser>
 ) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
@@ -17,6 +18,9 @@ export const updateUserById = async (
     if (!updatedUser) {
       throw new Error('User not found');
     }
+
+    revalidatePath('/my-profile');
+    revalidatePath('/checkout');
 
     return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
