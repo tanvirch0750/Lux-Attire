@@ -1,4 +1,4 @@
-import { IProduct, TProduct } from '@/db/models/product-model';
+import { TProduct } from '@/db/models/product-model';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ICartItem {

@@ -1,5 +1,18 @@
 import mongoose, { Schema } from 'mongoose';
 
+export interface IUser {
+  _id: string;
+  name: string;
+  password?: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  role?: string;
+  bio?: string;
+  socialMedia?: Record<string, string>;
+  profilePicture?: string;
+}
+
 const userSchema = new Schema({
   name: {
     required: true,

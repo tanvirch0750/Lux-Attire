@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { ShoppingCartIcon } from 'lucide-react';
 import { CartItems } from './CartItems';
 import { ScrollArea } from '../../../../components/ui/scroll-area';
@@ -55,7 +54,7 @@ export default function Cart() {
                   Your cart is empty
                 </h2>
                 <p className="text-gray-600 mb-8">
-                  Looks like you haven't added anything to your cart yet.
+                  Looks like you haven&apos;t added anything to your cart yet.
                 </p>
                 <SheetClose asChild>
                   <Link

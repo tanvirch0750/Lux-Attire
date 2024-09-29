@@ -9,13 +9,21 @@ import {
   PhoneIcon,
   UserIcon,
 } from 'lucide-react';
+import CartDetails from './CartDetails';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
+import { IUser } from '@/db/models/user-model';
 
-export default function Checkout() {
+export default function Checkout({ user }: { user: IUser }) {
+  const cartItems = useSelector((state: RootState) => state.cart);
+
+  console.log('cart items', cartItems);
+
   const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    phone: '',
-    address: '',
+    email: user?.email || '',
+    name: user?.name || '',
+    phone: user?.phone || '',
+    address: user?.address || '',
     paymentMethod: '',
   });
 
@@ -90,40 +98,11 @@ export default function Checkout() {
       <div className="px-4 pt-8">
         {/* Order Summary */}
         <p className="text-xl font-medium">Order Summary</p>
-        <p className="text-gray-400">
+        <p className="text-gray-600">
           Check your items. And select a suitable shipping method.
         </p>
         {/* Cart details */}
-        <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-          <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-            <img
-              className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-              src="https://img.freepik.com/free-photo/pleased-young-pretty-woman-looking-front-doing-peace-sign-isolated-olive-green-wall_141793-109830.jpg?uid=R163516477&ga=GA1.1.911219905.1717681244&semt=ais_hybrid"
-              alt=""
-            />
-            <div className="flex w-full flex-col px-4 py-4">
-              <span className="font-semibold">
-                Nike Air Max Pro 8888 - Super Light
-              </span>
-              <span className="float-right text-gray-400">42EU - 8.5US</span>
-              <p className="text-lg">$138.99</p>
-            </div>
-          </div>
-          <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-            <img
-              className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-              src="https://img.freepik.com/free-photo/pleased-young-pretty-woman-looking-front-doing-peace-sign-isolated-olive-green-wall_141793-109830.jpg?uid=R163516477&ga=GA1.1.911219905.1717681244&semt=ais_hybrid"
-              alt=""
-            />
-            <div className="flex w-full flex-col px-4 py-4">
-              <span className="font-semibold">
-                Nike Air Max Pro 8888 - Super Light
-              </span>
-              <span className="float-right text-gray-400">42EU - 8.5US</span>
-              <p className="text-lg">$138.99</p>
-            </div>
-          </div>
-        </div>
+        <CartDetails cartItems={cartItems?.items} />
 
         {/* Shipping Methods */}
         <div>
@@ -189,7 +168,7 @@ export default function Checkout() {
       {/* Payment Details */}
       <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
         <p className="text-xl font-medium">Payment Details</p>
-        <p className="text-gray-400">
+        <p className="text-gray-600">
           Complete your order by providing your payment details.
         </p>
         <div>
@@ -313,7 +292,9 @@ export default function Checkout() {
           <div className="mt-6 border-t border-b py-2">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Subtotal</p>
-              <p className="font-semibold text-gray-900">$399.00</p>
+              <p className="font-semibold text-gray-900">
+                ${cartItems?.totalPrice}
+              </p>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Shipping</p>
@@ -322,7 +303,9 @@ export default function Checkout() {
           </div>
           <div className="mt-6 flex items-center justify-between">
             <p className="text-sm font-medium text-gray-900">Total</p>
-            <p className="text-2xl font-semibold text-gray-900">$408.00</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              ${cartItems?.totalPrice + 8}
+            </p>
           </div>
 
           {/* Submit Button */}
