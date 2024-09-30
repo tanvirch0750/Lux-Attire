@@ -22,14 +22,17 @@ export const getUserOrders = async (userId: string) => {
       user: userId,
       isDeleted: false,
     }).populate('user');
-    return orders;
+    return JSON.parse(JSON.stringify(orders));
   } catch (error) {
     throw new Error('Error fetching user orders: ' + (error as Error).message);
   }
 };
 
 // Get a single order by its ID (available to admin or the user who placed the order)
-export const getOrderById = async (orderId: Types.ObjectId, userId: string) => {
+export const getOrderById = async (
+  orderId: Types.ObjectId | string,
+  userId: string
+) => {
   try {
     // Allow only admins or the user who placed the order to fetch the order details
     const order = await Order.findOne({
@@ -42,7 +45,7 @@ export const getOrderById = async (orderId: Types.ObjectId, userId: string) => {
       throw new Error('Order not found or is deleted');
     }
 
-    return order;
+    return JSON.parse(JSON.stringify(order));
   } catch (error) {
     throw new Error('Error fetching order: ' + (error as Error).message);
   }

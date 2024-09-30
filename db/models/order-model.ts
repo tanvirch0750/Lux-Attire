@@ -1,40 +1,36 @@
-import { Schema, model, Document, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
+import { customAlphabet } from 'nanoid';
 
 interface IOrderItem {
-  productId: Schema.Types.ObjectId;
+  productId: Schema.Types.ObjectId | string;
   name: string;
   quantity: number;
   image: string;
   price: number;
+  size: string;
+  color: string;
+  totalPrice: number;
 }
 
-export interface IOrder extends Document {
-  user: Schema.Types.ObjectId;
+export type IOrder = {
+  _id?: string;
+  orderId?: string;
+  user?: Schema.Types.ObjectId | string;
   orderItems: IOrderItem[];
-  shippingAddress: {
-    street: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
-  paymentMethod: string; // e.g., 'PayPal', 'Stripe', 'CreditCard'
-  paymentResult?: {
-    id: string;
-    status: string;
-    update_time: string;
-    email_address: string;
-  };
+  shippingAddress: string;
+  paymentMethod: string; // e.g., 'cashOnDelivery', 'stripe',
   itemsPrice: number;
-  taxPrice: number;
   shippingPrice: number;
   totalPrice: number;
-  isPaid: boolean;
-  paidAt?: Date;
-  isDelivered: boolean;
-  deliveredAt?: Date;
-  createdAt: Date;
-  isDeleted: boolean;
-}
+  isPaid?: boolean;
+  orderStatus?: string; // Delivered | Pending | Canceled
+  createdAt?: Date;
+  isDeleted?: boolean;
+  email: string;
+  phone: string;
+};
+
+const nanoid = customAlphabet('0123456789', 8);
 
 const orderSchema = new Schema<IOrder>(
   {
@@ -42,6 +38,12 @@ const orderSchema = new Schema<IOrder>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User', // Reference to the user model
+    },
+    orderId: {
+      type: String,
+      required: true,
+      unique: true,
+      default: () => nanoid(),
     },
     orderItems: [
       {
@@ -52,36 +54,32 @@ const orderSchema = new Schema<IOrder>(
         },
         name: { type: String, required: true },
         image: { type: String, required: true },
+        size: { type: String, required: true },
+        color: { type: String, required: true },
         quantity: { type: Number, required: true },
         price: { type: Number, required: true },
+        totalPrice: { type: Number, required: true },
       },
     ],
-    shippingAddress: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
-    },
+    shippingAddress: { type: String, required: true },
     paymentMethod: {
       type: String,
       required: true,
     },
-    paymentResult: {
-      id: { type: String },
-      status: { type: String },
-      update_time: { type: String },
-      email_address: { type: String },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
     },
     itemsPrice: {
       type: Number,
       required: true,
       default: 0.0,
     },
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
+
     shippingPrice: {
       type: Number,
       required: true,
@@ -97,16 +95,10 @@ const orderSchema = new Schema<IOrder>(
       required: true,
       default: false,
     },
-    paidAt: {
-      type: Date,
-    },
-    isDelivered: {
-      type: Boolean,
+    orderStatus: {
+      type: String,
       required: true,
-      default: false,
-    },
-    deliveredAt: {
-      type: Date,
+      default: 'pending',
     },
     isDeleted: {
       type: Boolean,

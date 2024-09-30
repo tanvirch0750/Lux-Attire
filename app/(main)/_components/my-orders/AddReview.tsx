@@ -34,7 +34,7 @@ export function AddaReview() {
           <DialogTitle>Add Review</DialogTitle>
           <DialogDescription>
             Give a review about the product you purchased. Click save when
-            you're done.
+            you&rsquo;re done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

@@ -2,6 +2,10 @@ import { Category, ICategory } from '@/db/models/category-model';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 
+interface MongoError extends Error {
+  code?: number;
+}
+
 // Create a new category
 export const createCategory = async (categoryData: ICategory) => {
   try {
@@ -11,9 +15,10 @@ export const createCategory = async (categoryData: ICategory) => {
     revalidatePath('/dashboard/category', 'page');
 
     return JSON.parse(JSON.stringify(newCategory));
-  } catch (error: any) {
+  } catch (error) {
+    const typedError = error as MongoError;
     // Check if the error is a duplicate key error (E11000)
-    if (error.code === 11000) {
+    if (typedError.code === 11000) {
       throw new Error('Category already exists'); // Custom error message
     }
     throw new Error('Error creating category');
@@ -37,9 +42,10 @@ export const updateCategoryById = async (
 
     revalidatePath('/dashboard/category', 'page');
     return JSON.parse(JSON.stringify(updatedCategory));
-  } catch (error: any) {
+  } catch (error) {
+    const typedError = error as MongoError;
     // Check if the error is a duplicate key error (E11000)
-    if (error.code === 11000) {
+    if (typedError.code === 11000) {
       throw new Error('Category already exists');
     }
     throw new Error('Error updating category');

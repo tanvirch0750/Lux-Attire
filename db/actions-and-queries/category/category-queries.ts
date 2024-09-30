@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 export const getAllCategories = async () => {
   try {
     const categories = await Category.find({}).sort({ createdAt: -1 });
-    return categories;
+    return JSON.parse(JSON.stringify(categories));
   } catch (error) {
     throw new Error('Error fetching categories: ' + (error as Error).message);
   }
@@ -18,7 +18,7 @@ export const getCategoryById = async (categoryId: Types.ObjectId) => {
     if (!category) {
       throw new Error('Category not found');
     }
-    return category;
+    return JSON.parse(JSON.stringify(category));
   } catch (error) {
     throw new Error('Error fetching category');
   }

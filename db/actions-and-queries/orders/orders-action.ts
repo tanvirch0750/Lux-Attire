@@ -15,7 +15,7 @@ export const createOrder = async (orderData: IOrder, userId: string) => {
       user: userId,
     });
     await newOrder.save();
-    return newOrder;
+    return JSON.parse(JSON.stringify(newOrder));
   } catch (error) {
     throw new Error('Error creating order: ' + (error as Error).message);
   }
@@ -24,13 +24,8 @@ export const createOrder = async (orderData: IOrder, userId: string) => {
 // Update an order by ID (only admin can update order status)
 export const updateOrderById = async (
   orderId: Types.ObjectId,
-  updateData: Partial<IOrder>,
-  role: string
+  updateData: Partial<IOrder>
 ) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can update orders');
-  }
-
   try {
     const updatedOrder = await Order.findOneAndUpdate(
       { _id: orderId, isDeleted: false },

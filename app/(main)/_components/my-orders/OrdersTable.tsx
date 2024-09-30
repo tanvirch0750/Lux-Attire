@@ -13,17 +13,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, ChevronDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -36,54 +32,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Link from 'next/link';
+import { IOrder } from '@/db/models/order-model';
+import { formatDateAndTime } from '@/lib/utils';
 
-const data: Payment[] = [
-  {
-    id: 'm5gr84i9',
-    amount: 316,
-    status: 'success',
-    date: '23-09-2024',
-    orderId: '#10234987',
-  },
-  {
-    id: '3u1reuv4',
-    amount: 242,
-    status: 'success',
-    date: '23-09-2024',
-    orderId: '#10234987',
-  },
-  {
-    id: 'derv1ws0',
-    amount: 837,
-    status: 'processing',
-    date: '23-09-2024',
-    orderId: '#10234987',
-  },
-  {
-    id: '5kma53ae',
-    amount: 874,
-    status: 'success',
-    date: '23-09-2024',
-    orderId: '#10234987',
-  },
-  {
-    id: 'bhqecj4p',
-    amount: 721,
-    status: 'failed',
-    date: '23-09-2024',
-    orderId: '#10234987',
-  },
-];
-
-export type Payment = {
-  id: string;
-  orderId: string;
-  amount: number;
-  status: 'pending' | 'processing' | 'success' | 'failed';
-  date: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Partial<IOrder>>[] = [
   {
     accessorKey: 'orderId',
     header: () => <div className="text-right">Order Id</div>,
@@ -95,16 +47,27 @@ export const columns: ColumnDef<Payment>[] = [
   },
 
   {
-    accessorKey: 'date',
+    accessorKey: 'createdAt',
     header: () => <div className="text-right">Date</div>,
     cell: ({ row }) => {
-      return (
-        <div className="text-right font-medium">{row.getValue('date')}</div>
-      );
+      const isoString = row.getValue('createdAt');
+      const { date } = formatDateAndTime(isoString as string);
+
+      return <div className="text-right font-medium">{date}</div>;
     },
   },
   {
-    accessorKey: 'amount',
+    accessorKey: 'createdAt',
+    header: () => <div className="text-right">Time</div>,
+    cell: ({ row }) => {
+      const isoString = row.getValue('createdAt');
+      const { time } = formatDateAndTime(isoString as string);
+
+      return <div className="text-right font-medium">{time}</div>;
+    },
+  },
+  {
+    accessorKey: 'totalPrice',
     header: ({ column }) => {
       return (
         <Button
@@ -117,14 +80,14 @@ export const columns: ColumnDef<Payment>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue('amount')}</div>
+      <div className="lowercase">${row.getValue('totalPrice')}</div>
     ),
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'orderStatus',
     header: 'Status',
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('status')}</div>
+      <div className="capitalize">{row.getValue('orderStatus')}</div>
     ),
   },
   {
@@ -132,16 +95,22 @@ export const columns: ColumnDef<Payment>[] = [
     header: 'Actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const order = row.original;
 
       return (
         <div className=" flex gap-2 justify-center">
-          <Link href={`/my-orders/fsdfds`}>
+          <Link href={`/my-orders/${order?._id}`}>
             {' '}
-            <Button size="sm">Details</Button>
+            <Button className=" bg-green-600 hover:bg-green-500" size="sm">
+              Details
+            </Button>
           </Link>
 
-          <Button size="sm" variant="destructive">
+          <Button
+            size="sm"
+            variant="destructive"
+            disabled={order?.isPaid || order?.orderStatus === 'delivered'}
+          >
             Cancel
           </Button>
         </div>
@@ -150,7 +119,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-export function OrdersTable() {
+export function OrdersTable({ orders }: { orders: IOrder[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -160,7 +129,7 @@ export function OrdersTable() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: orders,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -267,10 +236,10 @@ export function OrdersTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        {/* <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
+        </div> */}
         <div className="space-x-2">
           <Button
             variant="outline"
