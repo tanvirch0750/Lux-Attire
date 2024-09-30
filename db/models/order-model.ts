@@ -1,7 +1,7 @@
 import { Schema, model, models } from 'mongoose';
 import { customAlphabet } from 'nanoid';
 
-interface IOrderItem {
+export interface IOrderItem {
   productId: Schema.Types.ObjectId | string;
   name: string;
   quantity: number;
@@ -28,6 +28,7 @@ export type IOrder = {
   isDeleted?: boolean;
   email: string;
   phone: string;
+  session_id?: string;
 };
 
 const nanoid = customAlphabet('0123456789', 8);
@@ -66,6 +67,10 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       required: true,
     },
+    session_id: {
+      type: String,
+      unique: true,
+    },
     email: {
       type: String,
       required: true,
@@ -100,6 +105,7 @@ const orderSchema = new Schema<IOrder>(
       required: true,
       default: 'pending',
     },
+
     isDeleted: {
       type: Boolean,
       default: false,

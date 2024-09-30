@@ -84,11 +84,20 @@ export const columns: ColumnDef<Partial<IOrder>>[] = [
     ),
   },
   {
-    accessorKey: 'orderStatus',
+    accessorKey: 'isPaid',
     header: 'Status',
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('orderStatus')}</div>
+      <div className="capitalize">
+        {row.getValue('isPaid') ? 'Paid' : 'Not Paid'}
+      </div>
     ),
+  },
+  {
+    accessorKey: 'orderStatus',
+    header: 'Status',
+    cell: ({ row }) => {
+      return <div className="capitalize">{row.getValue('orderStatus')}</div>;
+    },
   },
   {
     id: 'actions',

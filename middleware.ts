@@ -8,7 +8,12 @@ const adminRoutes = [
   '/dashboard/orders',
 ];
 
-const userRoutes = ['/my-orders', '/checkout', '/my-profile'];
+const userRoutes = [
+  '/my-orders',
+  '/checkout',
+  '/my-profile',
+  '/order-successful',
+];
 
 export async function middleware(req: NextRequest) {
   // @ts-ignore
@@ -75,7 +80,10 @@ export const config = {
     '/login',
     '/register',
     '/my-orders',
+    '/my-orders/:path*',
     '/checkout',
     '/my-profile',
+    '/order-successful',
+    '/order-successful/:path*',
   ],
 };

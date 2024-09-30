@@ -2,6 +2,7 @@
 
 import { IOrder, Order } from '@/db/models/order-model';
 import { Types } from 'mongoose';
+import { revalidatePath } from 'next/cache';
 
 // Create a new order (available to all users)
 export const createOrder = async (orderData: IOrder, userId: string) => {
@@ -10,11 +11,29 @@ export const createOrder = async (orderData: IOrder, userId: string) => {
   }
 
   try {
+    // Check if an order with the same session_id already exists
+
+    if (orderData.session_id) {
+      const existingOrder = await Order.findOne({
+        session_id: orderData.session_id,
+      });
+      if (existingOrder) {
+        // If an order exists, return it without creating a new one
+        return JSON.parse(JSON.stringify(existingOrder));
+      }
+    }
+
+    // If no existing order, create a new one
     const newOrder = new Order({
       ...orderData,
       user: userId,
     });
     await newOrder.save();
+
+    // Revalidate paths
+    revalidatePath('/my-orders', 'page');
+    revalidatePath('/my-orders/[id]', 'page');
+
     return JSON.parse(JSON.stringify(newOrder));
   } catch (error) {
     throw new Error('Error creating order: ' + (error as Error).message);

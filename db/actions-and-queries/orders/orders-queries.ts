@@ -8,7 +8,9 @@ export const getAllOrders = async (role: string) => {
   }
 
   try {
-    const orders = await Order.find({ isDeleted: false }).populate('user');
+    const orders = await Order.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
+      .populate('user');
     return orders;
   } catch (error) {
     throw new Error('Error fetching orders: ' + (error as Error).message);
@@ -21,7 +23,9 @@ export const getUserOrders = async (userId: string) => {
     const orders = await Order.find({
       user: userId,
       isDeleted: false,
-    }).populate('user');
+    })
+      .sort({ createdAt: -1 })
+      .populate('user');
     return JSON.parse(JSON.stringify(orders));
   } catch (error) {
     throw new Error('Error fetching user orders: ' + (error as Error).message);

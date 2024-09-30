@@ -17,6 +17,8 @@ import { IOrder } from '@/db/models/order-model';
 import { createOrderAction } from '@/app/actions/order/order';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { createCheckoutSession } from '@/app/actions/stripe/stripe';
+import LoadingButton from '@/components/LodingButton';
 
 export default function Checkout({ user }: { user: IUser }) {
   const cartItems = useSelector((state: RootState) => state.cart);
@@ -139,7 +141,44 @@ export default function Checkout({ user }: { user: IUser }) {
         }
       } else if (formData.paymentMethod === 'stripe') {
         // Handle "Pay Now" logic for Stripe
-        alert('Proceeding to payment with Stripe');
+        const orderData: IOrder = {
+          user: user?._id,
+          paymentMethod: 'stripe',
+          orderItems: cartItems?.items?.map((item) => ({
+            productId: item?.productId,
+            color: item?.color?.name,
+            image: item?.image?.imageSrc,
+            name: item?.name,
+            price: item?.price,
+            quantity: item?.quantity,
+            size: item?.size?.name,
+            totalPrice: item?.quantity * item?.price,
+          })),
+          shippingAddress: formData?.address,
+          email: formData?.email,
+          phone: formData?.phone,
+          itemsPrice: cartItems?.totalPrice,
+          shippingPrice: shippingPrice,
+          totalPrice: cartItems?.totalPrice + shippingPrice,
+          isPaid: true,
+        };
+
+        try {
+          setLoading(true);
+
+          const stripeResult = await createCheckoutSession(orderData);
+
+          if (stripeResult?.url) {
+            router.push(`${stripeResult?.url}`);
+          }
+        } catch (error) {
+          console.log('stripe error', error);
+          toast.error('Payment Failed', {
+            position: 'top-center',
+          });
+        } finally {
+          setLoading(false);
+        }
       }
     }
   };
@@ -360,7 +399,7 @@ export default function Checkout({ user }: { user: IUser }) {
           </div>
 
           {/* Submit Button */}
-          <button
+          {/* <button
             disabled={!formData.paymentMethod || loading}
             onClick={handleSubmit}
             className={`mt-4 mb-8 w-full rounded-md bg-orange-600 px-6 py-3 font-medium text-white ${
@@ -368,7 +407,17 @@ export default function Checkout({ user }: { user: IUser }) {
             }`}
           >
             {formData.paymentMethod === 'cash' ? 'Place Order' : 'Pay Now'}
-          </button>
+          </button> */}
+          <LoadingButton
+            className="mt-4 mb-8 w-full rounded-md bg-orange-600 px-6 py-3 font-medium text-white"
+            isLoading={loading}
+            onClick={handleSubmit}
+            disabled={!formData.paymentMethod || loading}
+            label={
+              formData.paymentMethod === 'cash' ? 'Place Order' : 'Pay Now'
+            }
+            loadingLabel="Processing..."
+          />
         </div>
       </div>
     </div>

@@ -47,3 +47,10 @@ export function formatDateAndTime(isoDateString: string): {
 // const isoDate = '2024-09-30T12:49:57.979Z';
 // const result = formatDateAndTime(isoDate);
 // console.log(result);
+
+export const formatPrice = (price: number) => {
+  return Intl.NumberFormat('en-us', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(price);
+};
