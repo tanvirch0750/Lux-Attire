@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableRowActions } from './data-table-row-actions';
-import { ICategory } from '@/db/models/category-model';
+
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
@@ -19,7 +19,7 @@ interface IProductFrontend {
 
 export const columns: ColumnDef<IProductFrontend>[] = [
   {
-    accessorKey: 'image',
+    accessorKey: 'images',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
@@ -28,7 +28,8 @@ export const columns: ColumnDef<IProductFrontend>[] = [
       />
     ),
     cell: ({ row }) => {
-      const image = row?.getValue('image');
+      const image = (row?.getValue('images') as { imageSrc: string }[])[0]
+        ?.imageSrc;
 
       return (
         <div className="flex space-x-2">
@@ -76,7 +77,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
       />
     ),
     cell: ({ row }) => {
-      const category = row?.getValue('category');
+      const category = (row?.getValue('category') as { label: string })?.label;
       return (
         <div className="flex space-x-2">
           <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">

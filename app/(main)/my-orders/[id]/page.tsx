@@ -22,6 +22,10 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
       : order?.createdAt || '';
   const { date, time } = formatDateAndTime(createdAtString);
 
+  const { date: deliveredDate, time: deliveredTime } = formatDateAndTime(
+    order?.deliveredAt as string
+  );
+
   const getOrderStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed':
@@ -52,7 +56,7 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
               </Button>
             </Link>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800">
+          <h2 className="text-3xl font-bold text-green-600">
             {order?.orderStatus === 'delivered' ? (
               <span className="text-gren-500">Delivered to you!</span>
             ) : (
@@ -67,7 +71,9 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
                   <span className="font-bold text-brand">
                     #{order?.orderId}
                   </span>{' '}
-                  has been delireved. Please leave a review for the product.
+                  has been delireved. Please leave a{' '}
+                  <span className="font-bold text-brand">review</span> for the
+                  product.
                 </p>
               </>
             ) : (
@@ -188,10 +194,21 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
             </div>
             <div>
               <h4 className="font-bold">Order Date</h4>
-              <p className=" mt-2 text-gray-600">
-                {date}, {time}
+              <p className=" mt-2 text-gray-600 flex flex-col gap-1">
+                <span>{date}</span>
+                <span>{time}</span>
               </p>
             </div>
+
+            {order?.deliveredAt && (
+              <div>
+                <h4 className="font-bold">Delivered Date</h4>
+                <p className=" mt-2 text-gray-600 flex flex-col gap-1">
+                  <span>{deliveredDate}</span>
+                  <span>{deliveredTime}</span>
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

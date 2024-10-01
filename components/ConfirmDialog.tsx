@@ -10,7 +10,13 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trash2Icon, Undo2Icon } from 'lucide-react';
+import {
+  Loader2,
+  PackageCheckIcon,
+  Trash2Icon,
+  Undo2Icon,
+  XIcon,
+} from 'lucide-react';
 
 interface ConfirmDialogProps {
   triggerType:
@@ -18,7 +24,8 @@ interface ConfirmDialogProps {
     | 'confirm-order'
     | 'undo-delete'
     | 'cancel-order-user'
-    | 'cancel-order-admin';
+    | 'cancel-order-admin'
+    | 'delivered-order';
   triggerText?: string; // Text for the trigger button
   title: string; // Title of the alert dialog
   description: string; // Description for the dialog
@@ -67,6 +74,25 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               {triggerText}
             </Button>
           )}
+          {triggerType === 'cancel-order-admin' && (
+            <Button
+              disabled={disabled}
+              className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
+              size="sm"
+            >
+              <XIcon size={16} />
+            </Button>
+          )}
+          {triggerType === 'delivered-order' && (
+            <Button
+              disabled={disabled}
+              className=" px-2 bg-green-100 text-green-700 hover:bg-green-200"
+              size="sm"
+            >
+              <PackageCheckIcon size={16} />
+            </Button>
+          )}
+
           {triggerType === 'confirm-delete' && (
             <Button
               className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"

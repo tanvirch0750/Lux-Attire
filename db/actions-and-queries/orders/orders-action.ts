@@ -199,13 +199,9 @@ export const deliverOrder = async (orderId: Types.ObjectId | string) => {
       throw new Error('Order not found or is deleted');
     }
 
-    if (order.isDelivered) {
-      throw new Error('Order has already been delivered');
-    }
-
     // Set order status to delivered and mark it as delivered
     order.orderStatus = 'delivered';
-    order.deliveredAt = new Date();
+    order.deliveredAt = new Date().toISOString();
     await order.save();
 
     // Revalidate paths
