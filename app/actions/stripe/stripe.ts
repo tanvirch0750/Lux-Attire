@@ -29,7 +29,7 @@ export async function createCheckoutSession(order: IOrder) {
     price_data: {
       currency: CURRENCY,
       product_data: {
-        name: `${item.name}[$$$]${item.size}[$$$]${item.color}[$$$]${item.image}[$$$]${item.price}[$$$]${item.productId}[$$$]${item.quantity}[$$$]${item.totalPrice}`,
+        name: `${item.name}---${item.size}---${item.color}---${item.image}---${item.price}---${item.productId}---${item.quantity}---${item.totalPrice}`,
         images: [item.image], // Add the product image
       },
       unit_amount: formatAmountForStripe(item.price, CURRENCY), // Convert to smallest unit for Stripe

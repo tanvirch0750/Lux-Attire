@@ -89,98 +89,74 @@ export default function Checkout({ user }: { user: IUser }) {
 
   const shippingPrice = 8;
 
-  const handleSubmit = async () => {
-    if (validateForm()) {
-      if (formData.paymentMethod === 'cash') {
-        const orderData: IOrder = {
-          paymentMethod: 'cashOnDelivery',
-          orderItems: cartItems?.items?.map((item) => ({
-            productId: item?.productId,
-            color: item?.color?.name,
-            image: item?.image?.imageSrc,
-            name: item?.name,
-            price: item?.price,
-            quantity: item?.quantity,
-            size: item?.size?.name,
-            totalPrice: item?.quantity * item?.price,
-          })),
-          shippingAddress: formData?.address,
-          email: formData?.email,
-          phone: formData?.phone,
-          itemsPrice: cartItems?.totalPrice,
-          shippingPrice: shippingPrice,
-          totalPrice: cartItems?.totalPrice + shippingPrice,
-        };
+  const createOrderData = (paymentMethod: string, isPaid: boolean = false) => ({
+    user: user?._id,
+    paymentMethod,
+    orderItems: cartItems?.items?.map((item) => ({
+      productId: item?.productId,
+      color: item?.color?.name,
+      image: item?.image?.imageSrc,
+      name: item?.name,
+      price: item?.price,
+      quantity: item?.quantity,
+      size: item?.size?.name,
+      totalPrice: item?.quantity * item?.price,
+    })),
+    shippingAddress: formData?.address,
+    email: formData?.email,
+    phone: formData?.phone,
+    itemsPrice: cartItems?.totalPrice,
+    shippingPrice: shippingPrice,
+    totalPrice: cartItems?.totalPrice + shippingPrice,
+    isPaid,
+  });
 
-        try {
-          setLoading(true);
+  const handlePayment = async (orderData: IOrder, paymentMethod: string) => {
+    try {
+      setLoading(true);
 
-          const result = await createOrderAction(orderData, user?._id);
+      if (paymentMethod === 'cashOnDelivery') {
+        const result = await createOrderAction(orderData, user?._id);
 
-          console.log('order confirm result', result);
-
-          if (result.status === 200) {
-            toast.success('Your order placed successfully', {
-              position: 'top-center',
-            });
-
-            router.push(`/order-successful/${result?.data?._id}-${user?._id}`);
-          }
-
-          if (result.status === 404) {
-            toast.error(result?.error, {
-              position: 'top-center',
-            });
-          }
-        } catch (error) {
-          toast.error('Order placement Failed, Something went wrong', {
+        if (result.status === 200) {
+          toast.success('Your order placed successfully', {
             position: 'top-center',
           });
-        } finally {
-          setLoading(false);
+
+          router.push(`/order-successful/${result?.data?._id}-${user?._id}`);
+        } else {
+          toast.error(result?.error || 'Order placement failed', {
+            position: 'top-center',
+          });
         }
-      } else if (formData.paymentMethod === 'stripe') {
-        // Handle "Pay Now" logic for Stripe
-        const orderData: IOrder = {
-          user: user?._id,
-          paymentMethod: 'stripe',
-          orderItems: cartItems?.items?.map((item) => ({
-            productId: item?.productId,
-            color: item?.color?.name,
-            image: item?.image?.imageSrc,
-            name: item?.name,
-            price: item?.price,
-            quantity: item?.quantity,
-            size: item?.size?.name,
-            totalPrice: item?.quantity * item?.price,
-          })),
-          shippingAddress: formData?.address,
-          email: formData?.email,
-          phone: formData?.phone,
-          itemsPrice: cartItems?.totalPrice,
-          shippingPrice: shippingPrice,
-          totalPrice: cartItems?.totalPrice + shippingPrice,
-          isPaid: true,
-        };
-
-        try {
-          setLoading(true);
-
-          const stripeResult = await createCheckoutSession(orderData);
-
-          if (stripeResult?.url) {
-            router.push(`${stripeResult?.url}`);
-          }
-        } catch (error) {
-          console.log('stripe error', error);
-          toast.error('Payment Failed', {
-            position: 'top-center',
-          });
-        } finally {
-          setLoading(false);
+      } else if (paymentMethod === 'stripe') {
+        const stripeResult = await createCheckoutSession(orderData);
+        if (stripeResult?.url) {
+          router.push(`${stripeResult?.url}`);
+        } else {
+          toast.error('Payment Failed', { position: 'top-center' });
         }
       }
+    } catch (error) {
+      toast.error(
+        paymentMethod === 'cashOnDelivery'
+          ? 'Order placement Failed, Something went wrong'
+          : 'Payment Failed',
+        { position: 'top-center' }
+      );
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    const paymentMethod =
+      formData.paymentMethod === 'cash' ? 'cashOnDelivery' : 'stripe';
+    const orderData = createOrderData(paymentMethod);
+
+    await handlePayment(orderData, paymentMethod);
   };
 
   return (
@@ -399,15 +375,6 @@ export default function Checkout({ user }: { user: IUser }) {
           </div>
 
           {/* Submit Button */}
-          {/* <button
-            disabled={!formData.paymentMethod || loading}
-            onClick={handleSubmit}
-            className={`mt-4 mb-8 w-full rounded-md bg-orange-600 px-6 py-3 font-medium text-white ${
-              !formData.paymentMethod ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            {formData.paymentMethod === 'cash' ? 'Place Order' : 'Pay Now'}
-          </button> */}
           <LoadingButton
             className="mt-4 mb-8 w-full rounded-md bg-orange-600 px-6 py-3 font-medium text-white"
             isLoading={loading}

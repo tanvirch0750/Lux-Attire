@@ -29,6 +29,7 @@ export type IOrder = {
   email: string;
   phone: string;
   session_id?: string;
+  deliveredAt?: string;
 };
 
 const nanoid = customAlphabet('0123456789', 8);
@@ -103,9 +104,13 @@ const orderSchema = new Schema<IOrder>(
     orderStatus: {
       type: String,
       required: true,
-      default: 'pending',
+      default: 'confirmed',
     },
-
+    deliveredAt: {
+      type: String,
+      required: true,
+      default: '',
+    },
     isDeleted: {
       type: Boolean,
       default: false,

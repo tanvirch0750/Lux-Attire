@@ -4,12 +4,7 @@ import { Row } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon, Edit2Icon } from 'lucide-react';
 import Link from 'next/link';
-import { ICategory } from '@/db/models/category-model';
 
-import {
-  deleteCategoryAction,
-  undoDeleteCategoryAction,
-} from '@/app/actions/category/category';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
@@ -34,7 +29,7 @@ export function DataTableRowActions<TData>({
     try {
       setLoading(true);
 
-      const result = await deleteProductAction(products?._id!);
+      const result = await deleteProductAction(products?._id as string);
 
       if (result.status === 200) {
         toast.success('Product deleted successfully', {
@@ -60,7 +55,7 @@ export function DataTableRowActions<TData>({
     try {
       setLoading(true);
 
-      const result = await undoDeleteProductAction(products?._id!);
+      const result = await undoDeleteProductAction(products?._id as string);
 
       if (result.status === 200) {
         toast.success('Product restored successfully', {

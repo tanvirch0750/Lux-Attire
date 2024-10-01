@@ -6,6 +6,7 @@ import { CheckCircle, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 interface SearchParams {
   session_id?: string;
@@ -51,7 +52,7 @@ export default async function OrderConfirmation({
         itemProductId,
         itemQuantity,
         itemTotalPrice,
-      ] = description?.split('[$$$]') as string[];
+      ] = description?.split('---') as string[];
 
       return {
         productId: itemProductId,
@@ -64,16 +65,14 @@ export default async function OrderConfirmation({
         totalPrice: Number(itemTotalPrice),
       };
     });
-  const { user, ...othersOrderData } = JSON.parse(metaData?.order!);
-
-  console.log('order items', orderItems);
-  console.log('meta data', othersOrderData);
+  const { user, ...othersOrderData } = JSON.parse(metaData?.order as string);
 
   const orderData: IOrder = {
     orderItems: orderItems,
     ...othersOrderData,
-    orderStatus: 'paid',
+    orderStatus: 'confirmed',
     session_id: searchParams?.session_id,
+    isPaid: true,
   };
 
   if (paymentStatus === 'succeeded') {
@@ -81,6 +80,9 @@ export default async function OrderConfirmation({
     // update order db
     await createOrderAction(orderData, user);
   } else {
+    toast.error('Payment Failed, please try again', {
+      position: 'top-center',
+    });
     redirect('/checkout');
   }
 

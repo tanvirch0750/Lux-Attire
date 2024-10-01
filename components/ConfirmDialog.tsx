@@ -13,7 +13,12 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Trash2Icon, Undo2Icon } from 'lucide-react';
 
 interface ConfirmDialogProps {
-  triggerType: 'confirm-delete' | 'confirm-order' | 'undo-delete';
+  triggerType:
+    | 'confirm-delete'
+    | 'confirm-order'
+    | 'undo-delete'
+    | 'cancel-order-user'
+    | 'cancel-order-admin';
   triggerText?: string; // Text for the trigger button
   title: string; // Title of the alert dialog
   description: string; // Description for the dialog
@@ -22,6 +27,7 @@ interface ConfirmDialogProps {
   onConfirm: () => Promise<void> | void; // Confirm action handler
   isLoading: boolean; // Loading state for the confirm action
   children?: ReactNode; // Optional content (if needed)
+  disabled?: boolean;
 }
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -34,6 +40,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   isLoading,
   children,
+  disabled = false,
 }) => {
   // Manage dialog open/close state
   const [open, setOpen] = useState(false);
@@ -54,6 +61,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div>
           {triggerType === 'confirm-order' && (
             <Button variant="outline">{triggerText}</Button>
+          )}
+          {triggerType === 'cancel-order-user' && (
+            <Button variant="destructive" size="sm" disabled={disabled}>
+              {triggerText}
+            </Button>
           )}
           {triggerType === 'confirm-delete' && (
             <Button

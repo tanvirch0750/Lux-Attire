@@ -64,8 +64,16 @@ const cartSlice = createSlice({
         item.quantity = action.payload.quantity;
       }
     },
+
+    // New resetCart functionality
+    resetCart: (state) => {
+      state.items = [];
+      state.totalAmount = 0;
+      state.totalPrice = 0;
+    },
   },
 });
 
-export const { addItem, removeItem, updateQuantity } = cartSlice.actions;
+export const { addItem, removeItem, updateQuantity, resetCart } =
+  cartSlice.actions;
 export default cartSlice.reducer;

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function CartDetails({ cartItems }: { cartItems: ICartItem[] }) {
   return (
-    <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+    <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-2 sm:px-2">
       {cartItems?.map((item) => (
         <div
           key={item?.name}

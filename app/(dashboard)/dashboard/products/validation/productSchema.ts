@@ -2,7 +2,12 @@ import { z } from 'zod';
 
 export const productSchema = z.object({
   category: z.string().nonempty('Category is required'),
-  name: z.string().min(1, 'Product name is required'),
+  name: z
+    .string()
+    .min(1, 'Product name is required')
+    .refine((val) => !val.includes('---'), {
+      message: "Product name cannot include '---'",
+    }),
   price: z.number().min(0, 'Price must be a non-negative number'),
   isAvailable: z.boolean(),
   images: z

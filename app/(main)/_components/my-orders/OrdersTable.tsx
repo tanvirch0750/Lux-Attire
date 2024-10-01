@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -13,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -31,102 +30,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import Link from 'next/link';
+
 import { IOrder } from '@/db/models/order-model';
-import { formatDateAndTime } from '@/lib/utils';
-
-export const columns: ColumnDef<Partial<IOrder>>[] = [
-  {
-    accessorKey: 'orderId',
-    header: () => <div className="text-right">Order Id</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="text-right font-medium">{row.getValue('orderId')}</div>
-      );
-    },
-  },
-
-  {
-    accessorKey: 'createdAt',
-    header: () => <div className="text-right">Date</div>,
-    cell: ({ row }) => {
-      const isoString = row.getValue('createdAt');
-      const { date } = formatDateAndTime(isoString as string);
-
-      return <div className="text-right font-medium">{date}</div>;
-    },
-  },
-  {
-    accessorKey: 'createdAt',
-    header: () => <div className="text-right">Time</div>,
-    cell: ({ row }) => {
-      const isoString = row.getValue('createdAt');
-      const { time } = formatDateAndTime(isoString as string);
-
-      return <div className="text-right font-medium">{time}</div>;
-    },
-  },
-  {
-    accessorKey: 'totalPrice',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Amount
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="lowercase">${row.getValue('totalPrice')}</div>
-    ),
-  },
-  {
-    accessorKey: 'isPaid',
-    header: 'Status',
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue('isPaid') ? 'Paid' : 'Not Paid'}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'orderStatus',
-    header: 'Status',
-    cell: ({ row }) => {
-      return <div className="capitalize">{row.getValue('orderStatus')}</div>;
-    },
-  },
-  {
-    id: 'actions',
-    header: 'Actions',
-    enableHiding: false,
-    cell: ({ row }) => {
-      const order = row.original;
-
-      return (
-        <div className=" flex gap-2 justify-center">
-          <Link href={`/my-orders/${order?._id}`}>
-            {' '}
-            <Button className=" bg-green-600 hover:bg-green-500" size="sm">
-              Details
-            </Button>
-          </Link>
-
-          <Button
-            size="sm"
-            variant="destructive"
-            disabled={order?.isPaid || order?.orderStatus === 'delivered'}
-          >
-            Cancel
-          </Button>
-        </div>
-      );
-    },
-  },
-];
+import { columns } from './TableColumns';
 
 export function OrdersTable({ orders }: { orders: IOrder[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);

@@ -22,6 +22,19 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
       : order?.createdAt || '';
   const { date, time } = formatDateAndTime(createdAtString);
 
+  const getOrderStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed':
+        return 'text-brand';
+      case 'delivered':
+        return 'text-green-600';
+      case 'cancelled':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
+    }
+  };
+
   return (
     <div className=" border-t mb-24">
       <MaxWidthWrapper className="pt-12">
@@ -41,21 +54,42 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
           </div>
           <h2 className="text-3xl font-bold text-gray-800">
             {order?.orderStatus === 'delivered' ? (
-              <span className="text-gren-500">Delivered to you</span>
+              <span className="text-gren-500">Delivered to you!</span>
             ) : (
-              <span>It’s on the way</span>
+              <span>It’s on the way!</span>
             )}
           </h2>
           <div className=" flex items-center flex-col md:flex-row justify-between">
-            <p className="mt-2">
-              Your order with order Id{' '}
-              <span className="font-bold text-brand">#{order?.orderId}</span>{' '}
-              has shipped and will be with you soon.
-            </p>
+            {order?.orderStatus === 'delivered' ? (
+              <>
+                <p className="mt-2">
+                  Your order with order Id{' '}
+                  <span className="font-bold text-brand">
+                    #{order?.orderId}
+                  </span>{' '}
+                  has been delireved. Please leave a review for the product.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mt-2">
+                  Your order with order Id{' '}
+                  <span className="font-bold text-brand">
+                    #{order?.orderId}
+                  </span>{' '}
+                  has shipped and will be with you soon.
+                </p>
+              </>
+            )}
+
             <p className=" flex items-center gap-3">
               <span>
                 Order Status:{' '}
-                <span className="text-brand font-semibold capitalize">
+                <span
+                  className={`font-semibold capitalize ${getOrderStatusColor(
+                    order?.orderStatus as string
+                  )}`}
+                >
                   {order?.orderStatus}
                 </span>
               </span>{' '}
