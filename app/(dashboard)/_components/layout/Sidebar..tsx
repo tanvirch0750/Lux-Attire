@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { cn } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
@@ -22,10 +22,6 @@ export default function Sidebar({ className }: SidebarProps) {
   const isMinimized = useSelector(
     (state: RootState) => state.sidebar.isMinimized
   );
-
-  //   const handleToggle = () => {
-  //     toggle();
-  //   };
 
   return (
     <aside

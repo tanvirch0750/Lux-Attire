@@ -19,6 +19,23 @@ export const getReviewsByProduct = async (
   }
 };
 
+// Get all reviews for a specific product
+export const getReviewsByProductAdmin = async (
+  productId: Types.ObjectId | string
+) => {
+  try {
+    const reviews = await Review.find({
+      product: productId,
+    })
+      .sort({ createdAt: -1 })
+      .populate('user', 'name email profilePicture'); // Populate user with name and email
+
+    return JSON.parse(JSON.stringify(reviews));
+  } catch (error) {
+    throw new Error('Error fetching reviews: ' + (error as Error).message);
+  }
+};
+
 // Get a single review by ID
 export const getReviewById = async (reviewId: Types.ObjectId) => {
   try {

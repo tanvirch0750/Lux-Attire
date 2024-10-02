@@ -1,13 +1,14 @@
 import PageContainer from '../../_components/layout/PageContainer';
 import PageHeader from '../../_components/PageHeader';
 import { getAllProducts } from '@/db/actions-and-queries/products/products-queries';
-import { DataTable } from './_components/data-table';
-import { columns } from './_components/columns';
+
 import { TProduct } from '@/db/models/product-model';
+import { DataTable } from '../products/_components/data-table';
+import { productcolumns } from './_components/productColumns';
 
 // Product type
 
-export default async function ProductPage() {
+export default async function ReviesPage() {
   const productsData = await getAllProducts();
 
   const simplifiedData = productsData?.map((product: TProduct) => ({
@@ -22,16 +23,12 @@ export default async function ProductPage() {
 
   return (
     <PageContainer scrollable>
-      <PageHeader
-        btnLabel="Create Product"
-        btnLink="/dashboard/products/create"
-        heading="Products List"
-      />
+      <PageHeader heading="Products List for Reviews" />
 
       <div className=" pb-10">
         <DataTable
           data={simplifiedData?.length ? simplifiedData : []}
-          columns={columns}
+          columns={productcolumns}
         />
       </div>
     </PageContainer>

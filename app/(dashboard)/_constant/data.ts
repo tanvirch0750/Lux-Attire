@@ -142,6 +142,12 @@ export const navItems: NavItem[] = [
     label: 'orders',
   },
   {
+    title: 'Reviews',
+    href: '/dashboard/reviews',
+    icon: 'reviews',
+    label: 'reviews',
+  },
+  {
     title: 'Profile',
     href: '/dashboard/profile',
     icon: 'profile',

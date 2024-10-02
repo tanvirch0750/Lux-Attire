@@ -2,6 +2,8 @@
 
 import {
   createReview,
+  deleteReviewById,
+  undoDeleteReview,
   updateReviewByProductAndUser,
 } from '@/db/actions-and-queries/reviews/review-actions';
 import { IReview } from '@/db/models/review-model';
@@ -40,6 +42,38 @@ export async function updateReviewByUserAction(
     );
     return {
       data: product,
+      status: 200,
+    };
+  } catch (e: unknown) {
+    return {
+      error: isErrorWithMessage(e) ? e.message : 'Unknown error occurred',
+      status: 404,
+    };
+  }
+}
+
+export async function deleteReviewAction(reviewId: Types.ObjectId | string) {
+  try {
+    const review = await deleteReviewById(reviewId);
+    return {
+      data: review,
+      status: 200,
+    };
+  } catch (e: unknown) {
+    return {
+      error: isErrorWithMessage(e) ? e.message : 'Unknown error occurred',
+      status: 404,
+    };
+  }
+}
+
+export async function undoDeleteReviewAction(
+  reviewId: Types.ObjectId | string
+) {
+  try {
+    const review = await undoDeleteReview(reviewId);
+    return {
+      data: review,
       status: 200,
     };
   } catch (e: unknown) {

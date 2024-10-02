@@ -25,6 +25,7 @@ import {
   Pizza,
   Plus,
   Settings,
+  Star,
   SunMedium,
   Trash,
   Twitter,
@@ -66,6 +67,7 @@ export const Icons = {
   category: LayoutGrid,
   product: Package,
   orders: Folders,
+  reviews: Star,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

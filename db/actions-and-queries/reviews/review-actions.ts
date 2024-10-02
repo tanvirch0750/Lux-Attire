@@ -11,7 +11,7 @@ export const createReview = async (reviewData: IReview) => {
     await newReview.save();
 
     // Revalidate paths
-    revalidatePath('/dashboard/reviews', 'page');
+    revalidatePath('/dashboard/reviews/[id]', 'page');
     revalidatePath('/my-orders/[id]', 'page');
 
     return JSON.parse(JSON.stringify(newReview));
@@ -72,14 +72,7 @@ export const updateReviewById = async (
 };
 
 // Soft delete a review by updating isDeleted to true (if you want to add soft delete functionality)
-export const deleteReviewById = async (
-  reviewId: Types.ObjectId,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can delete reviews');
-  }
-
+export const deleteReviewById = async (reviewId: Types.ObjectId | string) => {
   try {
     const deletedReview = await Review.findOneAndUpdate(
       { _id: reviewId },
@@ -91,21 +84,18 @@ export const deleteReviewById = async (
       throw new Error('Review not found or is already deleted');
     }
 
-    return deletedReview;
+    // Revalidate paths
+    revalidatePath('/dashboard/reviews/[id]', 'page');
+    revalidatePath('/my-orders/[id]', 'page');
+
+    return JSON.parse(JSON.stringify(deletedReview));
   } catch (error) {
     throw new Error('Error deleting review: ' + (error as Error).message);
   }
 };
 
 // Undo delete functionality by setting isDeleted to false (if you want to add soft delete functionality)
-export const undoDeleteReview = async (
-  reviewId: Types.ObjectId,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can undo review deletion');
-  }
-
+export const undoDeleteReview = async (reviewId: Types.ObjectId | string) => {
   try {
     const restoredReview = await Review.findOneAndUpdate(
       { _id: reviewId, isDeleted: true },
@@ -117,7 +107,11 @@ export const undoDeleteReview = async (
       throw new Error('Review not found or is not deleted');
     }
 
-    return restoredReview;
+    // Revalidate paths
+    revalidatePath('/dashboard/reviews/[id]', 'page');
+    revalidatePath('/my-orders/[id]', 'page');
+
+    return JSON.parse(JSON.stringify(restoredReview));
   } catch (error) {
     throw new Error(
       'Error undoing review deletion: ' + (error as Error).message

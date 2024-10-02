@@ -20,7 +20,7 @@ export default async function DashboardLayout({
     <div className="flex">
       <Providers session={session}>
         <Sidebar />
-        <main className="w-full flex-1 overflow-hidden bg-primary-foreground h-screen">
+        <main className="w-full flex-1  bg-primary-foreground h-screen">
           <Header />
           {children}
         </main>
