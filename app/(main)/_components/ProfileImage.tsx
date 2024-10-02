@@ -8,9 +8,15 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { updateProfileAction } from '@/app/actions/user/user';
 
-export default function ProfileImage({ user }: { user: IUser }) {
+export default function ProfileImage({
+  user,
+  sessionImage,
+}: {
+  user: IUser;
+  sessionImage: string;
+}) {
   const [imageUrl, setImageUrl] = useState(
-    user?.profilePicture || 'https://github.com/shadcn.png'
+    user?.profilePicture || sessionImage || 'https://github.com/shadcn.png'
   );
 
   const handleImageUpload = async (newImageUrl: string) => {

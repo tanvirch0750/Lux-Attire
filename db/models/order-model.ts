@@ -108,7 +108,7 @@ const orderSchema = new Schema<IOrder>(
     },
     deliveredAt: {
       type: String,
-      required: true,
+
       default: '',
     },
     isDeleted: {

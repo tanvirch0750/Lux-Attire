@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { createCheckoutSession } from '@/app/actions/stripe/stripe';
 import LoadingButton from '@/components/LodingButton';
+import { sendEmails } from '@/lib/email';
 
 export default function Checkout({ user }: { user: IUser }) {
   const cartItems = useSelector((state: RootState) => state.cart);
@@ -122,6 +123,22 @@ export default function Checkout({ user }: { user: IUser }) {
           toast.success('Your order placed successfully', {
             position: 'top-center',
           });
+
+          const emailsToSend = [
+            {
+              to: formData?.email,
+              subject: 'Your Order with Luxe Attire is Confirmed!',
+              message: `Thank you for shopping with Luxe Attire! We're excited to let you know that your order has been successfully placed.`,
+            },
+            {
+              to: 'tanvirch7575@gmail.com',
+              subject: 'New Order is confirmed',
+              message: `A new order has been placed through Luxe Attire. `,
+            },
+          ];
+
+          const emailres = await sendEmails(emailsToSend);
+          console.log('email res', emailres);
 
           router.push(`/order-successful/${result?.data?._id}-${user?._id}`);
         } else {

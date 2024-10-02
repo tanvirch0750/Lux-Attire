@@ -23,7 +23,10 @@ const ProfilePage = async () => {
               Profile Information
             </h2>
             <div className=" space-y-4">
-              <ProfileImage user={user} />
+              <ProfileImage
+                user={user}
+                sessionImage={session?.user?.image as string}
+              />
             </div>
             <div className="space-y-4">
               <div>

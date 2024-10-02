@@ -9,6 +9,7 @@ import { getOrderById } from '@/db/actions-and-queries/orders/orders-queries';
 import { IOrder } from '@/db/models/order-model';
 import Image from 'next/image';
 import { formatDateAndTime } from '@/lib/utils';
+import WhatsAppButton from '@/components/WhatsappButton';
 
 const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
   const session = await auth();
@@ -56,11 +57,11 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
               </Button>
             </Link>
           </div>
-          <h2 className="text-3xl font-bold text-green-600">
+          <h2 className="text-3xl font-bold ">
             {order?.orderStatus === 'delivered' ? (
-              <span className="text-gren-500">Delivered to you!</span>
+              <span className="text-green-600">Delivered to you!</span>
             ) : (
-              <span>It’s on the way!</span>
+              <span className="text-primary">It’s on the way!</span>
             )}
           </h2>
           <div className=" flex items-center flex-col md:flex-row justify-between">
@@ -233,7 +234,8 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
 
         {/* Continue Shopping Button */}
         <div className="text-center mt-6 flex justify-end">
-          <Link href="/products" className="px-6 py-2">
+          <WhatsAppButton />
+          <Link href="/products" className=" py-2">
             <Button className="bg-brand  hover:bg-brand/90">
               Continue Shopping
             </Button>
