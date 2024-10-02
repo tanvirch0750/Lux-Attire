@@ -3,52 +3,48 @@
 import EmailTemplate from '@/components/EmailTemplate';
 import { Resend } from 'resend';
 
+// Initialize Resend with API key
 const resend = new Resend(
   process.env.RESEND_API_KEY || 're_MsNKdjP6_3sQKk7HfEjmTeavvztXfdxuF'
 );
 
-/*
- [
-    {
-        to: "info@gmail.com",
-        subject: "It is great",
-        message: "ndkkdjfjd djfkldjfjdkl"
-    },
-    {
-        to: "info@gmail.com",
-        subject: "It is great",
-        message: "ndkkdjfjd djfkldjfjdkl"
-    }
- ]
-*/
+// Define the type for each email's information
+interface EmailInfo {
+  to: string;
+  subject: string;
+  message: string;
+}
 
-export const sendEmails = async (emailInfo) => {
-  if (!emailInfo) return null;
+// Define the type for the array of email info
+type EmailInfoArray = EmailInfo[];
+
+export const sendEmails = async (emailInfo: EmailInfoArray) => {
+  if (!emailInfo || emailInfo.length === 0) return null;
 
   const response = await Promise.allSettled(
     emailInfo.map(async (data) => {
-      if (data.to && data.message && data.subject) {
-        const to = data.to;
-        const subject = data.subject;
-        const message = data.message;
+      const { to, subject, message } = data;
 
-        const sentInfo = await resend.emails.send({
-          from: 'onboarding@resend.dev',
-          to: to,
-          subject: subject,
-          react: EmailTemplate({ message }),
-        });
-        return sentInfo;
+      if (to && message && subject) {
+        try {
+          // Send email via Resend API
+          const sentInfo = await resend.emails.send({
+            from: 'info@tanvir-chowdhury.xyz',
+            to,
+            subject,
+            react: EmailTemplate({ message }), // Using the react-based template
+          });
+
+          return sentInfo;
+        } catch (error) {
+          // Handle Resend API errors
+          throw new Error(`Failed to send email to ${to}: ${error}`);
+        }
       } else {
-        new Promise((reject) => {
-          return reject(
-            new Error(
-              `Couldn't send email, please check the ${JSON.stringify(data)}.`
-            )
-          );
-        });
+        throw new Error(`Invalid email data: ${JSON.stringify(data)}`);
       }
     })
   );
+
   return response;
 };

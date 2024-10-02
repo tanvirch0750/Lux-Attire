@@ -14,12 +14,77 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Star } from 'lucide-react'; // Use any icon library or SVG for stars
+import { createReviewAction } from '@/app/actions/review/review';
+import { toast } from 'react-toastify';
+import { IOrderItem } from '@/db/models/order-model';
+import { IReview } from '@/db/models/review-model';
+import LoadingButton from '@/components/LodingButton';
 
-export function AddaReview() {
+export function AddaReview({
+  product,
+  user,
+  order,
+}: {
+  product: IOrderItem;
+  user: string;
+  order: string;
+}) {
   const [rating, setRating] = useState<number>(0);
+  const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleStarClick = (starIndex: number) => {
     setRating(starIndex);
+  };
+
+  const handleAddReview = async () => {
+    // Validation: Check if both rating and comment are provided
+    if (!comment.trim()) {
+      toast.error('Please enter a review comment.', {
+        position: 'top-center',
+      });
+      return;
+    }
+
+    if (rating === 0) {
+      toast.error('Please select a rating.', {
+        position: 'top-center',
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const reviewData: IReview = {
+        comment,
+        product: product?.productId as string,
+        rating,
+        user: user,
+        order: order,
+      };
+
+      const result = await createReviewAction(reviewData);
+
+      if (result.status === 200) {
+        toast.success('Thank you for your review', {
+          position: 'top-center',
+        });
+        // Optionally reset form fields
+        setComment('');
+        setRating(0);
+      } else if (result.status === 404) {
+        toast.error(result?.error, {
+          position: 'top-center',
+        });
+      }
+    } catch (error) {
+      toast.error('Review failed, please try again', {
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,6 +112,8 @@ export function AddaReview() {
               id="review"
               placeholder="Your Review"
               className="col-span-3"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
           </div>
 
@@ -72,9 +139,13 @@ export function AddaReview() {
         </div>
 
         <DialogFooter>
-          <Button type="submit" className="bg-brand hover:bg-brand/90">
-            Add Review
-          </Button>
+          <LoadingButton
+            isLoading={loading}
+            disabled={loading}
+            label="Add Review"
+            loadingLabel="Processing..."
+            onClick={handleAddReview}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

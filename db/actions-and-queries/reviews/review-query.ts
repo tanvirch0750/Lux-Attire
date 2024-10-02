@@ -1,99 +1,110 @@
-'use server';
-
-import { Review, IReview } from '@/db/models/review-model';
+import { Review } from '@/db/models/review-model';
 import { Types } from 'mongoose';
 
-// Create a new review
-export const createReview = async (reviewData: IReview, role: string) => {
-  if (role !== 'user') {
-    throw new Error('Only users can create reviews');
-  }
-
+// Get all reviews for a specific product
+export const getReviewsByProduct = async (productId: Types.ObjectId) => {
   try {
-    const newReview = new Review(reviewData);
-    await newReview.save();
-    return newReview;
+    const reviews = await Review.find({
+      product: productId,
+      isDeleted: false,
+    }).populate('user', 'name email profilePicture'); // Populate user with name and email
+
+    return reviews;
   } catch (error) {
-    throw new Error('Error creating review: ' + (error as Error).message);
+    throw new Error('Error fetching reviews: ' + (error as Error).message);
   }
 };
 
-// Update a review by ID
-export const updateReviewById = async (
-  reviewId: Types.ObjectId,
-  updateData: Partial<IReview>,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admin can update reviews');
-  }
-
+// Get a single review by ID
+export const getReviewById = async (reviewId: Types.ObjectId) => {
   try {
-    const updatedReview = await Review.findOneAndUpdate(
-      { _id: reviewId },
-      updateData,
-      { new: true, runValidators: true }
-    );
+    const review = await Review.findById(reviewId)
+      .populate('user', 'name email')
+      .populate('product', 'name price');
 
-    if (!updatedReview) {
+    if (!review) {
       throw new Error('Review not found');
     }
-    return updatedReview;
+    return review;
   } catch (error) {
-    throw new Error('Error updating review: ' + (error as Error).message);
+    throw new Error('Error fetching review: ' + (error as Error).message);
   }
 };
 
-// Soft delete a review by updating isDeleted to true (if you want to add soft delete functionality)
-export const deleteReviewById = async (
-  reviewId: Types.ObjectId,
-  role: string
+export const getReviewByProductAndUser = async (
+  productId: Types.ObjectId | string,
+  userId: Types.ObjectId | string,
+  orderId: Types.ObjectId | string
 ) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can delete reviews');
-  }
-
   try {
-    const deletedReview = await Review.findOneAndUpdate(
-      { _id: reviewId },
-      { isDeleted: true }, // If you want to use soft delete
-      { new: true }
-    );
+    const review = await Review.findOne({
+      product: productId,
+      user: userId,
+      order: orderId,
+    })
+      .populate('user', 'name email')
+      .populate('product', 'name price');
 
-    if (!deletedReview) {
-      throw new Error('Review not found or is already deleted');
+    if (!review) {
+      return JSON.parse(JSON.stringify('review-error'));
     }
 
-    return deletedReview;
+    return JSON.parse(JSON.stringify(review));
   } catch (error) {
-    throw new Error('Error deleting review: ' + (error as Error).message);
+    throw new Error('Error fetching review: ' + (error as Error).message);
   }
 };
 
-// Undo delete functionality by setting isDeleted to false (if you want to add soft delete functionality)
-export const undoDeleteReview = async (
-  reviewId: Types.ObjectId,
-  role: string
-) => {
+// Get all reviews (only admin can access)
+export const getAllReviews = async (role: string) => {
   if (role !== 'admin') {
-    throw new Error('Only admins can undo review deletion');
+    throw new Error('Only admins can access all reviews');
   }
 
   try {
-    const restoredReview = await Review.findOneAndUpdate(
-      { _id: reviewId, isDeleted: true },
-      { isDeleted: false },
-      { new: true }
-    );
+    const reviews = await Review.find({ isDeleted: false })
+      .populate('user', 'name email')
+      .populate('product', 'name price');
 
-    if (!restoredReview) {
-      throw new Error('Review not found or is not deleted');
+    return reviews;
+  } catch (error) {
+    throw new Error('Error fetching reviews: ' + (error as Error).message);
+  }
+};
+
+// Get review statistics for a specific product
+export const getReviewStatsByProduct = async (productId: Types.ObjectId) => {
+  try {
+    // Aggregate reviews to get average rating and total count
+    const stats = await Review.aggregate([
+      { $match: { product: productId, isDeleted: false } },
+      {
+        $group: {
+          _id: '$product',
+          averageRating: { $avg: '$rating' },
+          totalReviews: { $count: {} },
+        },
+      },
+      // Use $addFields to round the average rating
+      {
+        $addFields: {
+          averageRating: { $round: ['$averageRating', 0] }, // Round to nearest integer
+        },
+      },
+    ]);
+
+    // If no stats found, return default values
+    if (stats.length === 0) {
+      return {
+        averageRating: 0,
+        totalReviews: 0,
+      };
     }
 
-    return restoredReview;
+    return stats[0];
   } catch (error) {
     throw new Error(
-      'Error undoing review deletion: ' + (error as Error).message
+      'Error fetching review statistics: ' + (error as Error).message
     );
   }
 };

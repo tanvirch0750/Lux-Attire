@@ -3,13 +3,15 @@ import { Schema, model, Types } from 'mongoose';
 
 // Define the interface for the review schema
 export interface IReview {
-  user: Types.ObjectId;
-  product: Types.ObjectId;
+  user: Types.ObjectId | string;
+  product: Types.ObjectId | string;
+  order: Types.ObjectId | string;
   rating: number;
   comment: string;
   createdAt?: Date;
   updatedAt?: Date;
-  isDeleted: boolean;
+  isDeleted?: boolean;
+  _id?: string;
 }
 
 // Define the review schema
@@ -23,6 +25,11 @@ const reviewSchema = new Schema<IReview>(
     product: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
+      required: true,
+    },
+    order: {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
       required: true,
     },
     rating: {

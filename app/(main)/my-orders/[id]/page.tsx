@@ -2,7 +2,6 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React from 'react';
-import { AddaReview } from '../../_components/my-orders/AddReview';
 import { auth } from '@/auth';
 import { getUserByEmail } from '@/db/actions-and-queries/user/user-query';
 import { getOrderById } from '@/db/actions-and-queries/orders/orders-queries';
@@ -10,6 +9,7 @@ import { IOrder } from '@/db/models/order-model';
 import Image from 'next/image';
 import { formatDateAndTime } from '@/lib/utils';
 import WhatsAppButton from '@/components/WhatsappButton';
+import GiveReview from '../../_components/my-orders/GiveReview';
 
 const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
   const session = await auth();
@@ -169,9 +169,14 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
                   </div>
                 </div>
               </div>
-              <div className=" flex justify-end">
-                <AddaReview />
-              </div>
+
+              {order?.orderStatus !== 'cancelled' && (
+                <GiveReview
+                  product={item}
+                  user={user._id}
+                  order={order?._id as string}
+                />
+              )}
             </div>
           ))}
         </div>
