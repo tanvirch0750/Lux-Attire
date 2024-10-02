@@ -6,8 +6,10 @@ import { ProductDetails } from '@/app/(main)/_components/product/ProductDetails'
 import { ProductHeading } from '@/app/(main)/_components/product/ProductHeading';
 import { RelatedProducts } from '@/app/(main)/_components/product/RelatedProducts';
 import { Reviews } from '@/app/(main)/_components/product/Reviews';
+import Loader from '@/components/Loader';
 import { getProductById } from '@/db/actions-and-queries/products/products-queries';
 import { TProduct } from '@/db/models/product-model';
+import { Suspense } from 'react';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product: TProduct = await getProductById(params?.id);
@@ -50,7 +52,10 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        <Reviews />
+        <Suspense fallback={<Loader text="Loding Comments..." />}>
+          <Reviews productId={product?._id as string} />
+        </Suspense>
+
         <RelatedProducts />
       </main>
     </div>

@@ -2,14 +2,18 @@ import { Review } from '@/db/models/review-model';
 import { Types } from 'mongoose';
 
 // Get all reviews for a specific product
-export const getReviewsByProduct = async (productId: Types.ObjectId) => {
+export const getReviewsByProduct = async (
+  productId: Types.ObjectId | string
+) => {
   try {
     const reviews = await Review.find({
       product: productId,
       isDeleted: false,
-    }).populate('user', 'name email profilePicture'); // Populate user with name and email
+    })
+      .sort({ createdAt: -1 })
+      .populate('user', 'name email profilePicture'); // Populate user with name and email
 
-    return reviews;
+    return JSON.parse(JSON.stringify(reviews));
   } catch (error) {
     throw new Error('Error fetching reviews: ' + (error as Error).message);
   }
@@ -63,6 +67,7 @@ export const getAllReviews = async (role: string) => {
 
   try {
     const reviews = await Review.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
       .populate('user', 'name email')
       .populate('product', 'name price');
 
