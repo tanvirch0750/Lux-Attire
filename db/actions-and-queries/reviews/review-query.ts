@@ -71,32 +71,43 @@ export const getAllReviews = async (role: string) => {
       .populate('user', 'name email')
       .populate('product', 'name price');
 
-    return reviews;
+    return JSON.parse(JSON.stringify(reviews));
   } catch (error) {
     throw new Error('Error fetching reviews: ' + (error as Error).message);
   }
 };
 
 // Get review statistics for a specific product
-export const getReviewStatsByProduct = async (productId: Types.ObjectId) => {
+export const getReviewStatsByProduct = async (
+  productId: Types.ObjectId | string
+) => {
   try {
+    const objectIdProduct =
+      typeof productId === 'string' ? new Types.ObjectId(productId) : productId;
+
     // Aggregate reviews to get average rating and total count
     const stats = await Review.aggregate([
-      { $match: { product: productId, isDeleted: false } },
+      {
+        $match: {
+          product: objectIdProduct,
+          isDeleted: false,
+        },
+      },
       {
         $group: {
           _id: '$product',
           averageRating: { $avg: '$rating' },
-          totalReviews: { $count: {} },
+          totalReviews: { $sum: 1 },
         },
       },
-      // Use $addFields to round the average rating
       {
         $addFields: {
-          averageRating: { $round: ['$averageRating', 0] }, // Round to nearest integer
+          averageRating: { $round: ['$averageRating', 0] },
         },
       },
     ]);
+
+    console.log('review stats', stats);
 
     // If no stats found, return default values
     if (stats.length === 0) {
@@ -106,7 +117,7 @@ export const getReviewStatsByProduct = async (productId: Types.ObjectId) => {
       };
     }
 
-    return stats[0];
+    return JSON.parse(JSON.stringify(stats[0]));
   } catch (error) {
     throw new Error(
       'Error fetching review statistics: ' + (error as Error).message

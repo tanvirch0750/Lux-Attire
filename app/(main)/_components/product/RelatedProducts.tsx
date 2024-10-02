@@ -3,7 +3,7 @@ import { relatedProducts } from '../../products/[category]/[id]/data';
 
 export function RelatedProducts() {
   return (
-    <section aria-labelledby="related-heading" className="mt-16 sm:mt-24">
+    <section aria-labelledby="related-heading" className="mt-16 sm:mt-12">
       <h2 id="related-heading" className="text-lg font-medium text-gray-900">
         Customers also purchased
       </h2>

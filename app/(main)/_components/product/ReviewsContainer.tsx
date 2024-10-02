@@ -29,16 +29,15 @@ export function ReviewsContainer({ reviews }: ReviewsContainerProps) {
 
             {/* Conditional rendering of buttons based on showAll state */}
             <div className="mt-4 flex items-center justify-end">
-              {!showAll &&
-                reviews?.length > 5 && ( // Show "See More" button only if there are more than 5 reviews
-                  <Button
-                    variant="link"
-                    onClick={() => setShowAll(true)}
-                    className="text-lg font-medium text-brand hover:text-brand/90 pt-10"
-                  >
-                    See More Reviews
-                  </Button>
-                )}
+              {!showAll && reviews?.length > 5 && (
+                <Button
+                  variant="link"
+                  onClick={() => setShowAll(true)}
+                  className="text-lg font-medium text-brand hover:text-brand/90 pt-10"
+                >
+                  See More Reviews
+                </Button>
+              )}
 
               {showAll && (
                 <Button

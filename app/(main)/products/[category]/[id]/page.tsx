@@ -8,6 +8,7 @@ import { RelatedProducts } from '@/app/(main)/_components/product/RelatedProduct
 import { Reviews } from '@/app/(main)/_components/product/Reviews';
 import Loader from '@/components/Loader';
 import { getProductById } from '@/db/actions-and-queries/products/products-queries';
+import { getReviewStatsByProduct } from '@/db/actions-and-queries/reviews/review-query';
 import { TProduct } from '@/db/models/product-model';
 import { Suspense } from 'react';
 
@@ -23,6 +24,9 @@ export default async function ProductDetailPage({
   params: { id: string };
 }) {
   const product: TProduct = await getProductById(params?.id);
+  const reviewDetails = await getReviewStatsByProduct(params?.id);
+
+  console.log('review details', reviewDetails);
 
   return (
     <div className="bg-white border-t">
@@ -30,7 +34,7 @@ export default async function ProductDetailPage({
         <div className="lg:grid lg:auto-rows-min lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-5 lg:col-start-8">
             <ProductHeading name={product?.name} price={product?.price} />
-            <ProductDetailReviews />
+            <ProductDetailReviews reviewDetails={reviewDetails} />
           </div>
 
           <ImageGallery images={product?.images} />
