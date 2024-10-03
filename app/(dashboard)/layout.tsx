@@ -21,7 +21,7 @@ export default async function DashboardLayout({
       <Providers session={session}>
         <Sidebar />
         <main className="w-full flex-1 overflow-y-hidden  bg-primary-foreground h-screen">
-          <Header />
+          <Header userEmail={session?.user?.email as string} />
           {children}
         </main>
       </Providers>

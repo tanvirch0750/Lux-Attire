@@ -8,13 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { IUser } from '@/db/models/user-model';
 import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
+
 import Link from 'next/link';
-export function UserNav() {
+export function UserNav({ user }: { user: IUser }) {
   const { data: session } = useSession();
 
   console.log(session?.user?.image);
@@ -25,28 +25,32 @@ export function UserNav() {
           <Button variant="ghost" className="relative h-10 w-10 rounded-full">
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={session?.user?.image ?? ''}
-                alt={session?.user?.name ?? ''}
+                src={user?.profilePicture || session?.user?.image || ''}
+                alt={user?.name ?? ''}
               />
-              <AvatarFallback>{session.user?.name?.[0]}</AvatarFallback>
+              <AvatarFallback>{user?.name?.[0]}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {session.user?.name}
-              </p>
+              <p className="text-sm font-medium leading-none">{user?.name}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                {session.user?.email}
+                {user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Orders</DropdownMenuItem>
+            <Link href="/dashboard/profile">
+              {' '}
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+            </Link>
+            <Link href="/dashboard/orders">
+              {' '}
+              <DropdownMenuItem>Orders</DropdownMenuItem>
+            </Link>
 
             <Link href="/">
               {' '}

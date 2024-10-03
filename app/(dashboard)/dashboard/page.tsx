@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -6,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import PageContainer from '../_components/layout/PageContainer';
 import { RecentSales } from '../_components/RecentSales';
 import { BarGraph } from '../_components/charts/BarGraph';
