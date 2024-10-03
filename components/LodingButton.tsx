@@ -6,7 +6,7 @@ interface LoadingButtonProps {
   className?: string;
   isLoading: boolean;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
   label: string;
   loadingLabel?: string;
 }
@@ -23,7 +23,7 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   return (
     <Button
       type={type}
-      className={`w-full px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand/90 ${className}`}
+      className={` px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand/90 ${className}`}
       disabled={isLoading || disabled}
       onClick={onClick}
     >
