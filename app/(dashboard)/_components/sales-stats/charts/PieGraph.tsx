@@ -1,67 +1,57 @@
 'use client';
 
 import * as React from 'react';
-import { TrendingUp } from 'lucide-react';
-import { Label, Pie, PieChart } from 'recharts';
-
+import { Pie, PieChart, Label } from 'recharts';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
+  CardDescription,
 } from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 } from '@/components/ui/chart';
-const chartData = [
-  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
-  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
-  { browser: 'firefox', visitors: 287, fill: 'var(--color-firefox)' },
-  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
-  { browser: 'other', visitors: 190, fill: 'var(--color-other)' }
-];
 
+// Demo data
+
+// Pie chart configuration (optional, can adjust colors or other settings)
 const chartConfig = {
-  visitors: {
-    label: 'Visitors'
+  paid: {
+    label: 'Paid Orders',
+    color: 'hsl(var(--chart-paid))',
   },
-  chrome: {
-    label: 'Chrome',
-    color: 'hsl(var(--chart-1))'
+  unpaid: {
+    label: 'Unpaid Orders',
+    color: 'hsl(var(--chart-unpaid))',
   },
-  safari: {
-    label: 'Safari',
-    color: 'hsl(var(--chart-2))'
+  cancelled: {
+    label: 'Cancelled Orders',
+    color: 'hsl(var(--chart-cancelled))',
   },
-  firefox: {
-    label: 'Firefox',
-    color: 'hsl(var(--chart-3))'
+  delivered: {
+    label: 'Delivered Orders',
+    color: 'hsl(var(--chart-delivered))',
   },
-  edge: {
-    label: 'Edge',
-    color: 'hsl(var(--chart-4))'
+  confirmed: {
+    label: 'Confirmed Orders',
+    color: 'hsl(var(--chart-confirmed))',
   },
-  other: {
-    label: 'Other',
-    color: 'hsl(var(--chart-5))'
-  }
 } satisfies ChartConfig;
 
-export function PieGraph() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+export function PieGraph({ paid, unpaid }: { paid: number; unpaid: number }) {
+  const paidVsUnpaidOrders = { paid, unpaid };
+
+  const totalOrders = paidVsUnpaidOrders.paid + paidVsUnpaidOrders.unpaid;
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Pie Chart - Order Status</CardTitle>
+        <CardDescription>Paid vs Unpaid Orders</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -71,14 +61,29 @@ export function PieGraph() {
           <PieChart>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent hideLabel className="bg-white" />}
             />
+            {/* Pie for paid vs unpaid */}
             <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              data={[
+                {
+                  name: 'Paid',
+                  value: paidVsUnpaidOrders.paid,
+                  fill: '#48bb78',
+                }, // green
+                {
+                  name: 'Unpaid',
+                  value: paidVsUnpaidOrders.unpaid,
+                  fill: '#f56565',
+                }, // red
+              ]}
+              dataKey="value"
+              nameKey="name"
               innerRadius={60}
+              outerRadius={130}
               strokeWidth={5}
+              cx="50%"
+              cy="50%"
             >
               <Label
                 content={({ viewBox }) => {
@@ -95,14 +100,14 @@ export function PieGraph() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalOrders}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          Total Orders
                         </tspan>
                       </text>
                     );
@@ -113,14 +118,6 @@ export function PieGraph() {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }

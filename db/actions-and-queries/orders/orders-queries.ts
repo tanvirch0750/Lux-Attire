@@ -28,6 +28,21 @@ export const getUserOrders = async (userId: string) => {
   }
 };
 
+// Get recent 5 orders (available to admin only)
+export const getRecentOrders = async () => {
+  try {
+    const recentOrders = await Order.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('user');
+    return JSON.parse(JSON.stringify(recentOrders));
+  } catch (error) {
+    throw new Error(
+      'Error fetching recent orders: ' + (error as Error).message
+    );
+  }
+};
+
 // Get a single order by its ID (available to admin or the user who placed the order)
 export const getOrderById = async (
   orderId: Types.ObjectId | string,

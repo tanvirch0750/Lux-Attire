@@ -95,4 +95,6 @@ export const getAllSalesStatistics = async (): Promise<{
     ordersByStatus,
     revenueByMonth,
   };
+
+  
 };
