@@ -94,6 +94,7 @@ export const {
       if (user) {
         token.email = user?.email;
         token.name = user?.name;
+
         // If the user has a role (credentials login), set it in the token
         if (user.role) {
           token.role = user?.role;
@@ -102,7 +103,7 @@ export const {
           // If the role isn't available directly (Google login), fetch it from the database
           const dbUser = await User.findOne({ email: user?.email });
           if (dbUser) {
-            token.role = dbUser.role;
+            token.role = dbUser.role || 'user';
           }
         }
       }
