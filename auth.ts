@@ -5,6 +5,7 @@ import GoogleProvider from 'next-auth/providers/google';
 
 import bcrypt from 'bcryptjs';
 import { User } from './db/models/user-model';
+import { dbConnect } from './db/service/mongo';
 
 export const {
   auth,
@@ -19,6 +20,8 @@ export const {
         if (credentials == null) return null;
 
         try {
+          await dbConnect();
+
           const user = await User.findOne({
             email: credentials?.email,
           });
@@ -95,6 +98,7 @@ export const {
         if (user.role) {
           token.role = user?.role;
         } else {
+          await dbConnect();
           // If the role isn't available directly (Google login), fetch it from the database
           const dbUser = await User.findOne({ email: user?.email });
           if (dbUser) {
