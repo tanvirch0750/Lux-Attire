@@ -17,6 +17,9 @@ export const createOrder = async (orderData: IOrder, userId: string) => {
       const existingOrder = await Order.findOne({
         session_id: orderData.session_id,
       });
+
+      console.log('session id found');
+
       if (existingOrder) {
         // If an order exists, return it without creating a new one
         return JSON.parse(JSON.stringify(existingOrder));

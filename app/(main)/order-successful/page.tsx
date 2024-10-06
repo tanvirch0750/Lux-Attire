@@ -1,6 +1,7 @@
 import { createOrderAction } from '@/app/actions/order/order';
 import { Button } from '@/components/ui/button';
 import { IOrder } from '@/db/models/order-model';
+import { sendEmails } from '@/lib/email';
 import { stripe } from '@/lib/stripe';
 import { CheckCircle, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
@@ -65,20 +66,41 @@ export default async function OrderConfirmation({
         totalPrice: Number(itemTotalPrice),
       };
     });
-  const { user, ...othersOrderData } = JSON.parse(metaData?.order as string);
+  const { user, email, ...othersOrderData } = JSON.parse(
+    metaData?.order as string
+  );
 
   const orderData: IOrder = {
     orderItems: orderItems,
     ...othersOrderData,
     orderStatus: 'confirmed',
     session_id: searchParams?.session_id,
+    email: email,
     isPaid: true,
   };
 
   if (paymentStatus === 'succeeded') {
     // send  email  to the  user
     // update order db
-    await createOrderAction(orderData, user);
+    const res = await createOrderAction(orderData, user);
+
+    console.log('order success', res);
+
+    const emailsToSend = [
+      {
+        to: email,
+        subject: 'Your Order with Luxe Attire is Confirmed!',
+        message: `Thank you for shopping with Luxe Attire! We're excited to let you know that your order has been successfully placed.`,
+      },
+      {
+        to: 'tanvirch7575@gmail.com',
+        subject: 'New Order is confirmed',
+        message: `A new order has been placed through Luxe Attire. `,
+      },
+    ];
+
+    const emailres = await sendEmails(emailsToSend);
+    console.log('email res', emailres);
   } else {
     toast.error('Payment Failed, please try again', {
       position: 'top-center',

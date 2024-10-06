@@ -4,7 +4,7 @@ import {
   updateQuantity,
 } from '@/lib/features/cartSlice';
 
-import { TrashIcon, PlusIcon, MinusIcon } from 'lucide-react';
+import { PlusIcon, MinusIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 
@@ -61,7 +61,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
               </div>
             </div>
             <p className="text-lg font-semibold">
-              {(item?.price * item?.quantity).toFixed(2)}€
+              ${(item?.price * item?.quantity).toFixed(2)}
             </p>
           </div>
           <div className="flex items-center justify-between text-sm divide-x">

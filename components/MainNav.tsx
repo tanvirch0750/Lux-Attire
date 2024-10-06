@@ -26,7 +26,7 @@ import Cart from '../app/(main)/_components/cart/Cart';
 import { Session } from 'next-auth';
 
 // @ts-ignore
-export function MainNav({ items, children }) {
+export function MainNav({ items, children, userImage }) {
   const { data: session } = useSession();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -105,13 +105,15 @@ export function MainNav({ items, children }) {
                 <Avatar>
                   <AvatarImage
                     src={
-                      session?.user?.image
-                        ? session?.user?.image
-                        : 'https://github.com/shadcn.png'
+                      userImage ||
+                      session?.user?.image ||
+                      'https://github.com/shadcn.png'
                     }
                     alt="@shadcn"
                   />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>
+                    {session?.user?.name ? session.user.name.charAt(0) : 'U'}
+                  </AvatarFallback>
                 </Avatar>
               </div>
             </DropdownMenuTrigger>

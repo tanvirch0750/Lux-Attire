@@ -16,7 +16,7 @@ export default function CartChekcout() {
       <div className="text-right">
         <p className="text-xl">
           Total amount:{' '}
-          <span className="font-semibold">{totalPrice.toFixed(2)}€</span>
+          <span className="font-semibold">${totalPrice.toFixed(2)}</span>
         </p>
         <p className="text-sm">Not including taxes and shipping costs</p>
       </div>
