@@ -21,7 +21,7 @@ interface SearchParams {
 export interface IFilters {
   search: string;
   sort: string;
-  categories: string | string[] | undefined;
+  categories?: string | string[] | undefined;
   colors: string[] | string | undefined;
   priceRanges: string | string[] | undefined;
 }

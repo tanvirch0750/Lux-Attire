@@ -1,13 +1,19 @@
 import { TProduct } from '@/db/models/product-model';
 import ProductCard from './ProductCard';
-import { getAllAvailableProducts } from '@/db/actions-and-queries/products/products-queries';
+import { getProductsByCategoryValue } from '@/db/actions-and-queries/products/products-queries';
 import { IFilters } from '../../products/page';
 import NoProductsFound from './NoProductsFound';
 
-export default async function ProductList({ filters }: { filters: IFilters }) {
-  const products: TProduct[] = await getAllAvailableProducts();
+export default async function CategoryproductList({
+  filters,
+  categoryValue,
+}: {
+  filters: IFilters;
+  categoryValue: string;
+}) {
+  const products: TProduct[] = await getProductsByCategoryValue(categoryValue);
 
-  const { search, sort, colors, categories, priceRanges } = filters;
+  const { search, sort, colors, priceRanges } = filters;
 
   const filteredProducts = products
     ?.filter((product) => {
@@ -16,11 +22,6 @@ export default async function ProductList({ filters }: { filters: IFilters }) {
         search &&
         !product.name.toLowerCase().includes(search.toLowerCase())
       ) {
-        return false;
-      }
-
-      // Filter by category
-      if (categories?.length && !categories?.includes(product.category.value)) {
         return false;
       }
 

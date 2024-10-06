@@ -7,6 +7,8 @@ import NewsLetter from './_components/NewsLetter';
 
 import ProductsShowcase from './_components/ProductShowcase';
 import WhyChooseUs from './_components/WhyChooseUs';
+import { Suspense } from 'react';
+import Loader from '@/components/Loader';
 
 export default function HomePage() {
   const data = {
@@ -24,8 +26,11 @@ export default function HomePage() {
       <div>
         <CategoryGrid />
       </div>
+
       <div>
-        <NewArrivals />
+        <Suspense fallback={<Loader text="Lodin New Arrivals Products" />}>
+          <NewArrivals />
+        </Suspense>
       </div>
       <div className="hidden md:block">
         <SpecialOffer />
