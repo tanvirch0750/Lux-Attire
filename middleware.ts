@@ -18,6 +18,9 @@ const userRoutes = [
 export async function middleware(req: NextRequest) {
   // @ts-ignore
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  console.log('token ', token);
+
   const { pathname } = req.nextUrl;
 
   // Public routes that don't require authentication
@@ -35,6 +38,7 @@ export async function middleware(req: NextRequest) {
 
   // If no token is present, redirect to login
   if (!token) {
+    console.log('No token, redirecting to login.');
     if (
       !publicRoutes.includes(pathname) &&
       !authRestrictedRoutes.includes(pathname)
@@ -43,6 +47,8 @@ export async function middleware(req: NextRequest) {
     }
     return NextResponse.next(); // Let user access public routes
   }
+
+  console.log('Token validated:', token);
 
   // If the user is logged in and tries to access login or register, redirect to a protected route
   if (token && authRestrictedRoutes.includes(pathname)) {
