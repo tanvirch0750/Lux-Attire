@@ -2,7 +2,7 @@
 
 import { Row } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { ArrowRightIcon, Edit2Icon } from 'lucide-react';
+import { Edit2Icon } from 'lucide-react';
 import Link from 'next/link';
 
 import { toast } from 'react-toastify';
@@ -108,14 +108,14 @@ export function DataTableRowActions<TData>({
           isLoading={loading}
         />
       )}
-      <Link href={`/dashboard/products/${products?._id}`}>
+      {/* <Link href={`/dashboard/products/${products?._id}`}>
         <Button
           className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
           size="sm"
         >
           <ArrowRightIcon size={16} />
         </Button>
-      </Link>
+      </Link> */}
     </div>
   );
 }

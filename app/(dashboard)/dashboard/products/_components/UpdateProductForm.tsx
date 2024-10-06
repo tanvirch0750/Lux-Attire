@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import React, { useState } from 'react';
@@ -58,7 +60,6 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
     handleSubmit,
     register,
     formState: { errors },
-    reset,
   } = useForm<IProductFormInputs>({
     resolver: zodResolver(productSchema),
     defaultValues: initialData,

@@ -7,13 +7,7 @@ import { useState } from 'react';
 import { DashboardNav } from '../DashboardNav';
 import { navItems } from '../../_constant/data';
 
-// import { Playlist } from "../data/playlists";
-
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  // playlists: Playlist[];
-}
-
-export function MobileSidebar({ className }: SidebarProps) {
+export function MobileSidebar() {
   const [open, setOpen] = useState(false);
   return (
     <>

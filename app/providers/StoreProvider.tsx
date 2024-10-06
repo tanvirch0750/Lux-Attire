@@ -18,6 +18,7 @@ export default function StoreProvider({
 
   return (
     <Provider store={storeRef.current}>
+      {/* @ts-ignore */}
       <PersistGate loading={null} persistor={storeRef.current.__persistor}>
         {children}
       </PersistGate>

@@ -2,22 +2,16 @@
 
 import { Row } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import {
-  Edit2Icon,
-  Loader2,
-  Redo2Icon,
-  Trash2Icon,
-  Undo2Icon,
-} from 'lucide-react';
+import { Edit2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { ICategory } from '@/db/models/category-model';
-import { useSession } from 'next-auth/react';
+
 import {
   deleteCategoryAction,
   undoDeleteCategoryAction,
 } from '@/app/actions/category/category';
 import { toast } from 'react-toastify';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 interface DataTableRowActionsProps<TData> {
@@ -35,7 +29,7 @@ export function DataTableRowActions<TData>({
     try {
       setLoading(true);
 
-      const result = await deleteCategoryAction(category?._id!);
+      const result = await deleteCategoryAction(category?._id as string);
 
       if (result.status === 200) {
         toast.success('Category deleted successfully', {
@@ -61,7 +55,7 @@ export function DataTableRowActions<TData>({
     try {
       setLoading(true);
 
-      const result = await undoDeleteCategoryAction(category?._id!);
+      const result = await undoDeleteCategoryAction(category?._id as string);
 
       if (result.status === 200) {
         toast.success('Category restored successfully', {

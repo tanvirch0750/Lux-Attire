@@ -64,8 +64,10 @@ export default function AddToCart({
         productId: productId,
         name,
         price,
+        // @ts-ignore,
         size: selectedSize,
         color: selectedColor,
+        // @ts-ignore
         image: selectedImage,
         quantity: 1,
       };
