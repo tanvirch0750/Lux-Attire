@@ -8,6 +8,8 @@ import { productcolumns } from './_components/productColumns';
 
 // Product type
 
+export const dynamic = 'force-dynamic';
+
 export default async function ReviesPage() {
   const productsData = await getAllProducts();
 

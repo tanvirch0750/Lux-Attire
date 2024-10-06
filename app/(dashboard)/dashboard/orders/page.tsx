@@ -3,7 +3,9 @@ import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 import { getAllOrders } from '@/db/actions-and-queries/orders/orders-queries';
 
-export default async function ProductPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function OrderPage() {
   const ordersData = await getAllOrders();
 
   return (

@@ -3,7 +3,7 @@
 import { createCategoryAction } from '@/app/actions/category/category';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useCreateOrUpdate } from '@/hooks/useCreateOrUpdate';
+
 import { Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -86,7 +86,7 @@ const CreateCategoryForm = () => {
       {/* Value */}
       <div className="mb-4">
         <label htmlFor="value" className="block font-medium text-gray-700">
-          Value
+          Slug Value
         </label>
         <Input
           id="value"

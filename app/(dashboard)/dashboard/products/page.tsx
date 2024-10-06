@@ -7,6 +7,8 @@ import { TProduct } from '@/db/models/product-model';
 
 // Product type
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductPage() {
   const productsData = await getAllProducts();
 

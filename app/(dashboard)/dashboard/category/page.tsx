@@ -4,10 +4,10 @@ import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 import { getAllCategories } from '@/db/actions-and-queries/category/category-queries';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CategoryPage() {
   const data = await getAllCategories();
-
-  console.log(data);
 
   return (
     <PageContainer scrollable>

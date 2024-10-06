@@ -6,7 +6,7 @@ const CategoryGrid = () => {
     <div className="mx-auto p-6 grid grid-cols-12 gap-2">
       {/* Row 1 */}
       <Link
-        href="/products/womens-wear"
+        href="/products/womens-collection"
         className="col-span-12 md:col-span-6 flash-effect"
       >
         <div
@@ -19,9 +19,7 @@ const CategoryGrid = () => {
           {/* Text aligned to the right without background */}
           <div className="absolute right-0 mr-6 text-right">
             <p className="uppercase text-sm mb-2 text-white">explore</p>
-            <h2 className="text-3xl font-bold text-white">
-              Women's Collection
-            </h2>
+            <h2 className="text-3xl font-bold text-white">Womens Collection</h2>
             <p className="text-sm mt-2 text-white">#NEWYEAR2024</p>
           </div>
         </div>
@@ -103,7 +101,7 @@ const CategoryGrid = () => {
       </Link>
 
       <Link
-        href="/products/menswear"
+        href="/products/mens-collection"
         className="col-span-12 md:col-span-6 flash-effect"
       >
         <div

@@ -4,8 +4,9 @@ import Img from '@/assests/hero-two.jpg';
 import NewArrivals from './_components/NewArrivals';
 import SpecialOffer from './_components/special-offers/SpecialOffer';
 import NewsLetter from './_components/NewsLetter';
-import TopBrands from './_components/TopBrands';
+
 import ProductsShowcase from './_components/ProductShowcase';
+import WhyChooseUs from './_components/WhyChooseUs';
 
 export default function HomePage() {
   const data = {
@@ -30,7 +31,7 @@ export default function HomePage() {
         <SpecialOffer />
       </div>
       <div>
-        <TopBrands />
+        <WhyChooseUs />
       </div>
       <div>
         <ProductsShowcase />

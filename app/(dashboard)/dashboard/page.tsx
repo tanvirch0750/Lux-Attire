@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import UsersAndCategoryStats from '../_components/category-users-stats/CategoryAndUserStats';
 import { BarChart, LayoutDashboard, ShoppingCart, Users } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardHomePage() {
   return (
     <PageContainer scrollable={true}>
