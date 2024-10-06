@@ -62,6 +62,7 @@ export const {
   callbacks: {
     async signIn({ user, account }: { user: any; account: any }) {
       if (account.provider === 'google') {
+        await dbConnect();
         try {
           const { name, email } = user;
           // Check if the user already exists in the database
