@@ -19,6 +19,10 @@ export async function middleware(req: NextRequest) {
   // @ts-ignore
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
+  console.log('request', req);
+
+  console.log('next auth secret', process.env.NEXTAUTH_SECRET);
+
   console.log('token ', token);
 
   const { pathname } = req.nextUrl;
