@@ -19,7 +19,7 @@ const CURRENCY = 'usd';
 
 export async function createCheckoutSession(order: IOrder) {
   const ui_mode = 'hosted';
-  const origin = 'http://localhost:3000';
+  const origin = 'https://luxe-attire.vercel.app';
 
   console.log('stripe action', order);
 
