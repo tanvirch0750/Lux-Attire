@@ -1,10 +1,13 @@
 import { Category } from '@/db/models/category-model';
 import { Product } from '@/db/models/product-model';
+import { dbConnect } from '@/db/service/mongo';
 
 import { Types } from 'mongoose';
 
 // Get all products (only those that are not deleted)
 export const getAllProducts = async () => {
+  await dbConnect();
+
   try {
     const products = await Product.find({})
       .sort({ createdAt: -1 })
@@ -18,6 +21,8 @@ export const getAllProducts = async () => {
 
 // Get products by category-value (only those that are not deleted)
 export const getProductsByCategoryValue = async (categoryValue: string) => {
+  await dbConnect();
+
   try {
     // Find the category by its value
     const category = await Category.findOne({
@@ -48,6 +53,8 @@ export const getProductsByCategoryValue = async (categoryValue: string) => {
 
 // Get the first 8 products (new arrivals, only those that are not deleted)
 export const getNewArrivalProducts = async () => {
+  await dbConnect();
+
   try {
     const newArrivals = await Product.find({
       isDeleted: false,
@@ -65,6 +72,8 @@ export const getNewArrivalProducts = async () => {
 
 // Get all available products (only those that are not deleted)
 export const getAllAvailableProducts = async () => {
+  await dbConnect();
+
   try {
     const products = await Product.find({ isDeleted: false })
       .sort({ createdAt: -1 })
@@ -81,6 +90,8 @@ export const getAllAvailableProducts = async () => {
 
 // Get a product by ID (only if not deleted)
 export const getProductById = async (productId: Types.ObjectId | string) => {
+  await dbConnect();
+
   try {
     const product = await Product.findOne({
       _id: productId,
@@ -98,6 +109,8 @@ export const getProductById = async (productId: Types.ObjectId | string) => {
 export const getProductByIdAdmin = async (
   productId: Types.ObjectId | string
 ) => {
+  await dbConnect();
+
   try {
     const product = await Product.findOne({
       _id: productId,
