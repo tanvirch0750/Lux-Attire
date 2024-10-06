@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unescaped-entities */
+import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
 
@@ -32,7 +35,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-600">
               <li>Contact Us</li>
               <li>tanvirch7575@email.com</li>
-              <li>example@email.com</li>
+              <li>example@luxe-attire.com</li>
               <li>Call us: +8801302047933</li>
             </ul>
           </div>
@@ -41,10 +44,15 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4 text-primary">About</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>Support Center</li>
-              <li>Customer Support</li>
-              <li>About Us</li>
-              <li>Copyright</li>
+              <li>
+                <Link href="/support-center">Support Center</Link>
+              </li>
+              <li>
+                <Link href="/about-us">About Us</Link>
+              </li>
+              <li>
+                <Link href="/copyright">Copyright</Link>
+              </li>
             </ul>
           </div>
 
@@ -54,9 +62,15 @@ const Footer = () => {
               Customer Care
             </h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>FAQ & Helps</li>
-              <li>Shipping & Delivery</li>
-              <li>Return & Exchanges</li>
+              <li>
+                <Link href="/support-center">FAQ & Helps</Link>
+              </li>
+              <li>
+                <Link href="/shipping-delivery">Shipping & Delivery</Link>
+              </li>
+              <li>
+                <Link href="/return-exchange">Return & Exchanges</Link>
+              </li>
             </ul>
           </div>
 
@@ -66,10 +80,16 @@ const Footer = () => {
               Our Information
             </h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>Privacy Policy Update</li>
-              <li>Terms & Conditions</li>
-              <li>Return Policy</li>
-              <li>Site Map</li>
+              <li>
+                <Link href="/privacy-policy">Privacy Policy</Link>
+              </li>
+
+              <li>
+                <Link href="/terms-condition">Terms & Conditions</Link>
+              </li>
+              <li>
+                <Link href="/return-exchange">Return Policy</Link>
+              </li>
             </ul>
           </div>
 
@@ -79,10 +99,18 @@ const Footer = () => {
               Top Categories
             </h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>Men's Wear</li>
-              <li>Women's Wear</li>
-              <li>Kid's Wear</li>
-              <li>Sports Wear</li>
+              <li>
+                <Link href="/products/mens-collection">Men's Wear</Link>
+              </li>
+              <li>
+                <Link href="/products/womens-collection">Women's Wear</Link>
+              </li>
+              <li>
+                <Link href="/products/activewear">Active Wear</Link>
+              </li>
+              <li>
+                <Link href="/products/kids-wear">Kid's Wear</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -96,15 +124,11 @@ const Footer = () => {
 
           {/* Payment Icons */}
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <img
+            <Image
+              width={30}
+              height={20}
               src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg"
               alt="MasterCard"
-              className="h-4"
-            />
-
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
-              alt="PayPal"
               className="h-4"
             />
           </div>
