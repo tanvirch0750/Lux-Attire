@@ -2,6 +2,7 @@ import { Category } from '@/db/models/category-model';
 import { Order } from '@/db/models/order-model';
 import { Product } from '@/db/models/product-model';
 import { Review } from '@/db/models/review-model';
+import { dbConnect } from '@/db/service/mongo';
 
 export const getDeletedDataTracking = async (): Promise<{
   deletedProductsCount: number;
@@ -9,6 +10,7 @@ export const getDeletedDataTracking = async (): Promise<{
   deletedOrdersCount: number;
   deletedReviewsCount: number;
 }> => {
+  await dbConnect();
   // Count Deleted Products
   const deletedProductsCount = await Product.countDocuments({
     isDeleted: true,

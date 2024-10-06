@@ -1,10 +1,12 @@
 import { Review } from '@/db/models/review-model';
 import { Types } from 'mongoose';
+import { dbConnect } from '@/db/service/mongo';
 
 // Get all reviews for a specific product
 export const getReviewsByProduct = async (
   productId: Types.ObjectId | string
 ) => {
+  await dbConnect();
   try {
     const reviews = await Review.find({
       product: productId,
@@ -23,6 +25,7 @@ export const getReviewsByProduct = async (
 export const getReviewsByProductAdmin = async (
   productId: Types.ObjectId | string
 ) => {
+  await dbConnect();
   try {
     const reviews = await Review.find({
       product: productId,
@@ -38,6 +41,7 @@ export const getReviewsByProductAdmin = async (
 
 // Get a single review by ID
 export const getReviewById = async (reviewId: Types.ObjectId) => {
+  await dbConnect();
   try {
     const review = await Review.findById(reviewId)
       .populate('user', 'name email')
@@ -57,6 +61,7 @@ export const getReviewByProductAndUser = async (
   userId: Types.ObjectId | string,
   orderId: Types.ObjectId | string
 ) => {
+  await dbConnect();
   try {
     const review = await Review.findOne({
       product: productId,
@@ -78,6 +83,7 @@ export const getReviewByProductAndUser = async (
 
 // Get all reviews (only admin can access)
 export const getAllReviews = async (role: string) => {
+  await dbConnect();
   if (role !== 'admin') {
     throw new Error('Only admins can access all reviews');
   }
@@ -98,6 +104,7 @@ export const getAllReviews = async (role: string) => {
 export const getReviewStatsByProduct = async (
   productId: Types.ObjectId | string
 ) => {
+  await dbConnect();
   try {
     const objectIdProduct =
       typeof productId === 'string' ? new Types.ObjectId(productId) : productId;

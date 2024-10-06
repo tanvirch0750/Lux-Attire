@@ -1,6 +1,7 @@
 import { IUser, User } from '@/db/models/user-model';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
+import { dbConnect } from '@/db/service/mongo';
 
 function isMongoError(error: unknown): error is { code: number } {
   return typeof error === 'object' && error !== null && 'code' in error;
@@ -10,6 +11,7 @@ export const updateUserById = async (
   userId: Types.ObjectId | string,
   updateData: Partial<IUser>
 ) => {
+  await dbConnect();
   try {
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,

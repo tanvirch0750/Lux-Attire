@@ -6,12 +6,17 @@ import { auth } from '@/auth';
 import { getUserByEmail } from '@/db/actions-and-queries/user/user-query';
 import { getUserOrders } from '@/db/actions-and-queries/orders/orders-queries';
 import { IOrder } from '@/db/models/order-model';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MyOrdersPage() {
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email as string);
+
+  if (user?.role !== 'user') {
+    redirect('/login');
+  }
 
   const orders: IOrder[] = await getUserOrders(user?._id);
 

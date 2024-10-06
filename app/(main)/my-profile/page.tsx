@@ -5,12 +5,17 @@ import ProfileImage from '../_components/ProfileImage';
 import { IOrder } from '@/db/models/order-model';
 import { getUserOrders } from '@/db/actions-and-queries/orders/orders-queries';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 const ProfilePage = async () => {
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email as string);
 
   const orders: IOrder[] = await getUserOrders(user?._id);
+
+  if (!user?.email) {
+    redirect('/login');
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen py-10 pt-16">

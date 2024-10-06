@@ -1,4 +1,5 @@
 import { Review } from '@/db/models/review-model';
+import { dbConnect } from '@/db/service/mongo';
 
 export const getReviewStatistics = async (): Promise<{
   totalReviews: number;
@@ -14,6 +15,7 @@ export const getReviewStatistics = async (): Promise<{
     averageRating: number;
   }[];
 }> => {
+  await dbConnect();
   // Total Reviews
   const totalReviews = await Review.countDocuments({});
 

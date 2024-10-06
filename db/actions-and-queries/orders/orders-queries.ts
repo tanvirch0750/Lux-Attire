@@ -1,8 +1,10 @@
 import { Order } from '@/db/models/order-model';
 import { Types } from 'mongoose';
+import { dbConnect } from '@/db/service/mongo';
 
 // Get all orders (available to admin only)
 export const getAllOrders = async () => {
+  await dbConnect();
   try {
     const orders = await Order.find({ isDeleted: false })
       .sort({ createdAt: -1 })
@@ -15,6 +17,7 @@ export const getAllOrders = async () => {
 
 // Get orders for a specific user
 export const getUserOrders = async (userId: string) => {
+  await dbConnect();
   try {
     const orders = await Order.find({
       user: userId,
@@ -30,6 +33,7 @@ export const getUserOrders = async (userId: string) => {
 
 // Get recent 5 orders (available to admin only)
 export const getRecentOrders = async () => {
+  await dbConnect();
   try {
     const recentOrders = await Order.find({ isDeleted: false })
       .sort({ createdAt: -1 })
@@ -48,6 +52,7 @@ export const getOrderById = async (
   orderId: Types.ObjectId | string,
   userId: string
 ) => {
+  await dbConnect();
   try {
     // Allow only admins or the user who placed the order to fetch the order details
     const order = await Order.findOne({
@@ -67,6 +72,7 @@ export const getOrderById = async (
 };
 
 export const getAdminOrderById = async (orderId: Types.ObjectId | string) => {
+  await dbConnect();
   try {
     // Allow only admins or the user who placed the order to fetch the order details
     const order = await Order.findOne({

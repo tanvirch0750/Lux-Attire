@@ -4,9 +4,12 @@ import { IOrder, Order } from '@/db/models/order-model';
 import { Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
+import { dbConnect } from '@/db/service/mongo';
 
 // Create a new order (available to all users)
 export const createOrder = async (orderData: IOrder, userId: string) => {
+  await dbConnect();
+
   if (!userId) {
     throw new Error('You are not authorized');
   }
@@ -57,6 +60,7 @@ export const updateOrderById = async (
   orderId: Types.ObjectId,
   updateData: Partial<IOrder>
 ) => {
+  await dbConnect();
   try {
     const updatedOrder = await Order.findOneAndUpdate(
       { _id: orderId },
@@ -80,13 +84,8 @@ export const updateOrderById = async (
 };
 
 // Soft delete an order by updating isDeleted to true (only admin can delete)
-export const deleteOrderById = async (
-  orderId: Types.ObjectId,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can delete orders');
-  }
+export const deleteOrderById = async (orderId: Types.ObjectId) => {
+  await dbConnect();
 
   try {
     const deletedOrder = await Order.findOneAndUpdate(
@@ -112,13 +111,8 @@ export const deleteOrderById = async (
 };
 
 // Undo delete functionality by setting isDeleted to false (only admin can undo delete)
-export const undoDeleteOrder = async (
-  orderId: Types.ObjectId,
-  role: string
-) => {
-  if (role !== 'admin') {
-    throw new Error('Only admins can undo order deletion');
-  }
+export const undoDeleteOrder = async (orderId: Types.ObjectId) => {
+  await dbConnect();
 
   try {
     const restoredOrder = await Order.findOneAndUpdate(
@@ -150,6 +144,7 @@ export const cancelOrder = async (
   orderId: Types.ObjectId | string,
   userId: string
 ) => {
+  await dbConnect();
   try {
     const order = await Order.findOne({
       _id: orderId,
@@ -190,6 +185,7 @@ export const cancelOrder = async (
 };
 
 export const deliverOrder = async (orderId: Types.ObjectId | string) => {
+  await dbConnect();
   try {
     // Find the order by ID, user, and ensure it's not deleted
     const order = await Order.findOne({

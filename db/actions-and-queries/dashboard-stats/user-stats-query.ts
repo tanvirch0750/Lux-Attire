@@ -1,6 +1,7 @@
 import { Order } from '@/db/models/order-model';
 import { User } from '@/db/models/user-model';
 import { subMonths } from 'date-fns'; // For date manipulation
+import { dbConnect } from '@/db/service/mongo';
 
 export const getUserStatistics = async (): Promise<{
   totalUsers: number;
@@ -10,6 +11,7 @@ export const getUserStatistics = async (): Promise<{
   adminCount: number;
   regularUserCount: number;
 }> => {
+  await dbConnect();
   // Total Users
   const totalUsers = await User.countDocuments({});
 

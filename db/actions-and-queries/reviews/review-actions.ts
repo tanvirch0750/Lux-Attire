@@ -3,9 +3,11 @@
 import { Review, IReview } from '@/db/models/review-model';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
+import { dbConnect } from '@/db/service/mongo';
 
 // Create a new review
 export const createReview = async (reviewData: IReview) => {
+  await dbConnect();
   try {
     const newReview = new Review(reviewData);
     await newReview.save();
@@ -27,6 +29,7 @@ export const updateReviewByProductAndUser = async (
   orderId: Types.ObjectId | string,
   updateData: Partial<IReview>
 ) => {
+  await dbConnect();
   try {
     // Update the review only if it matches the given user, order, and product
     const updatedReview = await Review.findOneAndUpdate(
@@ -48,12 +51,9 @@ export const updateReviewByProductAndUser = async (
 // Update a review by ID
 export const updateReviewById = async (
   reviewId: Types.ObjectId,
-  updateData: Partial<IReview>,
-  role: string
+  updateData: Partial<IReview>
 ) => {
-  if (role !== 'admin') {
-    throw new Error('Only admin can update reviews');
-  }
+  await dbConnect();
 
   try {
     const updatedReview = await Review.findOneAndUpdate(
@@ -73,6 +73,7 @@ export const updateReviewById = async (
 
 // Soft delete a review by updating isDeleted to true (if you want to add soft delete functionality)
 export const deleteReviewById = async (reviewId: Types.ObjectId | string) => {
+  await dbConnect();
   try {
     const deletedReview = await Review.findOneAndUpdate(
       { _id: reviewId },
@@ -96,6 +97,7 @@ export const deleteReviewById = async (reviewId: Types.ObjectId | string) => {
 
 // Undo delete functionality by setting isDeleted to false (if you want to add soft delete functionality)
 export const undoDeleteReview = async (reviewId: Types.ObjectId | string) => {
+  await dbConnect();
   try {
     const restoredReview = await Review.findOneAndUpdate(
       { _id: reviewId, isDeleted: true },

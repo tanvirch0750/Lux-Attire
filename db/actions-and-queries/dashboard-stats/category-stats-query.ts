@@ -1,5 +1,6 @@
 import { Category } from '@/db/models/category-model';
 import { Order } from '@/db/models/order-model';
+import { dbConnect } from '@/db/service/mongo';
 
 export const getCategoryStatistics = async (): Promise<{
   totalCategories: number;
@@ -9,6 +10,7 @@ export const getCategoryStatistics = async (): Promise<{
     totalSold: number;
   } | null;
 }> => {
+  await dbConnect();
   // Total Categories
   const totalCategories = await Category.countDocuments({ isDeleted: false });
 

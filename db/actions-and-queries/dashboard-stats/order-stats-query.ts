@@ -1,4 +1,5 @@
 import { Order } from '@/db/models/order-model';
+import { dbConnect } from '@/db/service/mongo';
 
 export const getOrderStatistics = async (): Promise<{
   totalOrders: number;
@@ -6,6 +7,8 @@ export const getOrderStatistics = async (): Promise<{
   totalShippingRevenue: number;
   pendingDeliveries: number;
 }> => {
+  await dbConnect();
+
   // Total Orders
   const totalOrders = await Order.countDocuments({ isDeleted: false });
 

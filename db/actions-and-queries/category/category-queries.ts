@@ -1,8 +1,10 @@
 import { Category } from '@/db/models/category-model';
+import { dbConnect } from '@/db/service/mongo';
 import { Types } from 'mongoose';
 
 // Get all categories
 export const getAllCategories = async () => {
+  await dbConnect();
   try {
     const categories = await Category.find({}).sort({ createdAt: -1 });
     return JSON.parse(JSON.stringify(categories));
@@ -13,6 +15,7 @@ export const getAllCategories = async () => {
 
 // Get a category by ID
 export const getCategoryById = async (categoryId: Types.ObjectId) => {
+  await dbConnect();
   try {
     const category = await Category.findById(categoryId);
     if (!category) {

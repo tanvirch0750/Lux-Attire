@@ -3,6 +3,7 @@
 import { Product, IProduct } from '@/db/models/product-model';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
+import { dbConnect } from '@/db/service/mongo';
 
 interface MongoError extends Error {
   code?: number;
@@ -10,6 +11,7 @@ interface MongoError extends Error {
 
 // Create a new product (only admin can create)
 export const createProduct = async (productData: IProduct) => {
+  await dbConnect();
   try {
     const newProduct = new Product(productData);
     await newProduct.save();
@@ -34,6 +36,7 @@ export const updateProductById = async (
   productId: Types.ObjectId | string,
   updateData: Partial<IProduct>
 ) => {
+  await dbConnect();
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
@@ -61,6 +64,7 @@ export const updateProductById = async (
 
 // Soft delete a product by updating isDeleted to true
 export const deleteProductById = async (productId: Types.ObjectId | string) => {
+  await dbConnect();
   try {
     const deletedProduct = await Product.findOneAndUpdate(
       { _id: productId, isDeleted: false },
@@ -84,6 +88,7 @@ export const deleteProductById = async (productId: Types.ObjectId | string) => {
 
 // Undo delete functionality by setting isDeleted to false
 export const undoDeleteProduct = async (productId: Types.ObjectId | string) => {
+  await dbConnect();
   try {
     const restoredProduct = await Product.findOneAndUpdate(
       { _id: productId, isDeleted: true },

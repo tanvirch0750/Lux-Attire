@@ -1,4 +1,5 @@
 import { Order } from '@/db/models/order-model';
+import { dbConnect } from '@/db/service/mongo';
 
 // Function to get all sales and revenue statistics
 export const getAllSalesStatistics = async (): Promise<{
@@ -9,6 +10,7 @@ export const getAllSalesStatistics = async (): Promise<{
   ordersByStatus: { status: string; count: number }[];
   revenueByMonth: { month: string; totalRevenue: number }[];
 }> => {
+  await dbConnect();
   // Total Revenue
   const totalRevenuePromise = Order.aggregate([
     { $match: { isPaid: true } },
@@ -95,6 +97,4 @@ export const getAllSalesStatistics = async (): Promise<{
     ordersByStatus,
     revenueByMonth,
   };
-
-  
 };

@@ -1,4 +1,5 @@
 import { Category, ICategory } from '@/db/models/category-model';
+import { dbConnect } from '@/db/service/mongo';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 
@@ -8,6 +9,7 @@ interface MongoError extends Error {
 
 // Create a new category
 export const createCategory = async (categoryData: ICategory) => {
+  await dbConnect();
   try {
     const newCategory = new Category(categoryData);
     await newCategory.save();
@@ -30,6 +32,7 @@ export const updateCategoryById = async (
   categoryId: Types.ObjectId | string,
   updateData: Partial<ICategory>
 ) => {
+  await dbConnect();
   try {
     const updatedCategory = await Category.findByIdAndUpdate(
       categoryId,
@@ -56,6 +59,7 @@ export const updateCategoryById = async (
 export const deleteCategoryById = async (
   categoryId: Types.ObjectId | string
 ) => {
+  await dbConnect();
   try {
     const deletedCategory = await Category.findOneAndUpdate(
       { _id: categoryId, isDeleted: false },
@@ -79,6 +83,7 @@ export const deleteCategoryById = async (
 export const undoDeleteCategory = async (
   categoryId: Types.ObjectId | string
 ) => {
+  await dbConnect();
   try {
     const restoredCategory = await Category.findOneAndUpdate(
       { _id: categoryId, isDeleted: true },

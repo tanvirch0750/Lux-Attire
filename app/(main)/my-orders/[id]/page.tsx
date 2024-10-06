@@ -10,10 +10,15 @@ import Image from 'next/image';
 import { formatDateAndTime } from '@/lib/utils';
 import WhatsAppButton from '@/components/WhatsappButton';
 import GiveReview from '../../_components/my-orders/GiveReview';
+import { redirect } from 'next/navigation';
 
 const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email as string);
+
+  if (user?.role !== 'user') {
+    redirect('/login');
+  }
 
   const order: IOrder = await getOrderById(params?.id, user?._id);
 

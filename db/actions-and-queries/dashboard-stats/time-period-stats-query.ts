@@ -8,6 +8,7 @@ import {
   startOfMonth,
   endOfMonth,
 } from 'date-fns';
+import { dbConnect } from '@/db/service/mongo';
 
 // Define types for the return value structure
 interface TimeBasedTrends {
@@ -28,6 +29,8 @@ interface TimeBasedTrends {
 export const getTimeBasedTrends = async (
   period: 'daily' | 'weekly' | 'monthly'
 ): Promise<TimeBasedTrends> => {
+  await dbConnect();
+
   let startOfPeriod: Date, endOfPeriod: Date, dateFormat: string;
 
   // Set the start and end of the period based on daily, weekly, or monthly trends

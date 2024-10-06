@@ -1,6 +1,7 @@
 import { Order } from '@/db/models/order-model';
 import { Product } from '@/db/models/product-model';
 import { Review } from '@/db/models/review-model';
+import { dbConnect } from '@/db/service/mongo';
 
 // Function to get all product-specific statistics
 export const getProductStatistics = async (): Promise<{
@@ -16,6 +17,8 @@ export const getProductStatistics = async (): Promise<{
     totalRevenue: number;
   }[];
 }> => {
+  await dbConnect();
+
   // Total Products
   const totalProductsPromise = Product.countDocuments();
 
