@@ -1,6 +1,7 @@
 import { SessionProvider } from 'next-auth/react';
 import { MainNav } from '@/components/MainNav';
 import Footer from '@/components/Footer';
+import MiniHeader from '@/components/MiniHeader';
 
 const navLinks = [
   {
@@ -9,11 +10,11 @@ const navLinks = [
   },
   {
     title: "Womens's Wear",
-    href: '/products/womens-wear',
+    href: '/products/womens-collection',
   },
   {
     title: "Men's Wear",
-    href: '/products/menswear',
+    href: '/products/mens-collection',
   },
   {
     title: "Kids's Wear",
@@ -36,9 +37,11 @@ const MainLayout = ({
 }>) => {
   return (
     <div className="flex min-h-screen flex-col ">
+      <MiniHeader />
       <div className="h-20 py-4 z-50 bg-white/60 ">
         <div className="px-6 flex mx-auto h-full  items-center justify-between">
           <SessionProvider>
+            {/* @ts-ignore */}
             <MainNav items={navLinks} />
           </SessionProvider>
         </div>

@@ -9,6 +9,7 @@ import ProductsShowcase from './_components/ProductShowcase';
 import WhyChooseUs from './_components/WhyChooseUs';
 import { Suspense } from 'react';
 import Loader from '@/components/Loader';
+import MensCollectionBanner from './_components/MensCollectionBanner';
 
 export default function HomePage() {
   const data = {
@@ -40,6 +41,9 @@ export default function HomePage() {
       </div>
       <div>
         <ProductsShowcase />
+      </div>
+      <div>
+        <MensCollectionBanner />
       </div>
       <div className=" mb-20">
         <NewsLetter />

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -22,16 +23,16 @@ import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { MobileNav } from './MobileNav';
 import Cart from '../app/(main)/_components/cart/Cart';
+import { Session } from 'next-auth';
 
-export function MainNav({ items, children }: any) {
+// @ts-ignore
+export function MainNav({ items, children }) {
   const { data: session } = useSession();
 
-  const [showMobileMenu, setShowMobileMenu] = useState<any>(false);
-  const [loginSession, setLoginSession] = useState<any>(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [loginSession, setLoginSession] = useState<Session | null>(null);
   const pathname = usePathname();
   const isActive = (path: string) => path === pathname;
-
-  const cartCount = 3;
 
   useEffect(() => {
     setLoginSession(session);
@@ -116,6 +117,7 @@ export function MainNav({ items, children }: any) {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-56 mt-4">
+              {/* @ts-ignore */}
               {loginSession?.user?.role === 'user' && (
                 <>
                   {' '}
@@ -128,6 +130,7 @@ export function MainNav({ items, children }: any) {
                 </>
               )}
 
+              {/* @ts-ignore */}
               {loginSession?.user?.role === 'admin' && (
                 <>
                   {' '}
