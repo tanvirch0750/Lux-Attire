@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import * as React from 'react';
@@ -10,10 +12,13 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import SocialLogins from '@/app/register/_components/SocialLogings';
 import Link from 'next/link';
+import { LoginCredentials } from './DemoLoginCredentials';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 interface UserLoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function LoginForm({ className, ...props }: UserLoginFormProps) {
+  const [showPassword, setShowPassword] = React.useState(false);
   const router = useRouter();
   const [formData, setFormData] = React.useState({
     email: '',
@@ -38,11 +43,14 @@ export default function LoginForm({ className, ...props }: UserLoginFormProps) {
     // Clear corresponding error
     setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
   };
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
 
   const onSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     let valid = true;
-    let newErrors = { email: '', password: '' };
+    const newErrors = { email: '', password: '' };
 
     // Email Validation
     if (!formData.email) {
@@ -91,7 +99,10 @@ export default function LoginForm({ className, ...props }: UserLoginFormProps) {
 
   return (
     <div className={cn('px-12', className)} {...props}>
-      <h1 className="text-3xl mb-8">Login</h1>
+      <div className=" flex gap-2 justify-between items-center">
+        <h1 className="text-3xl mb-8">Login</h1>
+        <LoginCredentials />
+      </div>
       <form onSubmit={onSubmit}>
         <div className="grid gap-4">
           {/* Email Field */}
@@ -117,16 +128,30 @@ export default function LoginForm({ className, ...props }: UserLoginFormProps) {
           {/* Password Field */}
           <div className="grid gap-1">
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              placeholder="*******"
-              type="password"
-              autoCapitalize="none"
-              disabled={isLoading}
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                placeholder="*******"
+                type={showPassword ? 'text' : 'password'} // Toggle between text and password
+                autoCapitalize="none"
+                disabled={isLoading}
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="pr-10" // Add padding for the icon
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5 text-gray-500" /> // Icon for hiding password
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-gray-500" /> // Icon for showing password
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
