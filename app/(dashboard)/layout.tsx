@@ -29,7 +29,7 @@ export default async function DashboardLayout({
     <div className="flex">
       <Providers session={session}>
         <Sidebar />
-        <main className="w-full flex-1 overflow-y-hidden  bg-primary-foreground h-screen">
+        <main className="w-full flex-1 md:overflow-y-hidden  bg-primary-foreground h-screen">
           <Header userEmail={session?.user?.email as string} />
           {children}
         </main>
