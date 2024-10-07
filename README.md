@@ -74,7 +74,6 @@ Luxe Attire - This Clothing Marketplace project is a full-featured e-commerce pl
 
 ### 10. Optional Features Implemented
 
-- **Server Actions**: Used for posting product reviews and other server-side actions for improved performance.
 - **Email Notifications**: Order confirmation emails are automatically sent to users upon successful checkout.
 - **Order Status Tracking**: Users can track the status of their orders through a simple order tracking system.
 
