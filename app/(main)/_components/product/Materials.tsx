@@ -1,5 +1,3 @@
-import { product } from '../../products/[category]/[id]/data';
-
 export function Materials({ materials }: { materials: string[] }) {
   return (
     <div className="mt-8 border-t border-gray-200 pt-8">
