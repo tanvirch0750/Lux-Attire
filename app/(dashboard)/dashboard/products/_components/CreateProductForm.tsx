@@ -231,12 +231,12 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                 placeholder="ID"
               />
             </div>
-            <div className="col-span-6 lg:col-span-2">
+            <div className="col-span-6 lg:col-span-3">
               <Input
                 {...register(`images.${index}.color` as const)}
                 type="text"
                 className="mr-2 block py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-                placeholder="Product Color"
+                placeholder="Product Color (#ffff)"
               />
             </div>
             <div className="col-span-6 lg:col-span-2">
@@ -349,13 +349,13 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
               {...register(`colors.${index}.bgColor` as const)}
               type="text"
               className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="bg-gray-900  (backgroud-color)"
+              placeholder="#fffff  (backgroud-color)"
             />
             <Input
               {...register(`colors.${index}.selectedColor` as const)}
               type="text"
               className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="ring-gray-900 (Selected Color)"
+              placeholder="#f0f0f0 (Selected Color)"
             />
             <button
               type="button"

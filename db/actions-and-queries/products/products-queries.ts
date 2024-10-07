@@ -106,6 +106,39 @@ export const getProductById = async (productId: Types.ObjectId | string) => {
   }
 };
 
+// Get related products (same category, exclude current product)
+export const getRelatedProducts = async (
+  productId: Types.ObjectId | string
+) => {
+  await dbConnect();
+
+  try {
+    // First, fetch the product to get its category
+    const currentProduct = await Product.findOne({
+      _id: productId,
+      isDeleted: false,
+    }).populate('category');
+
+    if (!currentProduct) {
+      throw new Error('Product not found');
+    }
+
+    // Fetch related products from the same category, excluding the current product
+    const relatedProducts = await Product.find({
+      category: currentProduct.category._id,
+      _id: { $ne: productId },
+      isDeleted: false,
+      isAvailable: true,
+    })
+      .limit(4)
+      .populate('category');
+
+    return JSON.parse(JSON.stringify(relatedProducts));
+  } catch (error) {
+    throw new Error('Unable to fetch related products');
+  }
+};
+
 export const getProductByIdAdmin = async (
   productId: Types.ObjectId | string
 ) => {

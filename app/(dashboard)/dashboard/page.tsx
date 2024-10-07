@@ -39,14 +39,14 @@ export default async function DashboardHomePage() {
               className="flex items-center gap-2 px-4 py-2 rounded-md transition-all data-[state=active]:bg-white data-[state=active]:text-brand data-[state=active]:shadow"
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span className="hidden sm:inline">Order & Review</span>
+              <span className="hidden sm:inline">Order & Review Stats</span>
             </TabsTrigger>
             <TabsTrigger
               value="user"
               className="flex items-center gap-2 px-4 py-2 rounded-md transition-all data-[state=active]:bg-white data-[state=active]:text-brand data-[state=active]:shadow"
             >
               <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Users & Category</span>
+              <span className="hidden sm:inline">Users & Category Stats</span>
             </TabsTrigger>
           </TabsList>
           <TabsContent value="sales">

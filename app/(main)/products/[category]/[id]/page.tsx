@@ -1,5 +1,5 @@
 import AddToCart from '@/app/(main)/_components/product/AddToCart';
-import { ImageGallery } from '@/app/(main)/_components/product/ImageGallery';
+import ImageGallery from '@/app/(main)/_components/product/ImageGallery';
 import { Materials } from '@/app/(main)/_components/product/Materials';
 import { ProductDetailReviews } from '@/app/(main)/_components/product/ProductDetailReviews';
 import { ProductDetails } from '@/app/(main)/_components/product/ProductDetails';
@@ -60,7 +60,9 @@ export default async function ProductDetailPage({
           <Reviews productId={product?._id as string} />
         </Suspense>
 
-        <RelatedProducts />
+        <Suspense fallback={<Loader text="Loding related products..." />}>
+          <RelatedProducts id={product?._id as string} />
+        </Suspense>
       </main>
     </div>
   );
