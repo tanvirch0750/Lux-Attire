@@ -10,7 +10,7 @@ export default async function CategoryPage() {
   const data = await getAllCategories();
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader
         btnLabel="Create Category"
         btnLink="/dashboard/category/create"

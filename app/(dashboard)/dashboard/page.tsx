@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function DashboardHomePage() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-2 pb-12">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-2xl font-bold tracking-tight  mb-4">

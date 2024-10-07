@@ -34,7 +34,7 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       {/* Header Section */}
       <div className="mb-8">
         <div className="flex justify-between items-center gap-2 mb-4">

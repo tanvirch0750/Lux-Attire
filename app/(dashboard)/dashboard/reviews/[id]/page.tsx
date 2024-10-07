@@ -14,7 +14,7 @@ export default async function ReviesPage({
   const reviewsData = await getReviewsByProductAdmin(params?.id);
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader
         heading={`${reviewsData?.length} reviews found`}
         btnLabel="Products"

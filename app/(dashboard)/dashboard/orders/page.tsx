@@ -9,7 +9,7 @@ export default async function OrderPage() {
   const ordersData = await getAllOrders();
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <div className=" flex justify-between items-center pb-12">
         <h2 className=" text-primary text-2xl">All Orders</h2>
       </div>

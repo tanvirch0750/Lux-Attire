@@ -47,7 +47,7 @@ export default async function UpdateProductPage({
   };
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader
         btnLabel="Product List"
         btnLink="/dashboard/products"

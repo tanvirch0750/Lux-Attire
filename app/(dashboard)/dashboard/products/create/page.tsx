@@ -9,7 +9,7 @@ export default async function CreateProductPage() {
   const categories = await getAllCategories();
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader
         btnLabel="Product List"
         btnLink="/dashboard/products"

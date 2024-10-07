@@ -24,7 +24,7 @@ export default async function ReviesPage() {
   }));
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader heading="Products List for Reviews" />
 
       <div className=" pb-10">

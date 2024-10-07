@@ -9,7 +9,7 @@ export default async function ProfilePage() {
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email as string);
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <UpdateProfile
         userData={user}
         sessionImage={session?.user?.image as string}

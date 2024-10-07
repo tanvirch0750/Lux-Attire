@@ -10,7 +10,7 @@ export default async function ProductPage() {
   const usersData = await getAllUsers();
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader heading="Users List" />
 
       <div className=" pb-10">

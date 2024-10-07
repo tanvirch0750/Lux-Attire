@@ -23,7 +23,7 @@ export default async function ProductPage() {
   }));
 
   return (
-    <PageContainer scrollable>
+    <PageContainer>
       <PageHeader
         btnLabel="Create Product"
         btnLink="/dashboard/products/create"
