@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { RootState } from '@/lib/store';
 import { TProduct } from '@/db/models/product-model';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ImageGallery({
@@ -24,22 +24,22 @@ export default function ImageGallery({
     return a.primary ? -1 : 1;
   });
 
-  const handleImageLoad = (id: string) => {
+  const handleImageLoad = useCallback((id: string) => {
     setImagesLoaded((prev) => ({ ...prev, [id]: true }));
-  };
+  }, []);
 
   return (
-    <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0">
+    <div className="mt-6 sm:mt-8 lg:mt-0 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1">
       <h2 className="sr-only">Images</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 lg:grid-rows-3">
         {sortedImages.map((image, index) => (
           <div
             key={image.id}
             className={clsx(
               index === 0 || image.color === selectedColor
-                ? 'lg:col-span-2 lg:row-span-2'
-                : 'lg:col-span-1 lg:row-span-1',
+                ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2'
+                : 'sm:col-span-1',
               'relative aspect-square'
             )}
           >
@@ -50,14 +50,19 @@ export default function ImageGallery({
               src={image.imageSrc}
               alt={image.imageAlt}
               fill
-              sizes="(min-width: 1024px) 66vw, 100vw"
+              sizes={
+                index === 0 || image.color === selectedColor
+                  ? '(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw'
+                  : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+              }
               className={clsx(
                 'rounded-lg object-cover',
                 imagesLoaded[image.id] ? 'opacity-100' : 'opacity-0'
               )}
               onLoad={() => handleImageLoad(image.id)}
               priority={index === 0}
-              quality={95}
+              quality={index === 0 || image.color === selectedColor ? 90 : 90}
+              loading={index === 0 ? 'eager' : 'lazy'}
               placeholder="blur"
               blurDataURL={`data:image/svg+xml;base64,${toBase64(
                 shimmer(700, 475)
@@ -70,7 +75,6 @@ export default function ImageGallery({
   );
 }
 
-// Shimmer effect
 const shimmer = (w: number, h: number) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
