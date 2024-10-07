@@ -402,6 +402,23 @@ export default function Checkout({ user }: { user: IUser }) {
             }
             loadingLabel="Processing..."
           />
+
+          {formData?.paymentMethod === 'stripe' && (
+            <div
+              className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mt-4"
+              role="alert"
+            >
+              <strong className="font-bold">Demo Stripe Credentials:</strong>
+              <span className="block sm:inline ml-2">
+                Use{' '}
+                <span className="font-mono text-brand">
+                  4242 4242 4242 4242
+                </span>{' '}
+                as card number, any future date for expiry, and{' '}
+                <span className="font-mono text-brand">123</span> for CVC.
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

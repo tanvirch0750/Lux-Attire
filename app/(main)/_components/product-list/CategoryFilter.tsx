@@ -10,7 +10,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const CATEGORY_OPTIONS = [
   { id: 1, label: "Women's Collection", value: 'womens-collection' },
-  { id: 3, label: 'Active Wear', value: 'active-wear' },
+  { id: 3, label: 'Active Wear', value: 'activewear' },
   { id: 4, label: 'Kids Wear', value: 'kids-wear' },
   { id: 5, label: 'Traditional Clothing', value: 'traditional-clothing' },
   { id: 6, label: "Men's Collection", value: 'mens-collection' },

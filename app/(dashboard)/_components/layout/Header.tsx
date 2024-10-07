@@ -12,7 +12,7 @@ export default async function Header({ userEmail }: { userEmail: string }) {
   return (
     <header className="sticky inset-x-0 top-0 w-full border-b py-2">
       <nav className="flex items-center justify-between px-4 py-2 md:justify-between">
-        <div className={cn('block lg:!hidden')}>
+        <div className={cn('block md:!hidden')}>
           <MobileSidebar />
         </div>
         <Link href="/">

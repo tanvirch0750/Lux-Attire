@@ -5,7 +5,7 @@ import { FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 const MiniHeader = () => {
   return (
-    <div className=" bg-[#bc3100] text-white py-2 text-center text-sm flex justify-between items-center px-4 lg:px-8">
+    <div className="hidden lg:flex bg-[#bc3100] text-white py-2 text-center text-sm justify-between items-center px-4 lg:px-8">
       <p className="uppercase tracking-wide text-sm">
         Hurry! Limited stock available—shop now before it's gone.
       </p>

@@ -19,7 +19,7 @@ export default async function DashboardHomePage() {
         </div>
 
         <Tabs defaultValue="sales" className="w-full" orientation="vertical">
-          <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-1 bg-muted rounded-lg mb-6">
+          <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-1 bg-muted rounded-lg mb-12 lg:mb-6">
             <TabsTrigger
               value="sales"
               className="flex items-center gap-2 px-4 py-2 rounded-md transition-all data-[state=active]:bg-white data-[state=active]:text-brand data-[state=active]:shadow"
