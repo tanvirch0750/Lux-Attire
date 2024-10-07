@@ -26,8 +26,6 @@ export default async function ProductDetailPage({
   const product: TProduct = await getProductById(params?.id);
   const reviewDetails = await getReviewStatsByProduct(params?.id);
 
-  console.log('review details', reviewDetails);
-
   return (
     <div className="bg-white border-t">
       <main className="mx-auto mt-8 max-w-2xl px-4 pb-16 sm:px-6 sm:pb-24 lg:max-w-7xl lg:px-2">

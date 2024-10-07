@@ -1,8 +1,16 @@
 import Image from 'next/image';
 import LoginForm from './_components/LoginForm';
 import LoginImg from '@/assests/login-img.jpg';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth();
+
+  if (session?.user?.email) {
+    redirect('/');
+  }
+
   return (
     <div className="w-full h-screen">
       <div className="grid grid-cols-1 md:grid-cols-2 h-full items-center">

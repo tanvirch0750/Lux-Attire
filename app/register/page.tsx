@@ -2,8 +2,16 @@ import Image from 'next/image';
 
 import RegisterImg from '@/assests/register-img.jpg';
 import RegisterForm from './_components/RegisterForm';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
-export default function LoginPage() {
+export default async function RegisterPage() {
+  const session = await auth();
+
+  if (session?.user?.email) {
+    redirect('/');
+  }
+
   return (
     <div className="w-full h-screen">
       <div className="grid grid-cols-1 md:grid-cols-2 h-full items-center">

@@ -12,6 +12,7 @@ import {
   setSelectedColor,
   setSelectedSize,
 } from '@/lib/features/colorAndSizeSlice';
+import { useEffect } from 'react';
 
 export default function AddToCart({
   productId,
@@ -85,6 +86,11 @@ export default function AddToCart({
   const handleSizeChange = (size: string) => {
     dispatch(setSelectedSize(size));
   };
+
+  // Reset color and size when product changes
+  useEffect(() => {
+    dispatch(resetSelectedSizeAndColor());
+  }, [productId, dispatch]);
 
   return (
     <>
