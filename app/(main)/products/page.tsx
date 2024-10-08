@@ -41,6 +41,8 @@ interface SearchParams {
   color?: string;
   price?: string;
   category?: string;
+  page?: number | string;
+  limit?: number | string;
 }
 
 export interface IFilters {
@@ -49,6 +51,8 @@ export interface IFilters {
   categories?: string | string[] | undefined;
   colors: string[] | string | undefined;
   priceRanges: string | string[] | undefined;
+  page?: number | string | undefined;
+  limit?: number | string | undefined;
 }
 
 const ProductsPage = async ({
@@ -56,7 +60,7 @@ const ProductsPage = async ({
 }: {
   searchParams: SearchParams;
 }) => {
-  const { search, sort, color, price, category } = searchParams;
+  const { search, sort, color, price, category, page, limit } = searchParams;
 
   //Prepare filter conditions based on the extracted searchParams
   const filters: IFilters = {
@@ -65,7 +69,11 @@ const ProductsPage = async ({
     colors: color,
     priceRanges: price,
     categories: category,
+    page: page || 1,
+    limit: limit || 12,
   };
+
+  console.log('filters', filters);
 
   if (typeof filters.categories === 'string') {
     filters.categories = [filters.categories];
@@ -78,6 +86,9 @@ const ProductsPage = async ({
   if (typeof filters.priceRanges === 'string') {
     filters.priceRanges = [filters.priceRanges];
   }
+
+  // Create a unique key based on all filter values
+  const filterKey = JSON.stringify(filters);
 
   return (
     <>
@@ -122,7 +133,7 @@ const ProductsPage = async ({
                   fallback={
                     <Loader text="Loading Products" className="lg:col-span-4" />
                   }
-                  key={filters?.search || filters.sort}
+                  key={filterKey}
                 >
                   <ProductList filters={filters} />
                 </Suspense>

@@ -9,7 +9,7 @@ export default function Loader({ text, className }: LoaderProps) {
   return (
     <div
       className={clsx(
-        'flex flex-col flex-1 justify-center items-center min-h-[400px] h-full w-full space-y-4',
+        'flex flex-col flex-1 justify-center items-center min-h-[400px] w-full space-y-4',
         className
       )}
     >

@@ -3,13 +3,15 @@ import { Suspense } from 'react';
 import HeaderFilter from '../../_components/product-list/HeaderFilter';
 import SideFilter from '../../_components/product-list/SideFilter';
 import Loader from '@/components/Loader';
-import CategoryproductList from '../../_components/product-list/CategoryP;roductList';
+import CategoryproductList from '../../_components/product-list/CategoryProductList';
 
 interface SearchParams {
   search?: string;
   sort?: string | 'price-asc' | 'price-desc';
   color?: string;
   price?: string;
+  page?: string | number;
+  limit?: string | number;
 }
 
 export interface IFilters {
@@ -18,6 +20,8 @@ export interface IFilters {
   categories?: string | string[] | undefined;
   colors: string[] | string | undefined;
   priceRanges: string | string[] | undefined;
+  page?: string | number | undefined;
+  limit?: string | number | undefined;
 }
 
 export async function generateMetadata({
@@ -61,7 +65,7 @@ export default async function ProductCategoryPage({
   params: { category: string };
   searchParams: SearchParams;
 }) {
-  const { search, sort, color, price } = searchParams;
+  const { search, sort, color, price, page, limit } = searchParams;
   const category = params?.category;
 
   // Prepare filter conditions based on the extracted searchParams
@@ -70,6 +74,8 @@ export default async function ProductCategoryPage({
     sort: sort || 'price-asc',
     colors: color,
     priceRanges: price,
+    page: page || 1,
+    limit: 12,
   };
 
   if (typeof filters.categories === 'string') {

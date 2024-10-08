@@ -1,8 +1,9 @@
 import { TProduct } from '@/db/models/product-model';
 import ProductCard from './ProductCard';
 import { getProductsByCategoryValue } from '@/db/actions-and-queries/products/products-queries';
-import { IFilters } from '../../products/page';
+
 import NoProductsFound from './NoProductsFound';
+import { IFilters } from '../../products/[category]/page';
 
 export default async function CategoryproductList({
   filters,

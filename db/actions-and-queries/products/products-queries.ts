@@ -88,6 +88,105 @@ export const getAllAvailableProducts = async () => {
   }
 };
 
+// Get all available products with pagination, search, and filtering
+// In your products-queries.ts file
+
+export const getAllAvailableProductsWithQuery = async (query: any) => {
+  await dbConnect();
+
+  const {
+    search = '',
+    sort = 'price-desc',
+    colors = [],
+    priceRanges = [],
+    categories = [],
+    page = 1,
+    limit = 12, // Changed to 12 for better grid layout
+  } = query;
+
+  // Define the query conditions
+  const conditions: any = { isDeleted: false };
+
+  // Handle search
+  if (search) {
+    conditions.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  // Filter by colors
+  if (colors.length > 0) {
+    conditions['colors.name'] = {
+      $in: colors.map((color: string) => new RegExp(color, 'i')),
+    };
+  }
+
+  // Filter by price ranges
+  if (priceRanges.length > 0) {
+    const priceConditions: any[] = [];
+
+    priceRanges.forEach((range: string) => {
+      if (range === 'under-100') {
+        priceConditions.push({ price: { $lt: 100 } });
+      } else if (range === '100-200') {
+        priceConditions.push({ price: { $gte: 100, $lte: 200 } });
+      } else if (range === '201-300') {
+        priceConditions.push({ price: { $gte: 201, $lte: 300 } });
+      } else if (range === 'above-300') {
+        priceConditions.push({ price: { $gt: 300 } });
+      }
+    });
+
+    if (conditions.$or) {
+      conditions.$and = [{ $or: conditions.$or }, { $or: priceConditions }];
+      delete conditions.$or;
+    } else {
+      conditions.$or = priceConditions;
+    }
+  }
+
+  // Filter by categories
+  if (categories.length > 0) {
+    const categoryIds = await Category.find({
+      value: { $in: categories },
+    }).select('_id');
+    conditions.category = { $in: categoryIds.map((cat: any) => cat._id) };
+  }
+
+  // Sorting
+  let sortCondition: any = {};
+  if (sort === 'price-asc') {
+    sortCondition = { price: 1 };
+  } else if (sort === 'price-desc') {
+    sortCondition = { price: -1 };
+  }
+
+  // Pagination logic
+  const skip = (Number(page) - 1) * Number(limit);
+
+  try {
+    const products = await Product.find(conditions)
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(Number(limit))
+      .populate('category');
+
+    // Get the total count for pagination
+    const totalProducts = await Product.countDocuments(conditions);
+
+    return {
+      products: JSON.parse(JSON.stringify(products)),
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / Number(limit)),
+      currentPage: Number(page),
+    };
+  } catch (error) {
+    console.log(error);
+    throw new Error('Error fetching products: ' + (error as Error).message);
+  }
+};
+
 // Get a product by ID (only if not deleted)
 export const getProductById = async (productId: Types.ObjectId | string) => {
   await dbConnect();
