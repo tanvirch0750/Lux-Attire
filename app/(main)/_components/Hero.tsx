@@ -25,9 +25,9 @@ export const Hero = ({ data }: Props) => {
 
       {/* Text content with fade-in and scale effect */}
       <div className="bg-white bg-opacity-70 p-10 m-6 max-w-2xl z-10 fade-in-up">
-        <h2 className="text-3xl font-bold px-12 mb-2 text-primary fade-in-up">
+        <h1 className="text-3xl font-bold px-12 mb-2 text-primary fade-in-up">
           {data.title}
-        </h2>
+        </h1>
         <div
           className="mb-6 fade-in-up"
           dangerouslySetInnerHTML={{ __html: data.description }}

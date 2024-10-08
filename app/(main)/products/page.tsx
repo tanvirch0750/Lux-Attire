@@ -1,11 +1,36 @@
+import { Metadata } from 'next';
 import HeaderFilter from '../_components/product-list/HeaderFilter';
 import SideFilter from '../_components/product-list/SideFilter';
 import ProductList from '../_components/product-list/ProductList';
 import { Suspense } from 'react';
 import Loader from '@/components/Loader';
 
-export const metadata = {
-  title: 'All Products',
+export const metadata: Metadata = {
+  title: 'All Products | Luxe Attire',
+  description:
+    'Explore our wide range of luxurious and elegant clothing. Find the perfect piece to elevate your wardrobe at Luxe Attire.',
+  openGraph: {
+    title: 'All Products | Luxe Attire',
+    description:
+      'Explore our wide range of luxurious and elegant clothing. Find the perfect piece to elevate your wardrobe at Luxe Attire.',
+    type: 'website',
+    url: 'https://luxe-attire.vercel.app/products',
+    images: [
+      {
+        url: 'https://i.ibb.co.com/KN7fQCs/luxe-attire-og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Luxe Attire Product Collection',
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    'max-snippet': -1,
+    'max-image-preview': 'large',
+    'max-video-preview': -1,
+  },
 };
 
 // export const revalidate = 3600;
@@ -55,27 +80,58 @@ const ProductsPage = async ({
   }
 
   return (
-    <section
-      id="courses"
-      className="space-y-6 dark:bg-transparent p-[24px] border-t"
-    >
-      <HeaderFilter filters={filters} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: 'All Products - Luxe Attire',
+            description:
+              'Explore our wide range of luxurious and elegant clothing. Find the perfect piece to elevate your wardrobe at Luxe Attire.',
+            url: 'https://luxe-attire.vercel.app/products',
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'Luxe Attire',
+              url: 'https://luxe-attire.vercel.app',
+            },
+          }),
+        }}
+      />
 
-      <section className="pb-24 pt-0">
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-          <SideFilter />
-          {/* products grid */}
-          <Suspense
-            fallback={
-              <Loader text="Loding Products" className="lg:col-span-4" />
-            }
-            key={filters?.search || filters.sort}
-          >
-            <ProductList filters={filters} />
-          </Suspense>
-        </div>
-      </section>
-    </section>
+      <main>
+        <h1 className="sr-only">All Products - Luxe Attire</h1>
+
+        <section
+          aria-label="Product Filters and List"
+          className="space-y-6 dark:bg-transparent p-[24px] border-t"
+        >
+          <HeaderFilter filters={filters} />
+
+          <div className="pb-24 pt-0">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
+              <aside>
+                <h2 className="sr-only">Product Filters</h2>
+                <SideFilter />
+              </aside>
+
+              <div className="lg:col-span-4">
+                <h2 className="sr-only">Product List</h2>
+                <Suspense
+                  fallback={
+                    <Loader text="Loading Products" className="lg:col-span-4" />
+                  }
+                  key={filters?.search || filters.sort}
+                >
+                  <ProductList filters={filters} />
+                </Suspense>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
   );
 };
 

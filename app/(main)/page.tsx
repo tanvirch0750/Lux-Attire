@@ -35,6 +35,13 @@ export const metadata: Metadata = {
       'Discover a curated collection of sophisticated fashion at Luxe Attire. Luxurious garments crafted for those who appreciate style with grace. Elevate your wardrobe today.',
     images: ['https://i.ibb.co.com/KN7fQCs/luxe-attire-og.png'],
   },
+  robots: {
+    index: true,
+    follow: true,
+    'max-snippet': -1,
+    'max-image-preview': 'large',
+    'max-video-preview': -1,
+  },
 };
 
 export default function HomePage() {
@@ -42,7 +49,7 @@ export default function HomePage() {
     background_image: Img,
     title: 'Unveil Timeless Elegance',
     description:
-      'Discover a curated collection of sophisticated fashion that transcends trends. At Luxe Attire, we bring you luxurious garments crafted for those who appreciate style with grace. Elevate your wardrobe with pieces designed to make a statement in every moment.',
+      'Discover a curated collection of sophisticated fashion that transcends trends. At Luxe Attire, we bring you luxurious garments crafted for those who appreciate style with grace.',
     link_title: 'Shop At Luxe Attire',
     link_url: '/products',
   };

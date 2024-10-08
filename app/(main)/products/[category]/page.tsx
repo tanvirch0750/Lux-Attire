@@ -1,12 +1,9 @@
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import HeaderFilter from '../../_components/product-list/HeaderFilter';
 import SideFilter from '../../_components/product-list/SideFilter';
 import Loader from '@/components/Loader';
 import CategoryproductList from '../../_components/product-list/CategoryP;roductList';
-
-export const metadata = {
-  title: 'Products by Category',
-};
 
 interface SearchParams {
   search?: string;
@@ -21,6 +18,40 @@ export interface IFilters {
   categories?: string | string[] | undefined;
   colors: string[] | string | undefined;
   priceRanges: string | string[] | undefined;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { category: string };
+}): Promise<Metadata> {
+  const category =
+    params.category.charAt(0).toUpperCase() + params.category.slice(1);
+
+  return {
+    title: `${category} Products | Luxe Attire`,
+    description: `Explore our collection of ${category.toLowerCase()} products. Find the perfect ${category.toLowerCase()} items to elevate your style at Luxe Attire.`,
+    openGraph: {
+      title: `${category} Products | Luxe Attire`,
+      description: `Explore our collection of ${category.toLowerCase()} products. Find the perfect ${category.toLowerCase()} items to elevate your style at Luxe Attire.`,
+      type: 'website',
+      url: `https://luxe-attire.vercel.app/products/${params.category}`,
+      images: [
+        {
+          url: `https://i.ibb.co.com/KN7fQCs/luxe-attire-og.png`,
+          width: 1200,
+          height: 630,
+          alt: `${category} Products at Luxe Attire`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${category} Products | Luxe Attire`,
+      description: `Explore our collection of ${category.toLowerCase()} products. Find the perfect ${category.toLowerCase()} items to elevate your style at Luxe Attire.`,
+      images: [`https://i.ibb.co.com/KN7fQCs/luxe-attire-og.png`],
+    },
+  };
 }
 
 export default async function ProductCategoryPage({
@@ -53,31 +84,62 @@ export default async function ProductCategoryPage({
     filters.priceRanges = [filters.priceRanges];
   }
 
+  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+
   return (
-    <section
-      id="products"
-      className="space-y-6 dark:bg-transparent p-[24px] border-t"
-    >
-      {/* Filters header */}
-      <HeaderFilter filters={filters} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: `${categoryName} Products - Luxe Attire`,
+            description: `Explore our collection of ${category.toLowerCase()} products. Find the perfect ${category.toLowerCase()} items to elevate your style at Luxe Attire.`,
+            url: `https://luxe-attire.vercel.app/products/${category}`,
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'Luxe Attire',
+              url: 'https://www.luxeattire.com',
+            },
+          }),
+        }}
+      />
 
-      <section className="pb-24 pt-0">
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-          {/* Side filters */}
-          <SideFilter isCategory={false} />
+      <main>
+        <h1 className="sr-only">{categoryName} Products - Luxe Attire</h1>
 
-          {/* Products grid */}
-          <Suspense
-            fallback={
-              <Loader text="Loading Products" className="lg:col-span-4" />
-            }
-            key={filters?.search || filters.sort}
-          >
-            {/* Fetch and display products by category */}
-            <CategoryproductList filters={filters} categoryValue={category} />
-          </Suspense>
-        </div>
-      </section>
-    </section>
+        <section
+          aria-label={`${categoryName} Products and Filters`}
+          className="space-y-6 dark:bg-transparent p-[24px] border-t"
+        >
+          <HeaderFilter filters={filters} />
+
+          <div className="pb-24 pt-0">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
+              <aside>
+                <h2 className="sr-only">Product Filters</h2>
+                <SideFilter isCategory={false} />
+              </aside>
+
+              <div className="lg:col-span-4">
+                <h2 className="sr-only">Product List</h2>
+                <Suspense
+                  fallback={
+                    <Loader text="Loading Products" className="lg:col-span-4" />
+                  }
+                  key={filters?.search || filters.sort}
+                >
+                  <CategoryproductList
+                    filters={filters}
+                    categoryValue={category}
+                  />
+                </Suspense>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
