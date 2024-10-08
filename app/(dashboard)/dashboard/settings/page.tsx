@@ -13,6 +13,7 @@ import { CreditCardIcon, HandshakeIcon, PencilIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getShippingSettings } from '@/db/actions-and-queries/settings/settings-query';
 import { IShippingMethod } from '@/db/models/settings-model';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,9 +47,11 @@ export default async function SettingsPage() {
             ))}
           </CardContent>
           <CardFooter>
-            <Button className="w-full bg-brand hover:bg-brand/90">
-              <PencilIcon className="mr-2 h-4 w-4 " /> Update Shipping Price
-            </Button>
+            <Link href="/dashboard/settings/edit-shipping">
+              <Button className="w-full bg-brand hover:bg-brand/90">
+                <PencilIcon className="mr-2 h-4 w-4 " /> Update Shipping Price
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
       </div>

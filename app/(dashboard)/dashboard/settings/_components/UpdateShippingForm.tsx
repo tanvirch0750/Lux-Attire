@@ -17,6 +17,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Trash2 } from 'lucide-react';
 import { createOrUpdateShippingAction } from '@/app/actions/settings/settings';
+import { toast } from 'react-toastify';
 
 // Define the Zod schema for validation
 const shippingMethodSchema = z.object({
@@ -64,9 +65,13 @@ export default function UpdateShippingForm({
     setIsSubmitting(true);
     try {
       await createOrUpdateShippingAction(data.shippingPrice);
-      alert('success');
+      toast.success('Shipping price updated successfully', {
+        position: 'top-center',
+      });
     } catch (error) {
-      alert('no success');
+      toast.error('Category updation Failed, Something went wrong', {
+        position: 'top-center',
+      });
     } finally {
       setIsSubmitting(false);
     }
