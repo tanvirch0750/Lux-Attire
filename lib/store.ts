@@ -5,12 +5,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import sidebarSlice from './features/sidebarSlice';
 import colorSlice from './features/colorAndSizeSlice';
+import wishListReducer from './features/wishListSlice';
 
 // Create a persist config
 const persistConfig = {
   key: 'root', // key for the persisted state in storage
   storage, // the storage engine to use (e.g., localStorage)
-  whitelist: ['cart'], // the reducers you want to persist
+  whitelist: ['cart', 'wishlist'], // the reducers you want to persist
 };
 
 const rootReducer = combineReducers({
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   filters: filterReducer,
   sidebar: sidebarSlice,
   selectedColorAndSize: colorSlice,
+  wishlist: wishListReducer,
 });
 
 const makeConfiguredStore = () =>

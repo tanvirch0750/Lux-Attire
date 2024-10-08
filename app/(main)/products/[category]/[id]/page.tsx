@@ -105,6 +105,7 @@ export default async function ProductDetailPage({
                   images={product?.images}
                   price={product?.price}
                   name={product?.name}
+                  category={product?.category?.value}
                 />
               </form>
 

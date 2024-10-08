@@ -24,6 +24,7 @@ import { usePathname } from 'next/navigation';
 import { MobileNav } from './MobileNav';
 import Cart from '../app/(main)/_components/cart/Cart';
 import { Session } from 'next-auth';
+import Wishlist from '@/app/(main)/_components/wishlist/WishList';
 
 // @ts-ignore
 export function MainNav({ items, children, userImage }) {
@@ -96,6 +97,7 @@ export function MainNav({ items, children, userImage }) {
             </>
           )}
           <Cart />
+          <Wishlist />
         </div>
 
         {loginSession && (

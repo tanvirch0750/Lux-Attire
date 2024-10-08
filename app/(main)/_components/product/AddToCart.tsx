@@ -13,6 +13,8 @@ import {
   setSelectedSize,
 } from '@/lib/features/colorAndSizeSlice';
 import { useEffect } from 'react';
+import AddToWishListButton from '../wishlist/AddToWishListButton';
+import { IWishlistItem } from '@/lib/features/wishListSlice';
 
 export default function AddToCart({
   productId,
@@ -21,6 +23,7 @@ export default function AddToCart({
   images,
   price,
   name,
+  category,
 }: {
   productId: string;
   colors: TProduct['colors'];
@@ -28,6 +31,7 @@ export default function AddToCart({
   images: TProduct['images'];
   price: number;
   name: string;
+  category: string;
 }) {
   const dispatch = useDispatch();
 
@@ -87,6 +91,14 @@ export default function AddToCart({
     dispatch(setSelectedSize(size));
   };
 
+  const wishListData: IWishlistItem = {
+    productId: productId,
+    name: name,
+    price: price,
+    image: selectedImage?.imageSrc as string,
+    category: category,
+  };
+
   // Reset color and size when product changes
   useEffect(() => {
     dispatch(resetSelectedSizeAndColor());
@@ -94,11 +106,15 @@ export default function AddToCart({
 
   return (
     <>
-      <ColorPicker
-        colors={colors}
-        selectedColor={selectedColor}
-        setSelectedColor={handleColorChange} // Use Redux handler
-      />
+      <div className=" flex items-center justify-between">
+        <ColorPicker
+          colors={colors}
+          selectedColor={selectedColor}
+          setSelectedColor={handleColorChange} // Use Redux handler
+        />
+
+        <AddToWishListButton product={wishListData} isHidden={false} />
+      </div>
       <SizePicker
         sizes={sizes}
         selectedSize={selectedSize}
