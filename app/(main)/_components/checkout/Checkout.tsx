@@ -20,8 +20,15 @@ import { useRouter } from 'next/navigation';
 import { createCheckoutSession } from '@/app/actions/stripe/stripe';
 import LoadingButton from '@/components/LodingButton';
 import { sendEmails } from '@/lib/email';
+import { IShippingMethod } from '@/db/models/settings-model';
 
-export default function Checkout({ user }: { user: IUser }) {
+export default function Checkout({
+  user,
+  shippingData,
+}: {
+  user: IUser;
+  shippingData: IShippingMethod[];
+}) {
   const cartItems = useSelector((state: RootState) => state.cart);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -88,29 +95,65 @@ export default function Checkout({ user }: { user: IUser }) {
     return isValid;
   };
 
-  const shippingPrice = 8;
+  const shippingObject = shippingData?.reduce<Record<string, number>>(
+    (acc, { shippingMethod, price }) => {
+      acc[shippingMethod] = price;
+      return acc;
+    },
+    {}
+  );
 
-  const createOrderData = (paymentMethod: string, isPaid: boolean = false) => ({
-    user: user?._id,
-    paymentMethod,
-    orderItems: cartItems?.items?.map((item) => ({
-      productId: item?.productId,
-      color: item?.color?.name,
-      image: item?.image?.imageSrc,
-      name: item?.name,
-      price: item?.price,
-      quantity: item?.quantity,
-      size: item?.size?.name,
-      totalPrice: item?.quantity * item?.price,
-    })),
-    shippingAddress: formData?.address,
-    email: formData?.email,
-    phone: formData?.phone,
-    itemsPrice: cartItems?.totalPrice,
-    shippingPrice: shippingPrice,
-    totalPrice: cartItems?.totalPrice + shippingPrice,
-    isPaid,
-  });
+  // const createOrderData = (paymentMethod: string, isPaid: boolean = false) => ({
+  //   user: user?._id,
+  //   paymentMethod,
+  //   orderItems: cartItems?.items?.map((item) => ({
+  //     productId: item?.productId,
+  //     color: item?.color?.name,
+  //     image: item?.image?.imageSrc,
+  //     name: item?.name,
+  //     price: item?.price,
+  //     quantity: item?.quantity,
+  //     size: item?.size?.name,
+  //     totalPrice: item?.quantity * item?.price,
+  //   })),
+  //   shippingAddress: formData?.address,
+  //   email: formData?.email,
+  //   phone: formData?.phone,
+  //   itemsPrice: cartItems?.totalPrice,
+  //   shippingPrice: shippingPrice,
+  //   totalPrice: cartItems?.totalPrice + shippingPrice,
+  //   isPaid,
+  // });
+  const createOrderData = (paymentMethod: string, isPaid: boolean = false) => {
+    const shippingPrice =
+      paymentMethod === 'stripe'
+        ? shippingObject.stripe
+        : paymentMethod === 'cashOnDelivery'
+        ? shippingObject['cash-on-delivery']
+        : 8;
+
+    return {
+      user: user?._id,
+      paymentMethod,
+      orderItems: cartItems?.items?.map((item) => ({
+        productId: item?.productId,
+        color: item?.color?.name,
+        image: item?.image?.imageSrc,
+        name: item?.name,
+        price: item?.price,
+        quantity: item?.quantity,
+        size: item?.size?.name,
+        totalPrice: item?.quantity * item?.price,
+      })),
+      shippingAddress: formData?.address,
+      email: formData?.email,
+      phone: formData?.phone,
+      itemsPrice: cartItems?.totalPrice,
+      shippingPrice, // Dynamically set the shipping price based on payment method
+      totalPrice: cartItems?.totalPrice + shippingPrice, // Calculate the total price
+      isPaid,
+    };
+  };
 
   const handlePayment = async (orderData: IOrder, paymentMethod: string) => {
     try {
@@ -376,18 +419,31 @@ export default function Checkout({ user }: { user: IUser }) {
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Subtotal</p>
               <p className="font-semibold text-gray-900">
-                ${cartItems?.totalPrice}
+                $ {cartItems?.totalPrice.toFixed(2)}
               </p>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Shipping</p>
-              <p className="font-semibold text-gray-900">$8.00</p>
+              <p className="font-semibold text-gray-900">
+                ${' '}
+                {formData.paymentMethod === 'cash'
+                  ? ` ${shippingObject['cash-on-delivery'].toFixed(2) || 8.0}`
+                  : `${shippingObject['stripe'].toFixed(2) || 8.0}`}
+              </p>
             </div>
           </div>
           <div className="mt-6 flex items-center justify-between">
             <p className="text-sm font-medium text-gray-900">Total</p>
             <p className="text-2xl font-semibold text-gray-900">
-              ${cartItems?.totalPrice + shippingPrice}
+              $
+              {formData.paymentMethod === 'cash'
+                ? ` ${(
+                    cartItems?.totalPrice +
+                      shippingObject['cash-on-delivery'] || 8
+                  ).toFixed(2)}`
+                : `${(
+                    cartItems?.totalPrice + shippingObject['stripe'] || 8
+                  ).toFixed(2)}`}
             </p>
           </div>
 

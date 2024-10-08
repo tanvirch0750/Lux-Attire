@@ -14,6 +14,7 @@ import { IUser } from '@/db/models/user-model';
 import { signOut, useSession } from 'next-auth/react';
 
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 export function UserNav({ user }: { user: IUser }) {
   const { data: session } = useSession();
 
@@ -58,7 +59,14 @@ export function UserNav({ user }: { user: IUser }) {
             </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              signOut();
+              redirect('/login');
+            }}
+          >
+            Log out
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );

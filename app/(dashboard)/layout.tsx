@@ -19,7 +19,9 @@ export default async function DashboardLayout({
   const session = await auth();
   const userRole = await getUserRoleByEmail(session?.user?.email as string);
 
-  console.log('user role dashbard', userRole);
+  if (!session?.user) {
+    redirect('/login');
+  }
 
   if (userRole !== 'admin') {
     redirect('/unauthorized');
