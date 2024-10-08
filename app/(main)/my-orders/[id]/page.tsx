@@ -17,7 +17,7 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
   const user = await getUserByEmail(session?.user?.email as string);
 
   if (user?.role !== 'user') {
-    redirect('/login');
+    redirect('/unauthorized');
   }
 
   const order: IOrder = await getOrderById(params?.id, user?._id);

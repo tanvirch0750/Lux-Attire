@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     description:
       'Discover the story behind Luxe Attire, our mission to provide timeless fashion, and why customers choose us for elegant, affordable clothing.',
     type: 'website',
-    url: 'https://luxeattire.com/about',
+    url: 'https://luxe-attire.vercel.app/about-us',
     images: [
       {
-        url: 'https://luxeattire.com/og-image.jpg',
+        url: 'https://i.ibb.co.com/KN7fQCs/luxe-attire-og.png',
         width: 1200,
         height: 630,
         alt: 'Luxe Attire - Elegant and Affordable Fashion',
@@ -160,8 +160,8 @@ export default function AboutUsPage() {
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: 'Luxe Attire',
-            url: 'https://luxeattire.com',
-            logo: 'https://luxeattire.com/logo.png',
+            url: 'https://luxe-attire.vercel.app',
+            logo: 'https://i.ibb.co.com/3NKsYxH/luxe-attire-logo.png',
             description:
               'Luxe Attire offers timeless, sophisticated fashion that elevates your wardrobe while ensuring affordability.',
             sameAs: [

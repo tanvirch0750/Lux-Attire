@@ -15,7 +15,7 @@ export default async function MyOrdersPage() {
   const user = await getUserByEmail(session?.user?.email as string);
 
   if (user?.role !== 'user') {
-    redirect('/login');
+    redirect('/unauthorized');
   }
 
   const orders: IOrder[] = await getUserOrders(user?._id);

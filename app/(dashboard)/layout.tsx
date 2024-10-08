@@ -22,7 +22,7 @@ export default async function DashboardLayout({
   console.log('user role dashbard', userRole);
 
   if (userRole !== 'admin') {
-    redirect('/login');
+    redirect('/unauthorized');
   }
 
   return (

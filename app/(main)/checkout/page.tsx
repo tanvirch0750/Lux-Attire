@@ -8,7 +8,7 @@ export default async function CheckoutPage() {
   const user = await getUserByEmail(session?.user?.email as string);
 
   if (user?.role !== 'user') {
-    redirect('/login');
+    redirect('/unauthorized');
   }
 
   return (
