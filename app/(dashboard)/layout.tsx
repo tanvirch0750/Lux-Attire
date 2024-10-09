@@ -7,8 +7,8 @@ import { getUserRoleByEmail } from '@/db/actions-and-queries/user/user-query';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn Dashboard Starter',
-  description: 'Basic dashboard with Next.js and Shadcn',
+  title: 'Luxe Attire | Dashboard',
+  description: 'Luxe attire, dashboard',
 };
 
 export default async function DashboardLayout({

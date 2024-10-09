@@ -1,5 +1,12 @@
 import { Schema, model, models, Document, Types } from 'mongoose';
 
+export interface IOffer {
+  offerType: 'discount' | 'freeShipping';
+  value: number;
+  validUntil: Date | string;
+  isActive?: boolean;
+}
+
 // Product interface
 export interface IProduct {
   category: Types.ObjectId;
@@ -25,6 +32,7 @@ export interface IProduct {
   description: string;
   details: string[];
   isDeleted: boolean;
+  offers: IOffer;
 }
 
 export interface ICategory {
@@ -88,8 +96,26 @@ export type TProduct = {
   description: string;
   details: string[];
   isDeleted: boolean;
+  offers?: IOffer;
   _id?: string;
 };
+
+// Define the Mongoose schema for Settings
+const offerSchema = new Schema<IOffer>(
+  {
+    offerType: {
+      type: String,
+      enum: ['discount', 'freeShipping'],
+      required: true,
+    },
+    value: { type: Number, required: true }, // Could be discount percentage or fixed value
+    validUntil: { type: String, required: true }, // Offer expiration date
+    isActive: { type: Boolean, default: true }, // Whether the offer is currently active
+  },
+  {
+    _id: true,
+  }
+);
 
 // Mongoose document type for Product, which includes IProduct fields
 export interface ProductDocument extends IProduct, Document {}
@@ -145,6 +171,7 @@ const productSchema = new Schema<ProductDocument>(
       type: Boolean,
       default: false, // By default, a product is not deleted
     },
+    offers: [offerSchema],
   },
   {
     timestamps: true,

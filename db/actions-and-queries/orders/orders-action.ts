@@ -200,6 +200,7 @@ export const deliverOrder = async (orderId: Types.ObjectId | string) => {
 
     // Set order status to delivered and mark it as delivered
     order.orderStatus = 'delivered';
+    order.isPaid = true;
     order.deliveredAt = new Date().toISOString();
     await order.save();
 

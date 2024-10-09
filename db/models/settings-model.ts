@@ -19,7 +19,7 @@ const shippingMethodSchema = new Schema<IShippingMethod>(
     shippingMethod: {
       type: String,
       required: true,
-      unique: true, // Ensure unique shipping methods
+      unique: true,
     },
     price: {
       type: Number,
@@ -31,7 +31,7 @@ const shippingMethodSchema = new Schema<IShippingMethod>(
     },
   },
   {
-    _id: true, // Automatically create an _id for each shipping method
+    _id: true,
   }
 );
 

@@ -1,6 +1,6 @@
 'use server';
 
-import { Product, IProduct } from '@/db/models/product-model';
+import { Product, IProduct, IOffer } from '@/db/models/product-model';
 import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 import { dbConnect } from '@/db/service/mongo';
@@ -110,3 +110,54 @@ export const undoDeleteProduct = async (productId: Types.ObjectId | string) => {
     throw new Error('Error undoing product deletion');
   }
 };
+
+export async function updateProductOffers(productId: string, offers: IOffer[]) {
+  try {
+    // Validate productId
+    if (!Types.ObjectId.isValid(productId)) {
+      throw new Error('Invalid product ID');
+    }
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    // Validate offers
+    if (!Array.isArray(offers)) {
+      throw new Error('Offers must be an array');
+    }
+
+    // Validate each offer
+    offers.forEach((offer, index) => {
+      if (!['discount', 'freeShipping'].includes(offer.offerType)) {
+        throw new Error(`Invalid offerType for offer at index ${index}`);
+      }
+      if (typeof offer.value !== 'number') {
+        throw new Error(`Invalid value for offer at index ${index}`);
+      }
+      if (
+        typeof offer.validUntil !== 'string' ||
+        isNaN(Date.parse(offer.validUntil))
+      ) {
+        throw new Error(`Invalid validUntil date for offer at index ${index}`);
+      }
+      if (typeof offer.isActive !== 'boolean') {
+        throw new Error(`Invalid isActive status for offer at index ${index}`);
+      }
+    });
+
+    // Replace existing offers with new offers
+    product.offers = offers;
+
+    // Save the updated product
+    await product.save();
+
+    return product;
+  } catch (error) {
+    console.error('Error updating product offers:', error);
+    throw error;
+  }
+}
