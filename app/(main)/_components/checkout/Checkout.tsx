@@ -103,13 +103,25 @@ export default function Checkout({
     {}
   );
 
+  const allItemsHaveFreeShipping = cartItems.items.every((item) => {
+    const currentDate = new Date();
+    const activeOffers =
+      item.offers?.filter(
+        (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+      ) || [];
+    return activeOffers.some((offer) => offer.offerType === 'freeShipping');
+  });
+
+  console.log('is all item have free shipping', allItemsHaveFreeShipping);
+
   const createOrderData = (paymentMethod: string, isPaid: boolean = false) => {
-    const shippingPrice =
-      paymentMethod === 'stripe'
-        ? shippingObject.stripe
-        : paymentMethod === 'cashOnDelivery'
-        ? shippingObject['cash-on-delivery']
-        : 8;
+    const shippingPrice = allItemsHaveFreeShipping
+      ? 0
+      : paymentMethod === 'stripe'
+      ? shippingObject.stripe
+      : paymentMethod === 'cashOnDelivery'
+      ? shippingObject['cash-on-delivery']
+      : 8;
 
     return {
       user: user?._id,
@@ -401,28 +413,43 @@ export default function Checkout({
                 $ {cartItems?.totalPrice.toFixed(2)}
               </p>
             </div>
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-gray-900">Shipping</p>
-              <p className="font-semibold text-gray-900">
-                ${' '}
-                {formData.paymentMethod === 'cash'
-                  ? ` ${shippingObject['cash-on-delivery'].toFixed(2) || 8.0}`
-                  : `${shippingObject['stripe'].toFixed(2) || 8.0}`}
-              </p>
-            </div>
+            {formData?.paymentMethod && (
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-900">Shipping</p>
+                <p className="font-semibold text-gray-900">
+                  ${' '}
+                  {(() => {
+                    // Determine the shipping cost based on the allItemsHaveFreeShipping function and payment method
+                    const shippingCost = allItemsHaveFreeShipping
+                      ? 0
+                      : formData.paymentMethod === 'cash'
+                      ? shippingObject['cash-on-delivery'] || 8.0
+                      : shippingObject['stripe'] || 8.0;
+
+                    return shippingCost.toFixed(2);
+                  })()}
+                </p>
+              </div>
+            )}
           </div>
           <div className="mt-6 flex items-center justify-between">
             <p className="text-sm font-medium text-gray-900">Total</p>
+
             <p className="text-2xl font-semibold text-gray-900">
               $
-              {formData.paymentMethod === 'cash'
-                ? ` ${(
-                    cartItems?.totalPrice +
-                      shippingObject['cash-on-delivery'] || 8
-                  ).toFixed(2)}`
-                : `${(
-                    cartItems?.totalPrice + shippingObject['stripe'] || 8
-                  ).toFixed(2)}`}
+              {(() => {
+                // Determine the shipping cost based on the allItemsHaveFreeShipping function and payment method
+                const shippingCost = allItemsHaveFreeShipping
+                  ? 0
+                  : formData.paymentMethod === 'cash'
+                  ? shippingObject['cash-on-delivery'] || 8
+                  : shippingObject['stripe'] || 8;
+
+                // Calculate the total price
+                const totalPrice = (cartItems?.totalPrice || 0) + shippingCost;
+
+                return totalPrice.toFixed(2);
+              })()}
             </p>
           </div>
 

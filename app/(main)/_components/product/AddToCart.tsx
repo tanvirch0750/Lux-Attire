@@ -5,7 +5,6 @@ import { RootState } from '@/lib/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { ColorPicker } from './ColorPicker';
 import { SizePicker } from './SizePicker';
-
 import { IOffer, IProduct, TProduct } from '@/db/models/product-model';
 import {
   resetSelectedSizeAndColor,
@@ -18,12 +17,17 @@ import { IWishlistItem } from '@/lib/features/wishListSlice';
 import { Badge } from '@/components/ui/badge';
 import { Truck } from 'lucide-react';
 
+// Utility function to calculate discounted price based on offers
+const calculateDiscountedPrice = (originalPrice: number, discount: number) => {
+  return originalPrice - (originalPrice * discount) / 100;
+};
+
 export default function AddToCart({
   productId,
   colors,
   sizes,
   images,
-  price,
+  price, // Original price
   name,
   category,
   offers,
@@ -77,12 +81,18 @@ export default function AddToCart({
     (offer) => offer.offerType === 'freeShipping'
   );
 
+  // Calculate discounted price (if a discount offer exists)
+  const discountOffer = activeOffers.find(
+    (offer) => offer.offerType === 'discount'
+  );
+
   const handleAddToCart = () => {
     if (!isButtonDisabled) {
       const cartProduct: ICartItem = {
         productId: productId,
         name,
-        price,
+        price, // Set the discounted price (if applicable)
+        oldPrice: price, // Always set the original price
         // @ts-ignore,
         size: selectedSize,
         color: selectedColor,
@@ -92,7 +102,7 @@ export default function AddToCart({
         offers: offers,
       };
 
-      dispatch(addItem(cartProduct));
+      dispatch(addItem(cartProduct)); // Dispatch updated cart product
       dispatch(resetSelectedSizeAndColor());
     }
   };
@@ -109,7 +119,7 @@ export default function AddToCart({
   const wishListData: IWishlistItem = {
     productId: productId,
     name: name,
-    price: price,
+    price: price, // Wishlist should store the original price
     image: selectedImage?.imageSrc as string,
     category: category,
   };
@@ -121,7 +131,7 @@ export default function AddToCart({
 
   return (
     <>
-      <div className=" flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <ColorPicker
           colors={colors}
           selectedColor={selectedColor}
@@ -136,7 +146,7 @@ export default function AddToCart({
         setSelectedSize={handleSizeChange} // Use Redux handler
       />
       {shippingOffer && (
-        <Badge variant="secondary" className="mt-4  text-[16px]  text-brand">
+        <Badge variant="secondary" className="mt-4 text-[16px] text-brand">
           <Truck className="mr-1 h-4 w-4" />
           Free Shipping
         </Badge>
