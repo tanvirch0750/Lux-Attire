@@ -9,6 +9,10 @@ export default async function CheckoutPage() {
   const user = await getUserByEmail(session?.user?.email as string);
   const shippingData = await getShippingSettings();
 
+  if (!session?.user) {
+    redirect('/login');
+  }
+
   if (user?.role !== 'user') {
     redirect('/unauthorized');
   }
