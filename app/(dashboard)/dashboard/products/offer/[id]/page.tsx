@@ -1,17 +1,22 @@
 import PageContainer from '@/app/(dashboard)/_components/layout/PageContainer';
-import PageHeader from '@/app/(dashboard)/_components/PageHeader';
 import ProductOffersForm from '../../_components/ProductOfferForm';
+import { getProductByIdAdmin } from '@/db/actions-and-queries/products/products-queries';
 
-export default function OfferPage({ params }: { params: { id: string } }) {
+export default async function OfferPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const product = await getProductByIdAdmin(params?.id);
+
   return (
     <PageContainer>
-      <PageHeader
-        btnLabel="Product List"
-        btnLink="/dashboard/products"
-        heading="Update Offer"
-      />
       <div>
-        <ProductOffersForm productId={params?.id} />
+        <ProductOffersForm
+          productId={params?.id}
+          defaultOffers={product?.offers}
+          name={product?.name}
+        />
       </div>
     </PageContainer>
   );

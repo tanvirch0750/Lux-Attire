@@ -27,6 +27,7 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { addOfferToProductAction } from '@/app/actions/product/product';
 import { IOffer } from '@/db/models/product-model';
+import Link from 'next/link';
 
 const offerSchema = z.object({
   offerType: z.enum(['discount', 'freeShipping']),
@@ -47,11 +48,13 @@ type FormValues = z.infer<typeof productOffersSchema>;
 interface ProductOffersFormProps {
   productId: string;
   defaultOffers?: IOffer[];
+  name: string;
 }
 
 export default function ProductOffersForm({
   productId,
   defaultOffers = [],
+  name,
 }: ProductOffersFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -106,7 +109,14 @@ export default function ProductOffersForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle>Product Offers</CardTitle>
+          <CardTitle className=" flex items-center justify-between gap-1">
+            <span>Product Offers for - {name}</span>{' '}
+            <Link href="/dashboard/products">
+              <Button className=" bg-brand hover: bg-brand/90">
+                Products List
+              </Button>
+            </Link>
+          </CardTitle>
           <CardDescription>Manage offers for this product.</CardDescription>
         </CardHeader>
         <CardContent>

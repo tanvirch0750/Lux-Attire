@@ -108,14 +108,14 @@ export function DataTableRowActions<TData>({
           isLoading={loading}
         />
       )}
-      {/* <Link href={`/dashboard/products/offer/${products?._id}`}>
+      <Link href={`/dashboard/products/offer/${products?._id}`}>
         <Button
           className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
           size="sm"
         >
           <BadgePercentIcon size={18} />
         </Button>
-      </Link> */}
+      </Link>
     </div>
   );
 }

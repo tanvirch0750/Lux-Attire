@@ -130,7 +130,6 @@ export async function updateProductOffers(productId: string, offers: IOffer[]) {
       throw new Error('Offers must be an array');
     }
 
-    // Validate each offer
     offers.forEach((offer, index) => {
       if (!['discount', 'freeShipping'].includes(offer.offerType)) {
         throw new Error(`Invalid offerType for offer at index ${index}`);
@@ -149,13 +148,31 @@ export async function updateProductOffers(productId: string, offers: IOffer[]) {
       }
     });
 
-    // Replace existing offers with new offers
-    product.offers = offers;
+    // Update existing offers or add new ones
+    offers.forEach((newOffer) => {
+      const existingOfferIndex = product.offers.findIndex(
+        (existingOffer: IOffer) =>
+          existingOffer.offerType === newOffer.offerType
+      );
+
+      if (existingOfferIndex >= 0) {
+        // Update existing offer
+        product.offers[existingOfferIndex] = newOffer;
+      } else {
+        // Add new offer
+        product.offers.push(newOffer);
+      }
+    });
 
     // Save the updated product
     await product.save();
 
-    return product;
+    revalidatePath('/dashboard/products', 'page');
+    revalidatePath('/dashboard/products/[id]', 'page');
+    revalidatePath('/products', 'page');
+    revalidatePath('/products/[id]', 'page');
+
+    return JSON.parse(JSON.stringify(product));
   } catch (error) {
     console.error('Error updating product offers:', error);
     throw error;
