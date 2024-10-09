@@ -103,27 +103,6 @@ export default function Checkout({
     {}
   );
 
-  // const createOrderData = (paymentMethod: string, isPaid: boolean = false) => ({
-  //   user: user?._id,
-  //   paymentMethod,
-  //   orderItems: cartItems?.items?.map((item) => ({
-  //     productId: item?.productId,
-  //     color: item?.color?.name,
-  //     image: item?.image?.imageSrc,
-  //     name: item?.name,
-  //     price: item?.price,
-  //     quantity: item?.quantity,
-  //     size: item?.size?.name,
-  //     totalPrice: item?.quantity * item?.price,
-  //   })),
-  //   shippingAddress: formData?.address,
-  //   email: formData?.email,
-  //   phone: formData?.phone,
-  //   itemsPrice: cartItems?.totalPrice,
-  //   shippingPrice: shippingPrice,
-  //   totalPrice: cartItems?.totalPrice + shippingPrice,
-  //   isPaid,
-  // });
   const createOrderData = (paymentMethod: string, isPaid: boolean = false) => {
     const shippingPrice =
       paymentMethod === 'stripe'

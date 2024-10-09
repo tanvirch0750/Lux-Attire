@@ -21,6 +21,8 @@ export default async function LoginPage() {
           <Image
             src={LoginImg}
             alt="login image"
+            quality={80}
+            priority={true}
             layout="fill"
             objectFit="cover"
             className="w-full h-full filter saturate-50 hover:saturate-100 hover:scale-105 transition-all duration-500 ease-in-out"

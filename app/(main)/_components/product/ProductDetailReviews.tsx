@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { StarIcon } from 'lucide-react';
 
-type ReviewStats = {
+export type ReviewStats = {
   _id: string;
   averageRating: number;
   totalReviews: number;

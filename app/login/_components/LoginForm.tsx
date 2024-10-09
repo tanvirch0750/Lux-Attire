@@ -14,6 +14,7 @@ import SocialLogins from '@/app/register/_components/SocialLogings';
 import Link from 'next/link';
 import { LoginCredentials } from './DemoLoginCredentials';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import LoadingButton from '@/components/LodingButton';
 
 interface UserLoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -157,9 +158,17 @@ export default function LoginForm({ className, ...props }: UserLoginFormProps) {
             )}
           </div>
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Sign In with Email'}
-          </Button>
+          {/* <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'Loading...' : 'Login'}
+          </Button> */}
+          <LoadingButton
+            isLoading={isLoading}
+            label="Login"
+            loadingLabel="Processsing"
+            disabled={isLoading}
+            type="submit"
+            className=" bg-primary hover:bg-primary/90"
+          />
         </div>
       </form>
 

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import SocialLogins from './SocialLogings';
 import Link from 'next/link';
+import LoadingButton from '@/components/LodingButton';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -236,9 +237,14 @@ export default function RegisterForm({
             )}
           </div>
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Register'}
-          </Button>
+          <LoadingButton
+            isLoading={isLoading}
+            label="Register"
+            loadingLabel="Processsing"
+            disabled={isLoading}
+            type="submit"
+            className=" bg-primary hover:bg-primary/90"
+          />
         </div>
       </form>
 

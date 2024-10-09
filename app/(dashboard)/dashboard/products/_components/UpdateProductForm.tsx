@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import React, { useState } from 'react';
@@ -22,9 +20,25 @@ import { SizeDescription } from '@/app/(main)/_components/product/SizeDescriptio
 import { updateProdcutAction } from '@/app/actions/product/product';
 import { IProduct } from '@/db/models/product-model';
 import { toast } from 'react-toastify';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { CldUploadWidget } from 'next-cloudinary';
 import Image from 'next/image';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 export interface IProductFormInputs {
   _id?: string | Types.ObjectId;
@@ -83,11 +97,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
     name: 'colors',
   });
 
-  const {
-    fields: sizeFields,
-    append: appendSize,
-    remove: removeSize,
-  } = useFieldArray({
+  const { fields: sizeFields } = useFieldArray({
     control,
     name: 'sizes',
   });
@@ -105,29 +115,22 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
   const handleUpdateProduct: SubmitHandler<IProductFormInputs> = async (
     data
   ) => {
-    console.log('Submitted data:', data);
-
     try {
       setLoading(true);
-
       const result = await updateProdcutAction(
-        initialData?._id!,
+        initialData?._id as string,
         data as unknown as IProduct
       );
-
       if (result.status === 200) {
         toast.success('Product updated successfully', {
           position: 'top-center',
         });
       }
-
       if (result.status === 404) {
-        toast.error(result?.error, {
-          position: 'top-center',
-        });
+        toast.error(result?.error, { position: 'top-center' });
       }
     } catch (error) {
-      toast.error('Product updation Failed, Something went wrong', {
+      toast.error('Product update failed. Something went wrong', {
         position: 'top-center',
       });
     } finally {
@@ -136,357 +139,320 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleUpdateProduct)}
-      className="space-y-6 p-8 bg-white rounded"
-    >
-      {/* Name */}
-      <div className="mb-4">
-        <label htmlFor="name" className="block font-medium text-gray-700">
-          Product Name
-        </label>
-        <Input
-          id="name"
-          placeholder="Product Name"
-          {...register('name')}
-          className={`mt-1 block w-full py-2 px-3 border ${
-            errors.name ? 'border-red-500' : 'border-gray-300'
-          } rounded-md shadow-sm`}
-        />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-        )}
-      </div>
-
-      {/* Price */}
-      <div className="mb-4">
-        <label htmlFor="price" className="block font-medium text-gray-700">
-          Price
-        </label>
-        <Controller
-          name="price"
-          control={control}
-          render={({ field }) => (
-            <NumberInput
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-            />
-          )}
-        />
-        {errors.price && (
-          <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
-        )}
-      </div>
-
-      {/* Category */}
-      <div className="mb-4">
-        <label htmlFor="category" className="block font-medium text-gray-700">
-          Category
-        </label>
-        <select
-          id="category"
-          {...register('category')}
-          className={`mt-1 block w-full py-2 px-3 border focus:outline-0 bg-white ${
-            errors.category ? 'border-red-500' : 'border-gray-300'
-          } rounded-md shadow-sm`}
-        >
-          {categories?.map((cat) => (
-            <option key={cat?._id} value={cat?._id}>
-              {cat?.label}
-            </option>
-          ))}
-        </select>
-        {errors.category && (
-          <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
-        )}
-      </div>
-
-      {/* Available */}
-      <div className="mb-4">
-        <label htmlFor="isAvailable" className="flex items-center">
-          <Controller
-            name="isAvailable"
-            control={control}
-            render={({ field }) => (
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={(value: boolean) => field.onChange(value)}
-              />
-            )}
-          />
-          <span className=" font-medium text-gray-700 ml-2">Is Available</span>
-        </label>
-        {errors.isAvailable && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.isAvailable.message}
-          </p>
-        )}
-      </div>
-
-      {/* Images */}
-      <div className="mb-4">
-        <label className="block font-medium text-gray-700">Images</label>
-        {imageFields.map((field, index) => (
-          <div
-            key={field.id}
-            className="mb-2 grid grid-cols-12 lg:grid-cols-15 gap-3 border items-center p-3 rounded-md"
-          >
-            <div className="col-span-6 lg:col-span-1">
+    <form onSubmit={handleSubmit(handleUpdateProduct)} className="space-y-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Update Product</CardTitle>
+          <CardDescription>
+            Make changes to your product information.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Name and Price */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">Product Name</Label>
               <Input
-                {...register(`images.${index}.id` as const)}
-                type="text"
-                className="mr-2 block py-2 px-3 border border-gray-300 rounded-md shadow-sm w-full"
-                placeholder="ID"
+                id="name"
+                placeholder="Product Name"
+                {...register('name')}
               />
+              {errors.name && (
+                <p className="text-sm text-red-600">{errors.name.message}</p>
+              )}
             </div>
-            <div className="col-span-6 lg:col-span-2">
-              <Input
-                {...register(`images.${index}.color` as const)}
-                type="text"
-                className="mr-2 block py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-                placeholder="Product Color"
-              />
-            </div>
-            <div className="col-span-6 lg:col-span-2">
-              <Input
-                {...register(`images.${index}.imageAlt` as const)}
-                type="text"
-                className="mr-2 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-                placeholder="Image Alt"
-              />
-            </div>
-
-            {/* Image Upload */}
-            <div className="col-span-6 lg:col-span-3">
+            <div className="space-y-2">
+              <Label htmlFor="price">Price</Label>
               <Controller
+                name="price"
                 control={control}
-                name={`images.${index}.imageSrc`}
                 render={({ field }) => (
-                  <div className=" flex gap-1 items-center">
-                    {/* Conditionally render Upload Button or Image */}
-                    <div>
-                      {/* Show uploaded image */}
-                      <Image
-                        src={field.value}
-                        alt={field.value}
-                        width={100}
-                        height={80}
-                        className="mt-2 w-24 h-20 object-cover"
-                      />
-                    </div>
-                    <CldUploadWidget
-                      uploadPreset="luxe-attire"
-                      onSuccess={(result) => {
-                        // @ts-ignore
-                        const imageUrl = result?.info?.url;
-                        console.log('Uploaded Image URL:', imageUrl);
-
-                        // Set the imageSrc field for this particular image index
-                        field.onChange(imageUrl); // Ensure this updates the value in the form
-                      }}
-                    >
-                      {({ open }) => (
-                        <Button
-                          size="sm"
-                          className="bg-brand hover:bg-brand/90"
-                          onClick={() => open()}
-                        >
-                          Update
-                        </Button>
-                      )}
-                    </CldUploadWidget>
-                  </div>
-                )}
-              />
-            </div>
-
-            <div className="col-span-6 md:col-span-3 flex items-center gap-2">
-              <Controller
-                control={control}
-                name={`images.${index}.primary`}
-                render={({ field }) => (
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(value: boolean) => field.onChange(value)}
-                    className="mr-2 h-4 w-4"
+                  <NumberInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
                   />
                 )}
               />
-              <span>Primary</span>
-              <button
-                type="button"
-                onClick={() => removeImage(index)}
-                className="ml-2 text-red-600 hover:text-red-800"
+              {errors.price && (
+                <p className="text-sm text-red-600">{errors.price.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Category and Availability */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+
+              <Select
+                // @ts-ignore
+                onValueChange={(value) => register('category').onChange(value)}
+                defaultValue={initialData.category}
               >
-                Remove
-              </button>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories?.map((cat) => (
+                    // @ts-ignore
+                    <SelectItem key={cat?._id} value={cat?._id}>
+                      {cat?.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.category && (
+                <p className="text-sm text-red-600">
+                  {errors.category.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="isAvailable">Product Availability</Label>
+              <div className="flex items-center space-x-2">
+                <Controller
+                  name="isAvailable"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      id="isAvailable"
+                      checked={field.value}
+                      onCheckedChange={(value) => field.onChange(value)}
+                    />
+                  )}
+                />
+                <Label htmlFor="isAvailable">Is Available</Label>
+              </div>
             </div>
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={() =>
-            appendImage({
-              id: '',
-              imageSrc: '',
-              imageAlt: '',
-              color: '',
-              primary: false,
-            })
-          }
-          className="mt-2 text-brand hover:text-brand/90 text-sm"
-        >
-          Add Image
-        </button>
-      </div>
 
-      {/* Colors */}
-      <div className="mb-4">
-        <label className="block font-medium text-gray-700">Colors</label>
-        {colorFields.map((field, index) => (
-          <div key={field.id} className="mb-2 flex items-center">
-            <Input
-              {...register(`colors.${index}.name` as const)}
-              type="text"
-              className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Color Name"
-            />
-            <Input
-              {...register(`colors.${index}.bgColor` as const)}
-              type="text"
-              className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Background Color"
-            />
-            <Input
-              {...register(`colors.${index}.selectedColor` as const)}
-              type="text"
-              className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Selected Color"
-            />
-            <button
+          {/* Images */}
+          <div className="space-y-2">
+            <Label>Images</Label>
+            {imageFields.map((field, index) => (
+              <Card key={field.id} className="mb-4">
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Input
+                      {...register(`images.${index}.id` as const)}
+                      placeholder="ID"
+                    />
+                    <Input
+                      {...register(`images.${index}.color` as const)}
+                      placeholder="Product Color"
+                    />
+                    <Input
+                      {...register(`images.${index}.imageAlt` as const)}
+                      placeholder="Image Alt"
+                    />
+                    <Controller
+                      control={control}
+                      name={`images.${index}.imageSrc`}
+                      render={({ field }) => (
+                        <div className="flex items-center space-x-2">
+                          <Image
+                            src={field.value}
+                            alt={field.value}
+                            width={100}
+                            height={80}
+                            className="w-24 h-20 object-cover rounded"
+                          />
+                          <CldUploadWidget
+                            uploadPreset="luxe-attire"
+                            onSuccess={(result) => {
+                              const imageUrl = (result?.info as { url: string })
+                                ?.url;
+                              field.onChange(imageUrl);
+                            }}
+                          >
+                            {({ open }) => (
+                              <Button onClick={() => open()} size="sm">
+                                Update
+                              </Button>
+                            )}
+                          </CldUploadWidget>
+                        </div>
+                      )}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center space-x-2">
+                      <Controller
+                        control={control}
+                        name={`images.${index}.primary`}
+                        render={({ field }) => (
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            id={`primary-${index}`}
+                          />
+                        )}
+                      />
+                      <Label htmlFor={`primary-${index}`}>Primary</Label>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeImage(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            <Button
               type="button"
-              onClick={() => removeColor(index)}
-              className="ml-2 text-red-600 hover:text-red-800"
+              variant="outline"
+              onClick={() =>
+                appendImage({
+                  id: '',
+                  imageSrc: '',
+                  imageAlt: '',
+                  color: '',
+                  primary: false,
+                })
+              }
             >
-              Remove
-            </button>
+              <Plus className="h-4 w-4 mr-2" /> Add Image
+            </Button>
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={() =>
-            appendColor({ name: '', bgColor: '', selectedColor: '' })
-          }
-          className="text-brand hover:text-brand/90 text-sm"
-        >
-          Add Color
-        </button>
-      </div>
 
-      {/* Sizes */}
-      <div className="mb-4">
-        <label className="block font-medium text-gray-700 mb-1">
-          Sizes (<SizeDescription />)
-        </label>
+          {/* Colors */}
+          <div className="space-y-2">
+            <Label>Colors</Label>
+            {colorFields.map((field, index) => (
+              <Card key={field.id} className="mb-4">
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Input
+                      {...register(`colors.${index}.name` as const)}
+                      placeholder="Color Name"
+                    />
+                    <Input
+                      {...register(`colors.${index}.bgColor` as const)}
+                      placeholder="Background Color"
+                    />
+                    <Input
+                      {...register(`colors.${index}.selectedColor` as const)}
+                      placeholder="Selected Color"
+                    />
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => removeColor(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                appendColor({ name: '', bgColor: '', selectedColor: '' })
+              }
+            >
+              <Plus className="h-4 w-4 mr-2" /> Add Color
+            </Button>
+          </div>
 
-        <div className=" grid grid-cols-1 md:grid-cols-3 gap-2">
-          {sizeFields.map((field, index) => (
-            <div key={field.id} className="mb-2 flex items-center">
-              <Input
-                {...register(`sizes.${index}.name` as const)}
-                type="text"
-                className="mr-2 block w-1/4 py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-                placeholder="Size Name"
-              />
-
-              <Controller
-                name={`sizes.${index}.inStock`}
-                control={control}
-                render={({ field }) => (
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(value: boolean) => field.onChange(value)}
-                    className="mr-2 h-4 w-4"
+          {/* Sizes */}
+          <div className="space-y-2">
+            <Label>
+              Sizes (<SizeDescription />)
+            </Label>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {sizeFields.map((field, index) => (
+                <div key={field.id} className="flex items-center space-x-2">
+                  <Input
+                    {...register(`sizes.${index}.name` as const)}
+                    className="w-16"
+                    readOnly
                   />
-                )}
-              />
-              <span>In Stock</span>
+                  <Controller
+                    control={control}
+                    name={`sizes.${index}.inStock`}
+                    render={({ field }) => (
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id={`inStock-${index}`}
+                      />
+                    )}
+                  />
+                  <Label htmlFor={`inStock-${index}`}>In Stock</Label>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="mb-4">
-        <label className="block font-medium text-gray-700">Details</label>
-        {detailFields.map((field, index) => (
-          <div key={field.id} className="mb-2 flex items-center">
-            <Input
-              {...register(`details.${index}` as const)}
-              type="text"
-              className="mr-2 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm"
-              placeholder="Detail"
-            />
-            <button
-              type="button"
-              onClick={() => removeDetail(index)}
-              className="ml-2 text-red-600 hover:text-red-800"
-            >
-              Remove
-            </button>
           </div>
-        ))}
-        <button
-          type="button"
-          // @ts-ignore
-          onClick={() => appendDetail('')}
-          className="text-brand hover:text-brand/90 text-sm"
-        >
-          Add Detail
-        </button>
-      </div>
 
-      {/* Description */}
-      <div className="mb-4">
-        <label
-          htmlFor="description"
-          className="block font-medium text-gray-700"
-        >
-          Description
-        </label>
-        <Textarea
-          id="description"
-          {...register('description')}
-          className={`mt-1 block w-full py-2 px-3 border ${
-            errors.description ? 'border-red-500' : 'border-gray-300'
-          } rounded-md shadow-sm`}
-          placeholder="Description"
-        />
-        {errors.description && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.description.message}
-          </p>
-        )}
-      </div>
+          {/* Details */}
+          <div className="space-y-2">
+            <Label>Product Details</Label>
+            {detailFields.map((field, index) => (
+              <div key={field.id} className="flex items-center space-x-2">
+                <Input
+                  {...register(`details.${index}` as const)}
+                  placeholder="Detail"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeDetail(index)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              // @ts-ignore
+              onClick={() => appendDetail('')}
+            >
+              <Plus className="h-4 w-4 mr-2" /> Add Detail
+            </Button>
+          </div>
 
-      {/* Submit Button */}
-      <div>
-        <Button
-          type="submit"
-          className="w-full px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand/90"
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Updating Product
-            </>
-          ) : (
-            <> Update Product</>
-          )}
-        </Button>
-      </div>
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              {...register('description')}
+              rows={4}
+              placeholder="Product Description"
+            />
+            {errors.description && (
+              <p className="text-sm text-red-600">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button
+            type="submit"
+            className=" w-fit bg-brand hover:bg-brand/90"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Updating Product
+              </>
+            ) : (
+              'Update Product'
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
     </form>
   );
 };

@@ -10,6 +10,12 @@ import {
 } from '@/lib/features/wishListSlice';
 import { HeartFilledIcon } from '@radix-ui/react-icons';
 import { TProduct } from '@/db/models/product-model';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export default function AddToWishListButton({
   product,
@@ -46,18 +52,27 @@ export default function AddToWishListButton({
   };
 
   return (
-    <button
-      onClick={handleWishlistToggle}
-      className={`text-brand transition hover:text-brand/90 ${
-        isHidden ? 'hidden group-hover:block' : ''
-      }`}
-      aria-label="Add to wishlist"
-    >
-      {isInWishlist ? (
-        <HeartFilledIcon className="w-6 h-6 text-brand" />
-      ) : (
-        <Heart className="w-6 h-6" />
-      )}
-    </button>
+    <TooltipProvider>
+      <Tooltip delayDuration={10}>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleWishlistToggle}
+            className={`text-brand transition hover:text-brand/90 ${
+              isHidden ? 'hidden group-hover:block' : ''
+            }`}
+            aria-label="Add to wishlist"
+          >
+            {isInWishlist ? (
+              <HeartFilledIcon className="w-6 h-6 text-brand" />
+            ) : (
+              <Heart className="w-6 h-6" />
+            )}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          {isInWishlist ? <p>Remove from wishlist</p> : <p>Add to wishlist</p>}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

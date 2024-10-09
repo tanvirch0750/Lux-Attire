@@ -55,7 +55,7 @@ export async function RelatedProducts({ id }: { id: string }) {
                     </p>
                   </div>
                   <p className="text-sm font-medium text-gray-900">
-                    {relatedProduct?.price}
+                    $ {relatedProduct?.price}
                   </p>
                 </div>
               </div>

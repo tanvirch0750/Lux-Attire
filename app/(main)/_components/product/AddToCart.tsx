@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ColorPicker } from './ColorPicker';
 import { SizePicker } from './SizePicker';
 
-import { IProduct, TProduct } from '@/db/models/product-model';
+import { IOffer, IProduct, TProduct } from '@/db/models/product-model';
 import {
   resetSelectedSizeAndColor,
   setSelectedColor,
@@ -15,6 +15,8 @@ import {
 import { useEffect } from 'react';
 import AddToWishListButton from '../wishlist/AddToWishListButton';
 import { IWishlistItem } from '@/lib/features/wishListSlice';
+import { Badge } from '@/components/ui/badge';
+import { Truck } from 'lucide-react';
 
 export default function AddToCart({
   productId,
@@ -24,6 +26,7 @@ export default function AddToCart({
   price,
   name,
   category,
+  offers,
 }: {
   productId: string;
   colors: TProduct['colors'];
@@ -32,6 +35,7 @@ export default function AddToCart({
   price: number;
   name: string;
   category: string;
+  offers: IOffer[];
 }) {
   const dispatch = useDispatch();
 
@@ -63,6 +67,16 @@ export default function AddToCart({
     ? 'Select size and color'
     : 'Add to cart';
 
+  const currentDate = new Date();
+  const activeOffers =
+    offers?.filter(
+      (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+    ) || [];
+
+  const shippingOffer = activeOffers.find(
+    (offer) => offer.offerType === 'freeShipping'
+  );
+
   const handleAddToCart = () => {
     if (!isButtonDisabled) {
       const cartProduct: ICartItem = {
@@ -75,6 +89,7 @@ export default function AddToCart({
         // @ts-ignore
         image: selectedImage,
         quantity: 1,
+        offers: offers,
       };
 
       dispatch(addItem(cartProduct));
@@ -120,6 +135,12 @@ export default function AddToCart({
         selectedSize={selectedSize}
         setSelectedSize={handleSizeChange} // Use Redux handler
       />
+      {shippingOffer && (
+        <Badge variant="secondary" className="mt-4  text-[16px]  text-brand">
+          <Truck className="mr-1 h-4 w-4" />
+          Free Shipping
+        </Badge>
+      )}
       <button
         onClick={handleAddToCart}
         type="submit"

@@ -96,7 +96,7 @@ export type TProduct = {
   description: string;
   details: string[];
   isDeleted: boolean;
-  offers?: IOffer;
+  offers?: IOffer[];
   _id?: string;
 };
 

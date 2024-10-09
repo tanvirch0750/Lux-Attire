@@ -11,7 +11,7 @@ export default function ClearWishlist() {
     <div className="mt-auto">
       <div className="flex justify-end space-x-4 mt-4 items-center">
         <Button variant="destructive" onClick={() => dispatch(resetWishlist())}>
-          Clear Cart
+          Clear Wishlist
         </Button>
         <SheetClose asChild>
           <Link href="/products">

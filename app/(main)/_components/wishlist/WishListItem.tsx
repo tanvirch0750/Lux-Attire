@@ -42,7 +42,6 @@ const WishlistItem = ({ item }: { item: IWishlistItem }) => {
             </button>
             <Link
               href={`/products/${item?.category}/${item?.productId}`}
-              onClick={handleRemove}
               className="text-brand hover:text-brand/90"
             >
               <span>Buy Now</span>

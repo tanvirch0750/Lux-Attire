@@ -1,4 +1,4 @@
-import { TProduct } from '@/db/models/product-model';
+import { IOffer, TProduct } from '@/db/models/product-model';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ICartItem {
@@ -9,6 +9,7 @@ export interface ICartItem {
   quantity: number;
   color: TProduct['colors'][0];
   size: TProduct['sizes'][0];
+  offers: IOffer[];
 }
 
 interface CartState {

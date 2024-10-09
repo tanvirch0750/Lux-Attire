@@ -4,6 +4,10 @@ import { MainNav } from './MainNav';
 
 const navLinks = [
   {
+    title: 'Home',
+    href: '/',
+  },
+  {
     title: 'All Products',
     href: '/products',
   },
