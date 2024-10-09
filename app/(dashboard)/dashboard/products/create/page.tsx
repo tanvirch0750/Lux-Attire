@@ -10,12 +10,6 @@ export default async function CreateProductPage() {
 
   return (
     <PageContainer>
-      <PageHeader
-        btnLabel="Product List"
-        btnLink="/dashboard/products"
-        heading="Create Product"
-      />
-
       <ProductForm categories={categories as ICategory[]} />
     </PageContainer>
   );
