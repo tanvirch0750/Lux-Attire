@@ -1,5 +1,6 @@
 import { Category } from '@/db/models/category-model';
 import { Product } from '@/db/models/product-model';
+import { Review } from '@/db/models/review-model';
 import { dbConnect } from '@/db/service/mongo';
 
 import { Types } from 'mongoose';
@@ -35,15 +36,58 @@ export const getProductsByCategoryValue = async (categoryValue: string) => {
       throw new Error('Category not found');
     }
 
-    // Find products associated with the category
-    const products = await Product.find({
-      category: category._id,
-      isDeleted: false,
-    })
-      .sort({ createdAt: -1 })
-      .populate('category');
+    // Find products associated with the category and aggregate reviews
+    const products = await Product.aggregate([
+      {
+        $match: {
+          category: category._id,
+          isDeleted: false,
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: 'reviews', // The collection name for the 'Review' model
+          localField: '_id',
+          foreignField: 'product',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: {
+              if: { $gt: [{ $size: '$reviews' }, 0] },
+              then: { $avg: '$reviews.rating' },
+              else: 0, // Default to 0 if there are no reviews
+            },
+          },
+          totalReviews: { $size: '$reviews' }, // Count the number of reviews
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          price: 1,
+          colors: 1,
+          sizes: 1,
+          images: 1,
+          category: 1,
+          isAvailable: 1,
+          isDeleted: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          averageRating: 1,
+          totalReviews: 1,
+        },
+      },
+    ]);
 
-    return JSON.parse(JSON.stringify(products));
+    return products;
   } catch (error) {
     throw new Error(
       'Error fetching products by category: ' + (error as Error).message
@@ -51,20 +95,66 @@ export const getProductsByCategoryValue = async (categoryValue: string) => {
   }
 };
 
-// Get the first 8 products (new arrivals, only those that are not deleted)
+// Get the first 8 products (new arrivals, only those that are not deleted) along with their average ratings
 export const getNewArrivalProducts = async () => {
   await dbConnect();
 
   try {
-    const newArrivals = await Product.find({
-      isDeleted: false,
-      isAvailable: true,
-    })
-      .sort({ createdAt: -1 })
-      .limit(8)
-      .populate('category');
+    const newArrivals = await Product.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          isAvailable: true,
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $limit: 8,
+      },
+      {
+        $lookup: {
+          from: 'reviews', // The collection name for the 'Review' model
+          localField: '_id',
+          foreignField: 'product',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: {
+              if: { $gt: [{ $size: '$reviews' }, 0] },
+              then: { $avg: '$reviews.rating' },
+              else: 0, // Default to 0 if there are no reviews
+            },
+          },
+          totalReviews: { $size: '$reviews' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          price: 1,
+          colors: 1,
+          sizes: 1,
+          images: 1,
+          category: 1,
+          isAvailable: 1,
+          isDeleted: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          averageRating: 1,
+          totalReviews: 1,
+          offers: 1,
+        },
+      },
+    ]);
 
-    return JSON.parse(JSON.stringify(newArrivals));
+    return newArrivals;
   } catch (error) {
     throw new Error('Error fetching new arrivals: ' + (error as Error).message);
   }
@@ -166,17 +256,57 @@ export const getAllAvailableProductsWithQuery = async (query: any) => {
   const skip = (Number(page) - 1) * Number(limit);
 
   try {
+    // Fetch products first
     const products = await Product.find(conditions)
       .sort(sortCondition)
       .skip(skip)
       .limit(Number(limit))
       .populate('category');
 
-    // Get the total count for pagination
+    // Get total count for pagination
     const totalProducts = await Product.countDocuments(conditions);
 
+    // Get product IDs
+    const productIds = products.map((product) => product._id);
+
+    // Calculate average rating for each product
+    const reviews = await Review.aggregate([
+      {
+        $match: {
+          product: { $in: productIds },
+          isDeleted: false,
+        },
+      },
+      {
+        $group: {
+          _id: '$product',
+          averageRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Create a map of product IDs and their average ratings
+    const reviewMap: Record<
+      string,
+      { averageRating: number; totalReviews: number }
+    > = {};
+    reviews.forEach((review) => {
+      reviewMap[review._id] = {
+        averageRating: review.averageRating || 0,
+        totalReviews: review.totalReviews || 0,
+      };
+    });
+
+    // Add averageRating and totalReviews to each product
+    const productsWithRatings = products.map((product) => ({
+      ...product.toObject(),
+      averageRating: reviewMap[product._id]?.averageRating || 0,
+      totalReviews: reviewMap[product._id]?.totalReviews || 0,
+    }));
+
     return {
-      products: JSON.parse(JSON.stringify(products)),
+      products: JSON.parse(JSON.stringify(productsWithRatings)),
       totalProducts,
       totalPages: Math.ceil(totalProducts / Number(limit)),
       currentPage: Number(page),

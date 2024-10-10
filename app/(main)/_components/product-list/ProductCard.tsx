@@ -7,7 +7,7 @@ import AddToWishListButton from '../wishlist/AddToWishListButton';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tag, Clock, Truck, ArrowRight } from 'lucide-react';
+import { Tag, Clock, Truck, ArrowRight, Star } from 'lucide-react';
 
 export default function ProductCard({ product }: { product: TProduct }) {
   const wishListData = {
@@ -43,6 +43,31 @@ export default function ProductCard({ product }: { product: TProduct }) {
       calculateDiscountedPrice(product.price, parseFloat(discountOffer.value))
     : null;
 
+  const renderStarRating = (rating: number, totalReviews: number) => {
+    return (
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`w-4 h-4 ${
+                star <= rating
+                  ? 'text-yellow-400 fill-yellow-400'
+                  : 'text-gray-300'
+              }`}
+            />
+          ))}
+          <span className="ml-2 text-sm text-gray-600">
+            {rating.toFixed(1)}
+          </span>
+        </div>
+        {/* <span className="text-sm text-gray-600">
+          total reviews - {totalReviews}
+        </span> */}
+      </div>
+    );
+  };
+
   return (
     <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full">
       <Link href={`/products/${product?.category?.value}/${product._id}`}>
@@ -70,26 +95,37 @@ export default function ProductCard({ product }: { product: TProduct }) {
           </div>
         </div>
       </Link>
-      <CardContent className="p-4 flex-grow">
+      <CardContent className="p-4 flex-grow flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-gray-800 group-hover:text-brand truncate">
           {product?.name}
         </h2>
-        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+        <p className="text-sm text-gray-600 line-clamp-2">
           {product.description}
         </p>
-        <div className="mt-2 flex items-center text-sm text-gray-700">
-          <span className="font-semibold mr-1">Colors:</span>
-          {product?.colors?.map((color, index) => (
-            <span
-              key={color.bgColor}
-              className="w-4 h-4 rounded-full inline-block mr-1"
-              style={{ backgroundColor: color.bgColor }}
-              title={color.name}
-            />
-          ))}
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center text-sm text-gray-700">
+            <span className="font-semibold mr-2">Colors:</span>
+            {product?.colors?.map((color) => (
+              <span
+                key={color.bgColor}
+                className="w-4 h-4 rounded-full inline-block mr-1"
+                style={{ backgroundColor: color.bgColor }}
+                title={color.name}
+              />
+            ))}
+          </div>
+
+          {product?.averageRating != null &&
+            product.totalReviews != null &&
+            product.averageRating > 0 &&
+            product.totalReviews > 0 && (
+              <div>
+                {renderStarRating(product.averageRating, product.totalReviews)}
+              </div>
+            )}
         </div>
         {activeOffers.length > 0 && (
-          <div className="mt-2 text-sm text-gray-600 flex items-center">
+          <div className="text-sm text-gray-600 flex items-center mt-3">
             <Clock className="mr-1 h-3 w-3" />
             Offer valid until:{' '}
             {new Date(activeOffers[0].validUntil).toLocaleDateString()}
