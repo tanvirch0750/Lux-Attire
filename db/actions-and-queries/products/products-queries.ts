@@ -385,3 +385,151 @@ export const getProductByIdAdmin = async (
     throw new Error('Error fetching product: ' + (error as Error).message);
   }
 };
+
+export const getProductsWithDiscountOffers = async () => {
+  await dbConnect();
+
+  try {
+    // Get the current date in "YYYY-MM-DD" format
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Find products that have an active discount offer
+    const products = await Product.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          offers: {
+            $elemMatch: {
+              offerType: 'discount',
+              isActive: true,
+              validUntil: { $gt: currentDate },
+            },
+          },
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: 'reviews',
+          localField: '_id',
+          foreignField: 'product',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: {
+              if: { $gt: [{ $size: '$reviews' }, 0] },
+              then: { $avg: '$reviews.rating' },
+              else: 0,
+            },
+          },
+          totalReviews: { $size: '$reviews' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          price: 1,
+          colors: 1,
+          sizes: 1,
+          images: 1,
+          category: 1,
+          isAvailable: 1,
+          isDeleted: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          offers: 1,
+          averageRating: 1,
+          totalReviews: 1,
+        },
+      },
+    ]);
+
+    return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    throw new Error(
+      'Error fetching products with discount offers: ' +
+        (error as Error).message
+    );
+  }
+};
+
+export const getProductsWithFreeShippingOffers = async () => {
+  await dbConnect();
+
+  try {
+    // Get the current date in "YYYY-MM-DD" format
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Find products that have an active free shipping offer
+    const products = await Product.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          offers: {
+            $elemMatch: {
+              offerType: 'freeShipping',
+              isActive: true,
+              validUntil: { $gt: currentDate },
+            },
+          },
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: 'reviews',
+          localField: '_id',
+          foreignField: 'product',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: {
+              if: { $gt: [{ $size: '$reviews' }, 0] },
+              then: { $avg: '$reviews.rating' },
+              else: 0,
+            },
+          },
+          totalReviews: { $size: '$reviews' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          price: 1,
+          colors: 1,
+          sizes: 1,
+          images: 1,
+          category: 1,
+          isAvailable: 1,
+          isDeleted: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          offers: 1,
+          averageRating: 1,
+          totalReviews: 1,
+        },
+      },
+    ]);
+
+    return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    throw new Error(
+      'Error fetching products with free shipping offers: ' +
+        (error as Error).message
+    );
+  }
+};

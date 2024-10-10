@@ -10,6 +10,7 @@ import WhyChooseUs from './_components/WhyChooseUs';
 import { Suspense } from 'react';
 import Loader from '@/components/Loader';
 import MensCollectionBanner from './_components/MensCollectionBanner';
+import OfferAndFreeShippingBanner from './_components/OfferCard';
 
 export const metadata: Metadata = {
   title: 'Luxe Attire | Timeless Elegance in Fashion',
@@ -93,9 +94,12 @@ export default function HomePage() {
           </Suspense>
         </section>
 
-        <section aria-label="Special Offers" className="hidden md:block">
-          <h2 className="sr-only">Special Offers</h2>
-          <SpecialOffer />
+        <section
+          aria-label="Discount and free shipping"
+          className=" py-8 md:py-12"
+        >
+          <h2 className="sr-only">Discount and free shipping</h2>
+          <OfferAndFreeShippingBanner />
         </section>
 
         <section aria-label="Why Choose Us">
@@ -106,6 +110,11 @@ export default function HomePage() {
         <section aria-label="Featured Products">
           <h2 className="sr-only">Featured Products</h2>
           <ProductsShowcase />
+        </section>
+
+        <section aria-label="Special Offers" className="hidden md:block pb-12">
+          <h2 className="sr-only">Special Offers</h2>
+          <SpecialOffer />
         </section>
 
         <section aria-label="Men's Collection">
