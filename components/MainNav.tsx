@@ -54,7 +54,7 @@ export function MainNav({ items, children, userImage }) {
       </div>
       <div className="">
         {items?.length ? (
-          <nav className="hidden gap-6  lg:flex">
+          <nav className="hidden gap-6  xl:flex">
             {items?.map((item: any, index: any) => (
               <Link
                 key={index}
@@ -76,7 +76,7 @@ export function MainNav({ items, children, userImage }) {
         )}
       </div>
       <nav className="flex items-center gap-3">
-        <div className="items-center gap-3 hidden lg:flex ">
+        <div className="items-center gap-3 hidden xl:flex ">
           {!loginSession && (
             <>
               <Link
@@ -167,7 +167,7 @@ export function MainNav({ items, children, userImage }) {
         )}
 
         <button
-          className="flex items-center space-x-2 lg:hidden"
+          className="flex items-center space-x-2 xl:hidden"
           onClick={() => setShowMobileMenu(!showMobileMenu)}
         >
           {showMobileMenu ? <X /> : <Menu />}

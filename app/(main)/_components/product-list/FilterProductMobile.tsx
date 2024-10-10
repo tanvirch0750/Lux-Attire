@@ -28,9 +28,6 @@ const FilterProductMobile = () => {
         <SheetContent side="left" className="bg-white">
           <SheetHeader>
             <SheetTitle className="text-left">Filter Products</SheetTitle>
-            <SheetClose>
-              <X className="h-6 w-6" />
-            </SheetClose>
           </SheetHeader>
           <Accordion defaultValue={['categories']} type="multiple">
             {/* Categories filter */}

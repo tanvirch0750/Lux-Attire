@@ -108,17 +108,17 @@ const ProductsPage = async ({
       <main className="relative border-t">
         <h1 className="sr-only">All Products - Luxe Attire</h1>
 
-        <div className="sticky top-0 z-20 bg-white px-[24px] py-[12px]">
+        <div className="sticky top-0 z-20 bg-white px-[24px] py-[18px]">
           <HeaderFilter filters={filters} />
         </div>
 
         <section
           aria-label="Product Filters and List"
-          className="space-y-6 p-[24px] border-t"
+          className="space-y-6 p-[24px] "
         >
           <div className="pb-24 pt-0">
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-              <aside className="lg:block">
+              <aside className="hidden lg:block">
                 <div className="sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] overflow-y-auto">
                   <h2 className="sr-only">Product Filters</h2>
                   <SideFilter />
