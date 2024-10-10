@@ -32,9 +32,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
 
       return (
         <div className="flex space-x-2">
-          <div className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
-            {email}
-          </div>
+          <div className="max-w-32 text-md">{email}</div>
         </div>
       );
     },
@@ -53,7 +51,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
       const rating = row?.getValue('rating');
       return (
         <div className="flex space-x-2 text-center">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md text-center bg-orange-200 text-orange-900 px-2 py-1 rounded-lg">
+          <span className="max-w-[100px]  text-md text-center bg-orange-200 text-orange-900 px-2 py-1 rounded-lg">
             {rating as number}
           </span>
         </div>
@@ -75,9 +73,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
 
       return (
         <div className="flex space-x-2">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
-            {comment}
-          </span>
+          <span className="max-w-[350px] text-md">{comment}</span>
         </div>
       );
     },
@@ -88,7 +84,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Is Available"
+        title="Date"
         className="text-md text-brand"
       />
     ),
@@ -100,9 +96,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
       const { date } = formatDateAndTime(createdAtString as string);
       return (
         <div className="flex space-x-2">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
-            {date}
-          </span>
+          <span className="max-w-[200px] text-md">{date}</span>
         </div>
       );
     },

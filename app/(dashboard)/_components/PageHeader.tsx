@@ -11,7 +11,7 @@ export default function PageHeader({
   btnLink?: string;
 }) {
   return (
-    <div className=" flex justify-between items-center pb-12">
+    <div className=" flex justify-between items-center pb-8">
       <h2 className=" text-primary text-2xl">{heading}</h2>
 
       {btnLink && (

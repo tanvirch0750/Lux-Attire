@@ -50,7 +50,7 @@ export function PieGraph({ paid, unpaid }: { paid: number; unpaid: number }) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Order Status</CardTitle>
+        <CardTitle>Order Status</CardTitle>
         <CardDescription>Paid vs Unpaid Orders</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

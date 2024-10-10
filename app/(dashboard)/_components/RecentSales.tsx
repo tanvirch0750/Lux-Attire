@@ -10,6 +10,7 @@ interface Order {
     totalPrice: number;
   }[];
   user: {
+    profilePicture: string | undefined;
     name: string;
     email: string;
   };
@@ -20,13 +21,11 @@ export async function RecentSales() {
 
   return (
     <div className="space-y-8">
-      {recentOrders?.map((order: Order) => (
+      {recentOrders?.slice(0, 5)?.map((order: Order) => (
         <div key={order._id} className="flex items-center">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/path/to/avatar.png" alt="Avatar" />{' '}
-            {/* Replace with dynamic image path if available */}
+            <AvatarImage src={order?.user?.profilePicture} alt="Avatar" />{' '}
             <AvatarFallback>{order.user.name.charAt(0)}</AvatarFallback>{' '}
-            {/* Use first letter of the user's name */}
           </Avatar>
           <div className="ml-4 space-y-1">
             <p className="text-sm font-medium leading-none">

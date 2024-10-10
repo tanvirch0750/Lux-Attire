@@ -36,13 +36,18 @@ export default async function SettingsPage() {
                 key={item?._id}
                 className=" flex items-center space-x-4 rounded-md border p-4"
               >
-                <CreditCardIcon />
+                {item?.shippingMethod === 'stripe' ? (
+                  <CreditCardIcon />
+                ) : (
+                  <HandshakeIcon />
+                )}
+
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">
                     With {item?.shippingMethod}
                   </p>
                 </div>
-                <span>{item?.price}</span>
+                <span>${item?.price}</span>
               </div>
             ))}
           </CardContent>

@@ -10,6 +10,7 @@ import { BarGraph } from './charts/BarGraph';
 import { OrderStatusDistribution } from './charts/OrderStatusPieGraph';
 import { PieGraph } from './charts/PieGraph';
 import { getAllSalesStatistics } from '@/db/actions-and-queries/dashboard-stats/sales-stats-query';
+import { Package } from 'lucide-react';
 
 export default async function SalesStats() {
   const SalesStates = await getAllSalesStatistics();
@@ -34,27 +35,14 @@ export default async function SalesStats() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${SalesStates?.totalRevenue}
+              ${SalesStates?.totalRevenue.toFixed(2)}
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -83,7 +71,7 @@ export default async function SalesStats() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              +{SalesStates?.averageOrderValue}
+              +{SalesStates?.averageOrderValue.toFixed(2)}
             </div>
           </CardContent>
         </Card>
@@ -122,7 +110,6 @@ export default async function SalesStats() {
         <Card className="col-span-4 md:col-span-3">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
-            <CardDescription>You made 265 sales this month.</CardDescription>
           </CardHeader>
           <CardContent>
             <RecentSales />

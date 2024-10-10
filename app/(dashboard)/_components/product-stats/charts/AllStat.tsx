@@ -103,7 +103,7 @@ const RecentSales = ({
   revenueData: Array<{ name: string; totalRevenue: number }>;
 }) => (
   <div>
-    {data.map((item, index) => (
+    {data?.slice(0, 6)?.map((item, index) => (
       <div key={index} className="flex items-center mb-3">
         <div className="ml-4 space-y-1">
           <p className="text-sm font-medium leading-none">{item?.name}</p>
@@ -147,7 +147,7 @@ export default function ProductDashboard({
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalRevenue}</div>
+            <div className="text-2xl font-bold">${totalRevenue.toFixed(2)}</div>
           </CardContent>
         </Card>
         <Card>
@@ -199,7 +199,7 @@ export default function ProductDashboard({
         </div>
         <Card className="col-span-4 md:col-span-3">
           <CardHeader>
-            <CardTitle>Recent Sales</CardTitle>
+            <CardTitle>Most sold products</CardTitle>
             <CardDescription>
               You made {totalSold} sales this month.
             </CardDescription>

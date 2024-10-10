@@ -13,6 +13,7 @@ import {
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { CustomTooltip } from '@/components/Tooltip';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -79,14 +80,20 @@ export function DataTableRowActions<TData>({
 
   return (
     <div className="flex items-center w-[100px] gap-2">
-      <Link href={`/dashboard/category/${category?._id}`}>
-        <Button
-          className=" px-2 bg-green-100 text-green-500 hover:bg-gray-200"
-          size="sm"
-        >
-          <Edit2Icon size={16} />
-        </Button>
-      </Link>
+      <CustomTooltip
+        triggerContent={
+          <Link href={`/dashboard/category/${category?._id}`}>
+            <Button
+              className=" px-2 bg-green-100 text-green-500 hover:bg-gray-200"
+              size="sm"
+            >
+              <Edit2Icon size={16} />
+            </Button>
+          </Link>
+        }
+        tooltipContent="Edit"
+      />
+
       {category?.isDeleted ? (
         <ConfirmDialog
           triggerType="undo-delete"

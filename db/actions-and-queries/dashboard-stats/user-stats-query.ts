@@ -40,7 +40,7 @@ export const getUserStatistics = async (): Promise<{
     {
       $project: {
         userId: '$_id',
-        userName: '$userDetails.name',
+        userName: '$userDetails.email',
         totalSpent: 1,
       },
     },

@@ -138,7 +138,7 @@ export default function OrderReviewDashboard({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${orderStats?.totalShippingRevenue}
+              ${orderStats?.totalShippingRevenue.toFixed(2)}
             </div>
           </CardContent>
         </Card>

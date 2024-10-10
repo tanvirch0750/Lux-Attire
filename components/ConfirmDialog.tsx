@@ -17,6 +17,7 @@ import {
   Undo2Icon,
   XIcon,
 } from 'lucide-react';
+import { CustomTooltip } from './Tooltip';
 
 interface ConfirmDialogProps {
   triggerType:
@@ -66,49 +67,95 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <div>
-          {triggerType === 'confirm-order' && (
-            <Button variant="outline">{triggerText}</Button>
-          )}
-          {triggerType === 'cancel-order-user' && (
-            <Button variant="destructive" size="sm" disabled={disabled}>
-              {triggerText}
-            </Button>
-          )}
-          {triggerType === 'cancel-order-admin' && (
-            <Button
-              disabled={disabled}
-              className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
-              size="sm"
-            >
-              <XIcon size={16} />
-            </Button>
-          )}
-          {triggerType === 'delivered-order' && (
-            <Button
-              disabled={disabled}
-              className=" px-2 bg-green-100 text-green-700 hover:bg-green-200"
-              size="sm"
-            >
-              <PackageCheckIcon size={16} />
-            </Button>
-          )}
+          <CustomTooltip
+            triggerContent={
+              <>
+                {triggerType === 'confirm-order' && (
+                  <Button variant="outline">{triggerText}</Button>
+                )}
+              </>
+            }
+            tooltipContent="Confirm Order"
+          />
 
-          {triggerType === 'confirm-delete' && (
-            <Button
-              className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
-              size="sm"
-            >
-              <Trash2Icon size={16} />
-            </Button>
-          )}
-          {triggerType === 'undo-delete' && (
-            <Button
-              className=" px-2 bg-orange-100 text-orange-500 hover:bg-orange-200"
-              size="sm"
-            >
-              <Undo2Icon size={16} />
-            </Button>
-          )}
+          <CustomTooltip
+            triggerContent={
+              <>
+                {triggerType === 'cancel-order-user' && (
+                  <Button variant="destructive" size="sm" disabled={disabled}>
+                    {triggerText}
+                  </Button>
+                )}
+              </>
+            }
+            tooltipContent="Cancel Order"
+          />
+
+          <CustomTooltip
+            triggerContent={
+              <>
+                {triggerType === 'cancel-order-admin' && (
+                  <Button
+                    disabled={disabled}
+                    className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
+                    size="sm"
+                  >
+                    <XIcon size={16} />
+                  </Button>
+                )}
+              </>
+            }
+            tooltipContent="Cancel Order"
+          />
+
+          <CustomTooltip
+            triggerContent={
+              <>
+                {triggerType === 'delivered-order' && (
+                  <Button
+                    disabled={disabled}
+                    className=" px-2 bg-green-100 text-green-700 hover:bg-green-200"
+                    size="sm"
+                  >
+                    <PackageCheckIcon size={16} />
+                  </Button>
+                )}
+              </>
+            }
+            tooltipContent="Deliver Order"
+          />
+
+          <CustomTooltip
+            triggerContent={
+              <>
+                {triggerType === 'confirm-delete' && (
+                  <Button
+                    className=" px-2 bg-red-100 text-red-500 hover:bg-red-200"
+                    size="sm"
+                  >
+                    <Trash2Icon size={16} />
+                  </Button>
+                )}
+              </>
+            }
+            tooltipContent="Delete"
+          />
+
+          <CustomTooltip
+            triggerContent={
+              <>
+                {triggerType === 'undo-delete' && (
+                  <Button
+                    className=" px-2 bg-orange-100 text-orange-500 hover:bg-orange-200"
+                    size="sm"
+                  >
+                    <Undo2Icon size={16} />
+                  </Button>
+                )}
+              </>
+            }
+            tooltipContent="Undo Delete"
+          />
         </div>
       </AlertDialogTrigger>
       <AlertDialogContent className=" bg-white">

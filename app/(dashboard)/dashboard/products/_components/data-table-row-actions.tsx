@@ -13,6 +13,7 @@ import {
   deleteProductAction,
   undoDeleteProductAction,
 } from '@/app/actions/product/product';
+import { CustomTooltip } from '@/components/Tooltip';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -79,14 +80,22 @@ export function DataTableRowActions<TData>({
 
   return (
     <div className="flex items-center w-[100px] gap-2">
-      <Link href={`/dashboard/products/edit/${products?._id}`}>
-        <Button
-          className=" px-2 bg-green-100 text-green-500 hover:bg-gray-200"
-          size="sm"
-        >
-          <Edit2Icon size={16} />
-        </Button>
-      </Link>
+      <CustomTooltip
+        triggerContent={
+          <>
+            <Link href={`/dashboard/products/edit/${products?._id}`}>
+              <Button
+                className=" px-2 bg-green-100 text-green-500 hover:bg-gray-200"
+                size="sm"
+              >
+                <Edit2Icon size={16} />
+              </Button>
+            </Link>
+          </>
+        }
+        tooltipContent="Edit"
+      />
+
       {products?.isDeleted ? (
         <ConfirmDialog
           triggerType="undo-delete"
@@ -108,14 +117,22 @@ export function DataTableRowActions<TData>({
           isLoading={loading}
         />
       )}
-      <Link href={`/dashboard/products/offer/${products?._id}`}>
-        <Button
-          className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
-          size="sm"
-        >
-          <BadgePercentIcon size={18} />
-        </Button>
-      </Link>
+
+      <CustomTooltip
+        triggerContent={
+          <>
+            <Link href={`/dashboard/products/offer/${products?._id}`}>
+              <Button
+                className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
+                size="sm"
+              >
+                <BadgePercentIcon size={18} />
+              </Button>
+            </Link>
+          </>
+        }
+        tooltipContent="Add Offer"
+      />
     </div>
   );
 }

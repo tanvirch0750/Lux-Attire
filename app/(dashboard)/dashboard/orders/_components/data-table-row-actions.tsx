@@ -14,6 +14,7 @@ import {
   cancelOrderAction,
   deliverOrderAction,
 } from '@/app/actions/order/order';
+import { CustomTooltip } from '@/components/Tooltip';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -112,14 +113,21 @@ export function DataTableRowActions<TData>({
         }
       />
 
-      <Link href={`/dashboard/orders/${order?._id}`}>
-        <Button
-          className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
-          size="sm"
-        >
-          <ArrowRightIcon size={16} />
-        </Button>
-      </Link>
+      <CustomTooltip
+        triggerContent={
+          <>
+            <Link href={`/dashboard/orders/${order?._id}`}>
+              <Button
+                className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
+                size="sm"
+              >
+                <ArrowRightIcon size={16} />
+              </Button>
+            </Link>
+          </>
+        }
+        tooltipContent="Detatls"
+      />
     </div>
   );
 }
