@@ -29,7 +29,7 @@ Luxe Attire - This Clothing Marketplace project is a full-featured e-commerce pl
 
 ### 2. Authentication & Authorization
 
-- **User Registration & Login**: Secure registration and login with email and password credentials and google login.
+- **User Registration & Login**: Secure registration and login with email and password credentials and Google login.
 - **Protected Routes**: Pages like `My Orders` and the `Admin Dashboard` are accessible only after user authentication.
 
 ### 3. Product Management
@@ -37,42 +37,53 @@ Luxe Attire - This Clothing Marketplace project is a full-featured e-commerce pl
 - **Product Listing**: Products are categorized (`/kids-wear`, `/traditional-clothing`, `/menswear`) for easy browsing.
 - **Add to Cart**: Users can add products to their cart from both the product listing and the product detail pages.
 - **Product Reviews**: Registered users can provide reviews for products, visible below the product details.
+- **Offers Management**: Special offers and discounts can be managed and displayed on relevant products, enhancing user engagement.
 
-### 4. Cart and Checkout
+### 4. Wishlist Functionality
+
+- **Add to Wishlist**: Users can save products to their wishlist for later viewing, making it easier to keep track of desired items.
+- **Manage Wishlist**: Users can view, add, or remove items from their wishlist, providing a convenient shopping experience.
+
+### 5. Cart and Checkout
 
 - **Cart Management**: Items can be added to the cart, and Redux Persist is used to retain cart state across page reloads.
 - **Checkout Page**: Users can review their cart items before proceeding to payment. Only Cash on Delivery is available by default, but Stripe payment is implemented as an additional option.
 - **Total Price Calculation**: Includes the price of products and a delivery charge of 15 Taka.
 
-### 5. Order Management & Tracking
+### 6. Extensive Filtering & Pagination
+
+- **Advanced Filters**: Users can filter products based on various criteria such as price, category, and ratings, enhancing the shopping experience.
+- **Pagination**: Implemented pagination for product listings, allowing users to navigate through large sets of products easily.
+
+### 7. Order Management & Tracking
 
 - **Order Status Tracking**: Users can view their pending and delivered orders on the `My Orders` page.
 - **Admin Order Management**: Admins can change order statuses from "Pending" to "Delivered" on the `Admin Dashboard`.
 - **Order Confirmation Emails**: Automated emails are sent to users upon order confirmation.
 
-### 6. Payment Integration
+### 8. Payment Integration
 
 - **Stripe Payment**: Stripe is integrated as a payment gateway for secure and fast payment processing.
 - **Cash on Delivery**: Available as a default payment option on the checkout page.
 
-### 7. Admin Dashboard
+### 9. Admin Dashboard
 
 - **Product Management**: Admins can add, edit, and delete products via a dedicated dashboard.
 - **Order Management**: Admins can update order statuses and view order statistics.
 - **User Management**: Admins can manage user accounts, viewing their details and managing roles if needed.
 - **Sales Stats**: A comprehensive overview of total sales, product statistics, and other key metrics.
 
-### 8. Error Handling
+### 10. Error Handling
 
 - **Next.js Error Handling**: Enhanced error handling with custom informative error messages. Graceful fallbacks are implemented to ensure users have a smooth experience, even in cases of unexpected errors.
 
-### 9. SEO Optimization
+### 11. SEO Optimization
 
 - **Dynamic Meta Tags**: Static and dynamic meta tags are used to optimize search engine visibility.
 - **Product Name in Browser Tab**: The product name dynamically appears in the browser tab when viewing a product detail page, improving SEO and user experience.
 - **Next.js Metadata API**: Used for SEO optimization with support for dynamic page content.
 
-### 10. Optional Features Implemented
+### 12. Optional Features Implemented
 
 - **Email Notifications**: Order confirmation emails are automatically sent to users upon successful checkout.
 - **Order Status Tracking**: Users can track the status of their orders through a simple order tracking system.
@@ -91,9 +102,10 @@ Luxe Attire - This Clothing Marketplace project is a full-featured e-commerce pl
 
 1. **Browse Products**: Navigate through the product categories like `Menswear`, `Kids Wear`, etc.
 2. **Add to Cart**: Add items to the cart, with cart data persisting across sessions.
-3. **Checkout**: Proceed to checkout, where users can choose to pay via Stripe or Cash on Delivery.
-4. **Order Tracking**: View and track pending and delivered orders on the `My Orders` page.
-5. **Product Reviews**: Submit reviews for products on the product detail page.
+3. **Wishlist**: Save favorite items to a wishlist for future reference.
+4. **Checkout**: Proceed to checkout, where users can choose to pay via Stripe or Cash on Delivery.
+5. **Order Tracking**: View and track pending and delivered orders on the `My Orders` page.
+6. **Product Reviews**: Submit reviews for products on the product detail page.
 
 ### Admin Role
 
