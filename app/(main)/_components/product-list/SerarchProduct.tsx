@@ -34,7 +34,7 @@ const SearchProduct = () => {
       <Input
         type="text"
         placeholder="Search Products..."
-        className="pl-8 pr-3 py-2 text-sm border-primary/30 lg:w-72"
+        className="pl-8 pr-3 py-2 text-sm border-primary/30 lg:w-64"
         value={searchValue} // Bind the input value to local state
         onChange={handleSearchChange}
       />

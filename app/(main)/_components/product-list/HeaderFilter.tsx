@@ -9,7 +9,7 @@ export default function HeaderFilter({ filters }: { filters: IFilters }) {
   return (
     <>
       {/* header filter */}
-      <div className="flex items-baseline justify-between  border-gray-200 border-b pb-6 flex-col gap-4 lg:flex-row">
+      <div className="flex items-baseline justify-between  border-gray-200  flex-col gap-4 lg:flex-row z-20">
         <SearchProduct />
 
         <div className="flex items-center justify-end gap-2 max-lg:w-full">

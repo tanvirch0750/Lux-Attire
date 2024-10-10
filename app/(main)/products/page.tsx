@@ -33,8 +33,6 @@ export const metadata: Metadata = {
   },
 };
 
-// export const revalidate = 3600;
-
 interface SearchParams {
   search?: string;
   sort?: string | 'price-asc' | 'price-desc';
@@ -62,7 +60,6 @@ const ProductsPage = async ({
 }) => {
   const { search, sort, color, price, category, page, limit } = searchParams;
 
-  //Prepare filter conditions based on the extracted searchParams
   const filters: IFilters = {
     search: search || '',
     sort: sort || 'price-asc',
@@ -72,8 +69,6 @@ const ProductsPage = async ({
     page: page || 1,
     limit: limit || 12,
   };
-
-  console.log('filters', filters);
 
   if (typeof filters.categories === 'string') {
     filters.categories = [filters.categories];
@@ -87,7 +82,6 @@ const ProductsPage = async ({
     filters.priceRanges = [filters.priceRanges];
   }
 
-  // Create a unique key based on all filter values
   const filterKey = JSON.stringify(filters);
 
   return (
@@ -111,20 +105,24 @@ const ProductsPage = async ({
         }}
       />
 
-      <main>
+      <main className="relative border-t">
         <h1 className="sr-only">All Products - Luxe Attire</h1>
+
+        <div className="sticky top-0 z-20 bg-white px-[24px] py-[12px]">
+          <HeaderFilter filters={filters} />
+        </div>
 
         <section
           aria-label="Product Filters and List"
-          className="space-y-6 dark:bg-transparent p-[24px] border-t"
+          className="space-y-6 p-[24px] border-t"
         >
-          <HeaderFilter filters={filters} />
-
           <div className="pb-24 pt-0">
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-              <aside>
-                <h2 className="sr-only">Product Filters</h2>
-                <SideFilter />
+              <aside className="lg:block">
+                <div className="sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] overflow-y-auto">
+                  <h2 className="sr-only">Product Filters</h2>
+                  <SideFilter />
+                </div>
               </aside>
 
               <div className="lg:col-span-4">
