@@ -73,7 +73,7 @@ export default function CartDetails({ cartItems }: { cartItems: ICartItem[] }) {
                 </span>
                 <span className="text-gray-600">|</span>
                 <span className="float-right text-gray-600">
-                  <span className="font-bold">Size:</span> {item?.size?.name}
+                  <span className="font-bold">Size:</span> {item?.size}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2 mt-2">

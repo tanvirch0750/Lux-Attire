@@ -112,8 +112,6 @@ export default function Checkout({
     return activeOffers.some((offer) => offer.offerType === 'freeShipping');
   });
 
-  console.log('is all item have free shipping', allItemsHaveFreeShipping);
-
   const createOrderData = (paymentMethod: string, isPaid: boolean = false) => {
     const shippingPrice = allItemsHaveFreeShipping
       ? 0
@@ -133,7 +131,7 @@ export default function Checkout({
         name: item?.name,
         price: item?.price,
         quantity: item?.quantity,
-        size: item?.size?.name,
+        size: item?.size,
         totalPrice: item?.quantity * item?.price,
       })),
       shippingAddress: formData?.address,
@@ -458,7 +456,11 @@ export default function Checkout({
             className="mt-4 mb-8 w-full rounded-md bg-orange-600 px-6 py-3 font-medium text-white"
             isLoading={loading}
             onClick={handleSubmit}
-            disabled={!formData.paymentMethod || loading}
+            disabled={
+              !formData.paymentMethod ||
+              loading ||
+              cartItems?.items?.length === 0
+            }
             label={
               formData.paymentMethod === 'cash' ? 'Place Order' : 'Pay Now'
             }

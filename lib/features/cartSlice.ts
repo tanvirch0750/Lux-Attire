@@ -8,7 +8,7 @@ export interface ICartItem {
   image: TProduct['images'][0];
   quantity: number;
   color: TProduct['colors'][0];
-  size: TProduct['sizes'][0];
+  size: string;
   offers: IOffer[];
   oldPrice?: number;
 }

@@ -110,6 +110,7 @@ export default function AddToCart({
   // Dispatch the selected color and size using Redux actions
   const handleColorChange = (color: IProduct['colors'][0]) => {
     dispatch(setSelectedColor({ color, images }));
+    dispatch(setSelectedSize(''));
   };
 
   const handleSizeChange = (size: string) => {

@@ -68,7 +68,7 @@ const CartItem = ({ item }: { item: ICartItem }) => {
         <div className="flex flex-wrap gap-2 mb-2 text-sm text-gray-600">
           <span>Color: {item?.color?.name}</span>
           <span>|</span>
-          <span>Size: {item?.size?.name}</span>
+          <span>Size: {item?.size}</span>
           <span>|</span>
           <span className="flex items-center mb-2">
             <span className="text-sm text-gray-600 mr-2">Price:</span>
