@@ -34,7 +34,7 @@ export default function AddToCart({
 }: {
   productId: string;
   colors: TProduct['colors'];
-  sizes: TProduct['sizes'];
+  sizes: TProduct['colors'];
   images: TProduct['images'];
   price: number;
   name: string;
@@ -135,7 +135,7 @@ export default function AddToCart({
         <ColorPicker
           colors={colors}
           selectedColor={selectedColor}
-          setSelectedColor={handleColorChange} // Use Redux handler
+          setSelectedColor={handleColorChange}
         />
 
         <AddToWishListButton product={wishListData} isHidden={false} />
@@ -143,7 +143,8 @@ export default function AddToCart({
       <SizePicker
         sizes={sizes}
         selectedSize={selectedSize}
-        setSelectedSize={handleSizeChange} // Use Redux handler
+        setSelectedSize={handleSizeChange}
+        selectedColor={selectedColor}
       />
       {shippingOffer && (
         <Badge variant="secondary" className="mt-4 text-[16px] text-brand">

@@ -104,7 +104,7 @@ export default async function ProductDetailPage({
               <form>
                 <AddToCart
                   colors={product?.colors}
-                  sizes={product?.sizes}
+                  sizes={product?.colors}
                   productId={params?.id}
                   images={product?.images}
                   price={product?.price}

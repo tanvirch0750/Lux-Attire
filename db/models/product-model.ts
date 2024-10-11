@@ -70,6 +70,7 @@ export type TProduct = {
     name: string;
     bgColor: string;
     selectedColor: string;
+    sizeStocks?: ISizeStock[];
   }[];
   sizes: {
     name: string;
