@@ -3,8 +3,7 @@
 import { Row } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
-import { IProductFrontend } from '@/db/models/product-model';
+import { TProduct } from '@/db/models/product-model';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -13,7 +12,7 @@ interface DataTableRowActionsProps<TData> {
 export function ProductDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const products: IProductFrontend = row.original as IProductFrontend;
+  const products: TProduct = row.original as TProduct;
 
   return (
     <div className="flex items-center w-[100px] gap-2">

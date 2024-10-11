@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+const sizeStockSchema = z.object({
+  size: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'], {
+    errorMap: () => ({ message: 'Invalid size name' }),
+  }),
+  stock: z.number().min(0, 'Stock must be a non-negative number'),
+  isAvailable: z.boolean(),
+});
+
 export const productSchema = z.object({
   category: z.string().nonempty('Category is required'),
   name: z
@@ -27,6 +35,9 @@ export const productSchema = z.object({
         name: z.string().min(1, 'Color name is required'),
         bgColor: z.string().min(1, 'Background color is required'),
         selectedColor: z.string().min(1, 'Selected color is required'),
+        sizeStocks: z
+          .array(sizeStockSchema)
+          .nonempty('At least one size stock is required'),
       })
     )
     .nonempty('At least one color is required'),
@@ -36,7 +47,6 @@ export const productSchema = z.object({
         name: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'], {
           errorMap: () => ({ message: 'Invalid size name' }),
         }),
-
         inStock: z.boolean(),
       })
     )

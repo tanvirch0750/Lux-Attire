@@ -6,9 +6,10 @@ import {
   Controller,
   useFieldArray,
   SubmitHandler,
+  useWatch,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema } from '../validation/productSchema';
+import { z } from 'zod';
 import { NumberInput } from './NumberInput';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -40,25 +41,62 @@ import {
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
-interface IProductFormInputs {
-  category: string;
-  name: string;
-  price: number;
-  isAvailable: boolean;
-  images: {
-    id: string;
-    imageSrc: string;
-    imageAlt: string;
-    color: string;
-    primary: boolean;
-  }[];
-  colors: { name: string; bgColor: string; selectedColor: string }[];
-  sizes: { name: string; inStock: boolean }[];
-  description: string;
-  details: string[];
-}
+const sizeList = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
 
-const sizeList = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+const sizeStockSchema = z.object({
+  size: z.enum(sizeList),
+  stock: z.number().min(0, 'Stock must be a non-negative number'),
+  isAvailable: z.boolean(),
+});
+
+const productSchema = z.object({
+  category: z.string().nonempty('Category is required'),
+  name: z
+    .string()
+    .min(1, 'Product name is required')
+    .refine((val) => !val.includes('---'), {
+      message: "Product name cannot include '---'",
+    }),
+  price: z.number().min(0, 'Price must be a non-negative number'),
+  isAvailable: z.boolean(),
+  images: z
+    .array(
+      z.object({
+        id: z.string(),
+        color: z.string(),
+        imageSrc: z.string().url('Invalid image URL'),
+        imageAlt: z.string().min(1, 'Image alt text is required'),
+        primary: z.boolean(),
+      })
+    )
+    .nonempty('At least one image is required'),
+  colors: z
+    .array(
+      z.object({
+        name: z.string().min(1, 'Color name is required'),
+        bgColor: z.string().min(1, 'Background color is required'),
+        selectedColor: z.string().min(1, 'Selected color is required'),
+        sizeStocks: z
+          .array(sizeStockSchema)
+          .nonempty('At least one size stock is required'),
+      })
+    )
+    .nonempty('At least one color is required'),
+  sizes: z
+    .array(
+      z.object({
+        name: z.enum(sizeList),
+        inStock: z.boolean(),
+      })
+    )
+    .nonempty('At least one size is required'),
+  description: z.string().min(1, 'Description is required'),
+  details: z
+    .array(z.string().min(1, 'Detail is required'))
+    .nonempty('At least one detail is required'),
+});
+
+export type ProductFormInputs = z.infer<typeof productSchema>;
 
 const ProductForm = ({ categories }: { categories: ICategory[] }) => {
   const [loading, setLoading] = useState(false);
@@ -68,7 +106,8 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
     register,
     formState: { errors },
     reset,
-  } = useForm<IProductFormInputs>({
+    setValue,
+  } = useForm<ProductFormInputs>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       category: '',
@@ -78,10 +117,21 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
       images: [
         { id: '1', color: '', imageAlt: '', imageSrc: '', primary: false },
       ],
-      colors: [{ name: '', bgColor: '', selectedColor: '' }],
-      sizes: sizeList?.map((size) => ({ name: size, inStock: false })),
+      colors: [
+        {
+          name: '',
+          bgColor: '',
+          selectedColor: '',
+          sizeStocks: sizeList.map((size) => ({
+            size,
+            stock: 0,
+            isAvailable: false,
+          })),
+        },
+      ],
+      sizes: sizeList.map((size) => ({ name: size, inStock: false })),
       description: '',
-      details: ['product details'],
+      details: [''],
     },
   });
 
@@ -103,11 +153,6 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
     name: 'colors',
   });
 
-  const { fields: sizeFields } = useFieldArray({
-    control,
-    name: 'sizes',
-  });
-
   const {
     fields: detailFields,
     append: appendDetail,
@@ -118,7 +163,10 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
     name: 'details',
   });
 
-  const handleCreateProduct: SubmitHandler<IProductFormInputs> = async (
+  const watchedImages = useWatch({ control, name: 'images' });
+  const watchedColors = useWatch({ control, name: 'colors' });
+
+  const handleCreateProduct: SubmitHandler<ProductFormInputs> = async (
     data
   ) => {
     try {
@@ -146,10 +194,10 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
     <form onSubmit={handleSubmit(handleCreateProduct)} className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle className=" flex items-center justify-between gap-1">
+          <CardTitle className="flex items-center justify-between gap-1">
             <span>Create New Product</span>{' '}
             <Link href="/dashboard/products">
-              <Button className=" bg-brand hover: bg-brand/90">
+              <Button className="bg-brand hover:bg-brand/90">
                 Products List
               </Button>
             </Link>
@@ -162,7 +210,9 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
           {/* Name and Price */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Product Name</Label>
+              <Label htmlFor="name" className="text-brand">
+                Product Name
+              </Label>
               <Input
                 id="name"
                 placeholder="Product Name"
@@ -173,7 +223,9 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Price</Label>
+              <Label htmlFor="price" className="text-brand">
+                Price
+              </Label>
               <Controller
                 name="price"
                 control={control}
@@ -194,23 +246,28 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
           {/* Category and Availability */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select
-                // @ts-ignore
-                onValueChange={(value) => register('category').onChange(value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories?.map((cat) => (
-                    // @ts-ignore
-                    <SelectItem key={cat?._id} value={cat?._id}>
-                      {cat?.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="category" className="text-brand">
+                Category
+              </Label>
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories?.map((cat) => (
+                        // @ts-ignore
+                        <SelectItem key={cat?._id} value={cat?._id}>
+                          {cat?.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               {errors.category && (
                 <p className="text-sm text-red-600">
                   {errors.category.message}
@@ -218,7 +275,9 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="isAvailable">Product Availability</Label>
+              <Label htmlFor="isAvailable" className="text-brand">
+                Product Availability
+              </Label>
               <div className="flex items-center space-x-2">
                 <Checkbox id="isAvailable" {...register('isAvailable')} />
                 <Label htmlFor="isAvailable">Is Available</Label>
@@ -228,7 +287,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
 
           {/* Images */}
           <div className="space-y-2">
-            <Label>Images</Label>
+            <Label className="text-brand">Images</Label>
             {imageFields.map((field, index) => (
               <Card key={field.id} className="mb-4">
                 <CardContent className="pt-6">
@@ -237,10 +296,19 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                       {...register(`images.${index}.id` as const)}
                       placeholder="ID"
                     />
-                    <Input
-                      {...register(`images.${index}.color` as const)}
-                      placeholder="Product Color (#ffff)"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...register(`images.${index}.color` as const)}
+                        placeholder="Product Color (#ffff)"
+                      />
+                      <div
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border"
+                        style={{
+                          backgroundColor:
+                            watchedImages[index]?.color || 'transparent',
+                        }}
+                      />
+                    </div>
                     <Input
                       {...register(`images.${index}.imageAlt` as const)}
                       placeholder="Image Alt"
@@ -263,7 +331,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                               {({ open }) => (
                                 <Button
                                   onClick={() => open()}
-                                  className="w-full"
+                                  className="w-full bg-brand/80 hover:bg-brand/90"
                                 >
                                   Upload Image
                                 </Button>
@@ -325,31 +393,90 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
             </Button>
           </div>
 
-          {/* Colors */}
+          {/* Colors and Size Stocks */}
           <div className="space-y-2">
-            <Label>Colors</Label>
-            {colorFields.map((field, index) => (
+            <Label className="text-brand">Colors and Size Stocks</Label>
+            {colorFields.map((field, colorIndex) => (
               <Card key={field.id} className="mb-4">
                 <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <Input
-                      {...register(`colors.${index}.name` as const)}
+                      {...register(`colors.${colorIndex}.name` as const)}
                       placeholder="Color Name"
                     />
-                    <Input
-                      {...register(`colors.${index}.bgColor` as const)}
-                      placeholder="#fffff (background-color)"
-                    />
-                    <Input
-                      {...register(`colors.${index}.selectedColor` as const)}
-                      placeholder="#f0f0f0 (Selected Color)"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...register(`colors.${colorIndex}.bgColor` as const)}
+                        placeholder="#fffff (background-color)"
+                      />
+                      <div
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border"
+                        style={{
+                          backgroundColor:
+                            watchedColors[colorIndex]?.bgColor || 'transparent',
+                        }}
+                      />
+                    </div>
+                    <div className="relative">
+                      <Input
+                        {...register(
+                          `colors.${colorIndex}.selectedColor` as const
+                        )}
+                        placeholder="#f0f0f0 (Selected Color)"
+                      />
+                      <div
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border"
+                        style={{
+                          backgroundColor:
+                            watchedColors[colorIndex]?.selectedColor ||
+                            'transparent',
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-brand">
+                      Size and Stocks (unit number) for {field.name} (
+                      <SizeDescription />)
+                    </Label>
+                    {sizeList.map((size, sizeIndex) => (
+                      <div
+                        key={size}
+                        className="grid grid-cols-3 gap-2 items-center"
+                      >
+                        <Input value={size} readOnly className="w-16" />
+                        <Controller
+                          name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.stock`}
+                          control={control}
+                          render={({ field }) => (
+                            <NumberInput
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              // @ts-ignore
+                              placeholder="Stock"
+                            />
+                          )}
+                        />
+                        <Controller
+                          name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.isAvailable`}
+                          control={control}
+                          render={({ field }) => (
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              id={`isAvailable-${colorIndex}-${sizeIndex}`}
+                            />
+                          )}
+                        />
+                      </div>
+                    ))}
                   </div>
                   <Button
                     variant="destructive"
                     size="sm"
                     className="mt-4"
-                    onClick={() => removeColor(index)}
+                    onClick={() => removeColor(colorIndex)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -360,7 +487,17 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
               type="button"
               variant="outline"
               onClick={() =>
-                appendColor({ name: '', bgColor: '', selectedColor: '' })
+                appendColor({
+                  name: '',
+                  bgColor: '',
+                  selectedColor: '',
+                  // @ts-ignore
+                  sizeStocks: sizeList.map((size) => ({
+                    size,
+                    stock: 0,
+                    isAvailable: false,
+                  })),
+                })
               }
             >
               <Plus className="h-4 w-4 mr-2" /> Add Color
@@ -369,17 +506,13 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
 
           {/* Sizes */}
           <div className="space-y-2">
-            <Label>
-              Sizes (<SizeDescription />)
+            <Label className="text-brand">
+              Global Sizes | Legacy field (<SizeDescription />)
             </Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {sizeFields.map((field, index) => (
-                <div key={field.id} className="flex items-center space-x-2">
-                  <Input
-                    {...register(`sizes.${index}.name` as const)}
-                    className="w-16"
-                    readOnly
-                  />
+            <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-4">
+              {sizeList.map((size, index) => (
+                <div key={size} className="flex items-center space-x-2">
+                  <Input value={size} className="w-16" readOnly />
                   <Controller
                     control={control}
                     name={`sizes.${index}.inStock`}
@@ -399,7 +532,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
 
           {/* Details */}
           <div className="space-y-2">
-            <Label>Fabric Details</Label>
+            <Label className=" text-brand">Fabric Details</Label>
             {detailFields.map((field, index) => (
               <div key={field.id} className="flex items-center space-x-2">
                 <Input
@@ -428,7 +561,9 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description" className=" text-brand">
+              Description
+            </Label>
             <Textarea
               id="description"
               {...register('description')}

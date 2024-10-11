@@ -8,12 +8,13 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { IProductFrontend } from '@/db/models/product-model';
+
 import {
   deleteProductAction,
   undoDeleteProductAction,
 } from '@/app/actions/product/product';
 import { CustomTooltip } from '@/components/Tooltip';
+import { TProduct } from '@/db/models/product-model';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -24,7 +25,7 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const [loading, setLoading] = useState(false);
 
-  const products: IProductFrontend = row.original as IProductFrontend;
+  const products: TProduct = row.original as TProduct;
 
   const handleDeleteProduct = async () => {
     try {
