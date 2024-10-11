@@ -35,7 +35,7 @@ const WhyChooseUs = () => {
       <h2 className="text-2xl font-bold mb-4 ">Why Choose Us</h2>
 
       {/* Features Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
         {features.map((feature, index) => (
           <div
             key={index}

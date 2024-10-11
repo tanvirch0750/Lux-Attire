@@ -9,7 +9,7 @@ export default function CategoryCards() {
       title: 'Womens Collection',
       subtitle: 'explore',
       hashtag: '#NEWYEAR2024',
-      className: 'col-span-12 md:col-span-6',
+      className: 'col-span-12 md:col-span-6 xl:col-span-6',
       textPosition: 'right',
     },
     {
@@ -18,7 +18,7 @@ export default function CategoryCards() {
         'https://img.freepik.com/free-photo/stylish-girl-plaid-coat-posing-orange-wall_197531-23797.jpg?t=st=1726331866~exp=1726335466~hmac=0f76551b400a3020c498b95a7a464c7372d790d5b70320ac1c5e1704ba9a55b3&w=740',
       title: 'Activewear',
       subtitle: '#New',
-      className: 'col-span-12 md:col-span-3',
+      className: 'col-span-12 md:col-span-6 xl:col-span-3',
       textPosition: 'top-right',
     },
     {
@@ -28,7 +28,7 @@ export default function CategoryCards() {
       title: 'Kids Wear',
       subtitle: '#Dress',
       hashtag: 'exclusive',
-      className: 'col-span-12 md:col-span-3',
+      className: 'col-span-12 md:col-span-6 xl:col-span-3',
       textPosition: 'bottom-right',
     },
     {
@@ -38,7 +38,7 @@ export default function CategoryCards() {
       title: 'Accessories',
       subtitle: '#Accessories',
       hashtag: '25%',
-      className: 'col-span-12 md:col-span-3',
+      className: 'col-span-12 md:col-span-6 xl:col-span-3',
       textPosition: 'top-left',
     },
     {
@@ -48,7 +48,7 @@ export default function CategoryCards() {
       title: 'Traditional Clothing',
       subtitle: 'explore',
       hashtag: '#NEWYEAR2024',
-      className: 'col-span-12 md:col-span-3',
+      className: 'col-span-12 md:col-span-6 xl:col-span-3',
       textPosition: 'center',
     },
     {
@@ -58,7 +58,7 @@ export default function CategoryCards() {
       title: 'Menswear',
       subtitle: 'explore',
       hashtag: 'Mega Sale',
-      className: 'col-span-12 md:col-span-6',
+      className: 'col-span-12 md:col-span-6 xl:col-span-6',
       textPosition: 'right',
     },
   ];

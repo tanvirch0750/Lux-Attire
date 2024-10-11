@@ -87,7 +87,7 @@ export const getProductsByCategoryValue = async (categoryValue: string) => {
       },
     ]);
 
-    return products;
+    return JSON.parse(JSON.stringify(products));
   } catch (error) {
     throw new Error(
       'Error fetching products by category: ' + (error as Error).message
@@ -154,7 +154,7 @@ export const getNewArrivalProducts = async () => {
       },
     ]);
 
-    return newArrivals;
+    return JSON.parse(JSON.stringify(newArrivals));
   } catch (error) {
     throw new Error('Error fetching new arrivals: ' + (error as Error).message);
   }

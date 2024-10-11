@@ -32,7 +32,7 @@ const ProductsShowcase = () => {
         {products.map((product, index) => (
           <div
             key={index}
-            className={`flash-effect text-center flex flex-col justify-center items-center animate-fade-slide ${
+            className={`flash-effect border md:border-0 p-6 md:p-0  text-center flex flex-col justify-center items-center animate-fade-slide ${
               index % 2 === 0 ? 'fade-slide-left' : 'fade-slide-right'
             }`}
           >
