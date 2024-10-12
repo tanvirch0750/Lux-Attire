@@ -2,102 +2,12 @@ import PageContainer from '@/app/(dashboard)/_components/layout/PageContainer';
 import ProductStats from '../../_components/product-stats/ProductStats';
 import { getProductDetailsWithSales } from '@/db/actions-and-queries/products/products-queries';
 
-const demoproduct = {
-  _id: '650a7b1e123abc45de678901',
-  name: "Men's T-Shirt",
-  price: 29.99,
-  isAvailable: true,
-  images: [
-    {
-      id: 'img123',
-      imageSrc:
-        'https://img.freepik.com/free-photo/side-view-hands-painting-t-shirt_23-2150572788.jpg?uid=R15161155&ga=GA1.1.1101573227.1727353633&semt=ais_hybrid-rr-similar',
-      imageAlt: "Men's T-Shirt in blue",
-      color: '#0000FF',
-      primary: true,
-    },
-    {
-      id: 'img124',
-      imageSrc:
-        'https://img.freepik.com/free-photo/view-hawaiian-shirt-with-floral-print_23-2149366086.jpg?uid=R15161155&ga=GA1.1.1101573227.1727353633&semt=ais_hybrid-rr-similar',
-      imageAlt: "Men's T-Shirt in red",
-      color: '#FF0000',
-      primary: false,
-    },
-  ],
-  colors: [
-    {
-      name: 'Blue',
-      bgColor: '#0000FF',
-      selectedColor: '#0000FF',
-      sizeStocks: [
-        { size: 'S', inStock: true, stockQuantity: 30 },
-        { size: 'M', inStock: true, stockQuantity: 50 },
-        { size: 'L', inStock: false, stockQuantity: 0 },
-      ],
-    },
-    {
-      name: 'Red',
-      bgColor: '#FF0000',
-      selectedColor: '#FF0000',
-      sizeStocks: [
-        { size: 'S', inStock: true, stockQuantity: 20 },
-        { size: 'M', inStock: false, stockQuantity: 0 },
-        { size: 'L', inStock: true, stockQuantity: 10 },
-      ],
-    },
-  ],
-  sizes: [
-    { name: 'S', inStock: true },
-    { name: 'M', inStock: false },
-    { name: 'L', inStock: true },
-  ],
-  description: 'A comfortable and stylish T-shirt for men.',
-  details: ['100% cotton', 'Machine washable', 'Available in multiple colors'],
-  categoryDetails: {
-    name: "Men's Wear",
-    value: 'mens-wear',
-  },
-  salesData: [
-    {
-      color: 'Blue',
-      size: 'S',
-      totalQuantity: 150,
-      totalRevenue: 4498.5,
-    },
-    {
-      color: 'Blue',
-      size: 'M',
-      totalQuantity: 200,
-      totalRevenue: 5998.0,
-    },
-    {
-      color: 'Red',
-      size: 'S',
-      totalQuantity: 100,
-      totalRevenue: 2999.0,
-    },
-    {
-      color: 'Red',
-      size: 'L',
-      totalQuantity: 50,
-      totalRevenue: 1499.5,
-    },
-  ],
-  totalQuantitySold: 500,
-  totalRevenueGenerated: 14995.0,
-};
-
 export default async function ProductDetailPage({
   params,
 }: {
   params: { details_id: string };
 }) {
-  console.log('params', params);
-
   const product = await getProductDetailsWithSales(params?.details_id);
-
-  console.log('details product', product);
 
   return (
     <PageContainer>

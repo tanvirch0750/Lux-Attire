@@ -56,7 +56,7 @@ export const getUserStatistics = async (): Promise<{
   const adminCount = await User.countDocuments({ role: 'admin' });
   const regularUserCount = await User.countDocuments({ role: 'user' });
 
-  return {
+  const finalRes = {
     totalUsers,
     activeUsers,
     topCustomers,
@@ -64,4 +64,15 @@ export const getUserStatistics = async (): Promise<{
     adminCount,
     regularUserCount,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   totalUsers,
+  //   activeUsers,
+  //   topCustomers,
+  //   newUsers,
+  //   adminCount,
+  //   regularUserCount,
+  // };
 };

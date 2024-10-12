@@ -41,10 +41,19 @@ export const getOrderStatistics = async (): Promise<{
     isDeleted: false,
   });
 
-  return {
+  const finalRes = {
     totalOrders,
     ordersByPaymentMethod,
     totalShippingRevenue: totalShippingRevenue[0]?.totalShippingRevenue || 0,
     pendingDeliveries,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   totalOrders,
+  //   ordersByPaymentMethod,
+  //   totalShippingRevenue: totalShippingRevenue[0]?.totalShippingRevenue || 0,
+  //   pendingDeliveries,
+  // };
 };

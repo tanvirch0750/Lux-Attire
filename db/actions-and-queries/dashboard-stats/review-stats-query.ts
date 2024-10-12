@@ -87,10 +87,19 @@ export const getReviewStatistics = async (): Promise<{
     },
   ]);
 
-  return {
+  const finalRes = {
     totalReviews,
     averageRating,
     mostReviewedProducts,
     topRatedProducts,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   totalReviews,
+  //   averageRating,
+  //   mostReviewedProducts,
+  //   topRatedProducts,
+  // };
 };

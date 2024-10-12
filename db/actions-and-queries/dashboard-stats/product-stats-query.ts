@@ -130,7 +130,7 @@ export const getProductStatistics = async (): Promise<{
     revenuePerProductPromise,
   ]);
 
-  return {
+  const finalRes = {
     totalProducts,
     availableProducts,
     soldProducts,
@@ -139,4 +139,16 @@ export const getProductStatistics = async (): Promise<{
     totalReviews,
     revenuePerProduct,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   totalProducts,
+  //   availableProducts,
+  //   soldProducts,
+  //   averageRating,
+  //   mostPopularProducts,
+  //   totalReviews,
+  //   revenuePerProduct,
+  // };
 };

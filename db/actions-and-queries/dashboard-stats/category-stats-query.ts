@@ -46,7 +46,7 @@ export const getCategoryStatistics = async (): Promise<{
     { $limit: 1 }, // Get the most popular category
   ]);
 
-  return {
+  const finalRes = {
     totalCategories,
     mostPopularCategory:
       mostPopularCategory.length > 0
@@ -57,4 +57,6 @@ export const getCategoryStatistics = async (): Promise<{
           }
         : null,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
 };

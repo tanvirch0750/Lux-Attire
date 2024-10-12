@@ -27,10 +27,19 @@ export const getDeletedDataTracking = async (): Promise<{
   // Count Deleted Reviews
   const deletedReviewsCount = await Review.countDocuments({ isDeleted: true });
 
-  return {
+  const finalRes = {
     deletedProductsCount,
     deletedCategoriesCount,
     deletedOrdersCount,
     deletedReviewsCount,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   deletedProductsCount,
+  //   deletedCategoriesCount,
+  //   deletedOrdersCount,
+  //   deletedReviewsCount,
+  // };
 };

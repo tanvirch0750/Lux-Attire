@@ -86,7 +86,7 @@ export const getAllSalesStatistics = async (): Promise<{
         averageOrderValueResult[0].totalOrders
       : 0;
 
-  return {
+  const finalRes = {
     totalRevenue,
     averageOrderValue,
     totalOrders,
@@ -97,4 +97,18 @@ export const getAllSalesStatistics = async (): Promise<{
     ordersByStatus,
     revenueByMonth,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   totalRevenue,
+  //   averageOrderValue,
+  //   totalOrders,
+  //   paidVsUnpaidOrders: {
+  //     paid: paidOrders,
+  //     unpaid: unpaidOrders,
+  //   },
+  //   ordersByStatus,
+  //   revenueByMonth,
+  // };
 };

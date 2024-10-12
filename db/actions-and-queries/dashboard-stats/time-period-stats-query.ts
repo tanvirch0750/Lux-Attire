@@ -104,9 +104,17 @@ export const getTimeBasedTrends = async (
     { $sort: { '_id.date': 1 } },
   ]);
 
-  return {
+  const finalRes = {
     ordersOverTime,
     revenueOverTime,
     newUsersOverTime,
   };
+
+  return JSON.parse(JSON.stringify(finalRes));
+
+  // return {
+  //   ordersOverTime,
+  //   revenueOverTime,
+  //   newUsersOverTime,
+  // };
 };

@@ -608,7 +608,7 @@ export async function getProductDetailsWithSales(productId: string) {
     },
   ]);
 
-  return product;
+  return JSON.parse(JSON.stringify(product));
 }
 
 // const product = {
