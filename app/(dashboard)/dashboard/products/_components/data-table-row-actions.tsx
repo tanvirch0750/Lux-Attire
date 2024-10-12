@@ -2,7 +2,12 @@
 
 import { Row } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { BadgePercentIcon, Edit2Icon } from 'lucide-react';
+import {
+  ArrowRight,
+  BadgePercentIcon,
+  Edit2Icon,
+  ReceiptTextIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { toast } from 'react-toastify';
@@ -80,7 +85,22 @@ export function DataTableRowActions<TData>({
   };
 
   return (
-    <div className="flex items-center w-[100px] gap-2">
+    <div className="flex items-center w-[200px] gap-2">
+      <CustomTooltip
+        triggerContent={
+          <>
+            <Link href={`/dashboard/products/details/${products?._id}`}>
+              <Button
+                className=" px-2 bg-orange-100 text-orange-500 hover:bg-orange-200"
+                size="sm"
+              >
+                <ReceiptTextIcon size={16} />
+              </Button>
+            </Link>
+          </>
+        }
+        tooltipContent="Deatails"
+      />
       <CustomTooltip
         triggerContent={
           <>
@@ -95,6 +115,22 @@ export function DataTableRowActions<TData>({
           </>
         }
         tooltipContent="Edit"
+      />
+
+      <CustomTooltip
+        triggerContent={
+          <>
+            <Link href={`/dashboard/products/offer/${products?._id}`}>
+              <Button
+                className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
+                size="sm"
+              >
+                <BadgePercentIcon size={18} />
+              </Button>
+            </Link>
+          </>
+        }
+        tooltipContent="Add Offer"
       />
 
       {products?.isDeleted ? (
@@ -118,22 +154,6 @@ export function DataTableRowActions<TData>({
           isLoading={loading}
         />
       )}
-
-      <CustomTooltip
-        triggerContent={
-          <>
-            <Link href={`/dashboard/products/offer/${products?._id}`}>
-              <Button
-                className=" px-2 bg-blue-100 text-blue-500 hover:bg-blue-200"
-                size="sm"
-              >
-                <BadgePercentIcon size={18} />
-              </Button>
-            </Link>
-          </>
-        }
-        tooltipContent="Add Offer"
-      />
     </div>
   );
 }

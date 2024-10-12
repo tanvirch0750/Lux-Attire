@@ -3,7 +3,7 @@ import { Product } from '@/db/models/product-model';
 import { Review } from '@/db/models/review-model';
 import { dbConnect } from '@/db/service/mongo';
 
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 // Get all products (only those that are not deleted)
 export const getAllProducts = async () => {
@@ -533,3 +533,163 @@ export const getProductsWithFreeShippingOffers = async () => {
     );
   }
 };
+
+export async function getProductDetailsWithSales(productId: string) {
+  const productObjectId = new mongoose.Types.ObjectId(productId);
+
+  const [product] = await Product.aggregate([
+    { $match: { _id: productObjectId } },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'categoryDetails',
+      },
+    },
+    { $unwind: '$categoryDetails' },
+    {
+      $lookup: {
+        from: 'orders',
+        let: { productId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $in: ['$$productId', '$orderItems.productId'] },
+            },
+          },
+          { $unwind: '$orderItems' },
+          {
+            $match: {
+              $expr: { $eq: ['$orderItems.productId', '$$productId'] },
+            },
+          },
+          {
+            $group: {
+              _id: { color: '$orderItems.color', size: '$orderItems.size' },
+              totalQuantity: { $sum: '$orderItems.quantity' },
+              totalRevenue: { $sum: '$orderItems.totalPrice' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              color: '$_id.color',
+              size: '$_id.size',
+              totalQuantity: 1,
+              totalRevenue: 1,
+            },
+          },
+        ],
+        as: 'salesData',
+      },
+    },
+    {
+      $addFields: {
+        totalQuantitySold: { $sum: '$salesData.totalQuantity' },
+        totalRevenueGenerated: { $sum: '$salesData.totalRevenue' },
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        price: 1,
+        isAvailable: 1,
+        images: 1,
+        colors: 1,
+        sizes: 1,
+        description: 1,
+        details: 1,
+        categoryDetails: { label: 1, value: 1 },
+        salesData: 1,
+        totalQuantitySold: 1,
+        totalRevenueGenerated: 1,
+      },
+    },
+  ]);
+
+  return product;
+}
+
+// const product = {
+//   _id: '650a7b1e123abc45de678901',
+//   name: "Men's T-Shirt",
+//   price: 29.99,
+//   isAvailable: true,
+//   images: [
+//     {
+//       id: 'img123',
+//       imageSrc: 'https://example.com/images/tshirt.jpg',
+//       imageAlt: "Men's T-Shirt in blue",
+//       color: '#0000FF',
+//       primary: true,
+//     },
+//     {
+//       id: 'img124',
+//       imageSrc: 'https://example.com/images/tshirt_red.jpg',
+//       imageAlt: "Men's T-Shirt in red",
+//       color: '#FF0000',
+//       primary: false,
+//     },
+//   ],
+//   colors: [
+//     {
+//       name: 'Blue',
+//       bgColor: '#0000FF',
+//       selectedColor: '#0000FF',
+//       sizeStocks: [
+//         { size: 'S', inStock: true, stockQuantity: 30 },
+//         { size: 'M', inStock: true, stockQuantity: 50 },
+//         { size: 'L', inStock: false, stockQuantity: 0 },
+//       ],
+//     },
+//     {
+//       name: 'Red',
+//       bgColor: '#FF0000',
+//       selectedColor: '#FF0000',
+//       sizeStocks: [
+//         { size: 'S', inStock: true, stockQuantity: 20 },
+//         { size: 'M', inStock: false, stockQuantity: 0 },
+//         { size: 'L', inStock: true, stockQuantity: 10 },
+//       ],
+//     },
+//   ],
+//   sizes: [
+//     { name: 'S', inStock: true },
+//     { name: 'M', inStock: false },
+//     { name: 'L', inStock: true },
+//   ],
+//   description: 'A comfortable and stylish T-shirt for men.',
+//   details: ['100% cotton', 'Machine washable', 'Available in multiple colors'],
+//   categoryDetails: {
+//     name: "Men's Wear",
+//   },
+//   salesData: [
+//     {
+//       color: 'Blue',
+//       size: 'S',
+//       totalQuantity: 150,
+//       totalRevenue: 4498.5,
+//     },
+//     {
+//       color: 'Blue',
+//       size: 'M',
+//       totalQuantity: 200,
+//       totalRevenue: 5998.0,
+//     },
+//     {
+//       color: 'Red',
+//       size: 'S',
+//       totalQuantity: 100,
+//       totalRevenue: 2999.0,
+//     },
+//     {
+//       color: 'Red',
+//       size: 'L',
+//       totalQuantity: 50,
+//       totalRevenue: 1499.5,
+//     },
+//   ],
+//   totalQuantitySold: 500,
+//   totalRevenueGenerated: 14995.0,
+// };

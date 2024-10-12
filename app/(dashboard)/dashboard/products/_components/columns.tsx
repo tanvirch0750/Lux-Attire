@@ -58,7 +58,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
+          <span className="max-w-[100px] truncate sm:max-w-72 md:max-w-[31rem] text-md">
             {row.getValue('name')}
           </span>
         </div>
@@ -79,9 +79,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
       const category = row?.getValue('category');
       return (
         <div className="flex space-x-2">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
-            {category as string}
-          </span>
+          <span className="max-w-[150px]  text-md">{category as string}</span>
         </div>
       );
     },
@@ -101,9 +99,7 @@ export const columns: ColumnDef<IProductFrontend>[] = [
 
       return (
         <div className="flex space-x-2">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
-            {price}
-          </span>
+          <span className="max-w-[150px]  text-md">{price}</span>
         </div>
       );
     },
@@ -137,33 +133,33 @@ export const columns: ColumnDef<IProductFrontend>[] = [
     },
   },
 
-  {
-    accessorKey: 'isDeleted',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Is Deleted"
-        className="text-md text-brand"
-      />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
-            {row.getValue('isDeleted') ? (
-              <Badge className=" bg-red-200 text-red-950 hover:bg-red-100 hover:text-red-700">
-                Yes
-              </Badge>
-            ) : (
-              <Badge className=" bg-green-200 text-green-950 hover:bg-green-100 hover:text-green-700">
-                No
-              </Badge>
-            )}
-          </span>
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: 'isDeleted',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader
+  //       column={column}
+  //       title="Is Deleted"
+  //       className="text-md text-brand"
+  //     />
+  //   ),
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="flex space-x-2">
+  //         <span className="max-w-32 truncate sm:max-w-72 md:max-w-[31rem] text-md">
+  //           {row.getValue('isDeleted') ? (
+  //             <Badge className=" bg-red-200 text-red-950 hover:bg-red-100 hover:text-red-700">
+  //               Yes
+  //             </Badge>
+  //           ) : (
+  //             <Badge className=" bg-green-200 text-green-950 hover:bg-green-100 hover:text-green-700">
+  //               No
+  //             </Badge>
+  //           )}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  // },
 
   {
     id: 'actions',
