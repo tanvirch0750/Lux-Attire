@@ -59,11 +59,8 @@ export default async function OrderConfirmation({
         <div className="border-t border-gray-200 py-6">
           <h2 className="text-sm font-medium text-primary mb-4">ORDER ITEMS</h2>
           <ul className="divide-y divide-gray-200">
-            {orderDetails?.orderItems?.map((item) => (
-              <li
-                key={item?.productId as string}
-                className="py-4 flex items-center"
-              >
+            {orderDetails?.orderItems?.map((item, index) => (
+              <li key={index} className="py-4 flex items-center">
                 <Image
                   src={item?.image}
                   alt={item.name}

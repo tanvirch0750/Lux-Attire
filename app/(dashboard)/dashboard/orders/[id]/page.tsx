@@ -83,8 +83,8 @@ const OrderSummaryPage = async ({ params }: { params: { id: string } }) => {
       {/* Order Items Section */}
       <div className="space-y-6 mt-12">
         {/* Single Order Item */}
-        {order?.orderItems.map((item) => (
-          <div key={item?.productId as string} className="border  rounded-md">
+        {order?.orderItems.map((item, index) => (
+          <div key={index} className="border  rounded-md">
             <div className=" grid grid-cols-12 gap-6 p-4">
               {/* Product Info */}
               <div className="flex space-x-4 col-span-6">

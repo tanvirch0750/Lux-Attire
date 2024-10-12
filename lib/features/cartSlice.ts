@@ -43,7 +43,10 @@ const cartSlice = createSlice({
   reducers: {
     addItem: (state, action: PayloadAction<ICartItem>) => {
       const existingItem = state.items.find(
-        (item) => item.productId === action.payload.productId
+        (item) =>
+          item.productId === action.payload.productId &&
+          item.color.bgColor === action.payload.color.bgColor &&
+          item.size === action.payload.size
       );
 
       // Get active offers and calculate discounted price
@@ -74,9 +77,19 @@ const cartSlice = createSlice({
       state.totalPrice += itemPrice * action.payload.quantity;
     },
 
-    removeItem: (state, action: PayloadAction<string>) => {
+    removeItem: (
+      state,
+      action: PayloadAction<{
+        productId: string;
+        color: TProduct['colors'][0];
+        size: string;
+      }>
+    ) => {
       const itemIndex = state.items.findIndex(
-        (item) => item.productId === action.payload
+        (item) =>
+          item.productId === action.payload.productId &&
+          item.color.bgColor === action.payload.color.bgColor &&
+          item.size === action.payload.size
       );
       if (itemIndex !== -1) {
         const item = state.items[itemIndex];
@@ -90,10 +103,18 @@ const cartSlice = createSlice({
 
     updateQuantity: (
       state,
-      action: PayloadAction<{ productId: string; quantity: number }>
+      action: PayloadAction<{
+        productId: string;
+        color: TProduct['colors'][0];
+        size: string;
+        quantity: number;
+      }>
     ) => {
       const item = state.items.find(
-        (item) => item.productId === action.payload.productId
+        (item) =>
+          item.productId === action.payload.productId &&
+          item.color.bgColor === action.payload.color.bgColor &&
+          item.size === action.payload.size
       );
       if (item && action.payload.quantity > 0) {
         const quantityDifference = action.payload.quantity - item.quantity;

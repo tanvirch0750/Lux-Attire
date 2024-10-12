@@ -16,6 +16,7 @@ import AddToWishListButton from '../wishlist/AddToWishListButton';
 import { IWishlistItem } from '@/lib/features/wishListSlice';
 import { Badge } from '@/components/ui/badge';
 import { Truck } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 // Utility function to calculate discounted price based on offers
 const calculateDiscountedPrice = (originalPrice: number, discount: number) => {
@@ -53,15 +54,18 @@ export default function AddToCart({
   const selectedImage = useSelector(
     (state: RootState) => state.selectedColorAndSize.selectedImage
   );
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  // const cartItems = useSelector((state: RootState) => state.cart.items);
 
   // Check if the product is already in the cart
-  const isProductInCart = cartItems.some(
-    (item: ICartItem) => item.productId === productId
-  );
+  // const isProductInCart = cartItems.some(
+  //   (item: ICartItem) => item.productId === productId
+  // );
+
+  const isProductInCart = false;
 
   // Check if size and color are selected
   const isSizeAndColorSelected = selectedSize && selectedColor?.name;
+  // const isSizeAndColorSelected = false;
 
   // Determine button state and text
   const isButtonDisabled = !isSizeAndColorSelected || isProductInCart;
@@ -82,9 +86,9 @@ export default function AddToCart({
   );
 
   // Calculate discounted price (if a discount offer exists)
-  const discountOffer = activeOffers.find(
-    (offer) => offer.offerType === 'discount'
-  );
+  // const discountOffer = activeOffers.find(
+  //   (offer) => offer.offerType === 'discount'
+  // );
 
   const handleAddToCart = () => {
     if (!isButtonDisabled) {
@@ -104,6 +108,10 @@ export default function AddToCart({
 
       dispatch(addItem(cartProduct)); // Dispatch updated cart product
       dispatch(resetSelectedSizeAndColor());
+
+      toast.success('Product added to the cart', {
+        position: 'top-center',
+      });
     }
   };
 

@@ -13,7 +13,12 @@ const CartItem = ({ item }: { item: ICartItem }) => {
 
   const handleIncrease = () => {
     dispatch(
-      updateQuantity({ productId: item.productId, quantity: item.quantity + 1 })
+      updateQuantity({
+        productId: item.productId,
+        quantity: item.quantity + 1,
+        color: item.color,
+        size: item.size,
+      })
     );
   };
 
@@ -23,13 +28,21 @@ const CartItem = ({ item }: { item: ICartItem }) => {
         updateQuantity({
           productId: item.productId,
           quantity: item.quantity - 1,
+          color: item.color,
+          size: item.size,
         })
       );
     }
   };
 
   const handleRemove = () => {
-    dispatch(removeItem(item.productId));
+    dispatch(
+      removeItem({
+        productId: item.productId,
+        color: item.color,
+        size: item.size,
+      })
+    );
   };
 
   const currentDate = new Date();
