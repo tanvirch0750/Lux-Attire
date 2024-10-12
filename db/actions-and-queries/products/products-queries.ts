@@ -535,6 +535,7 @@ export const getProductsWithFreeShippingOffers = async () => {
 };
 
 export async function getProductDetailsWithSales(productId: string) {
+  await dbConnect();
   const productObjectId = new mongoose.Types.ObjectId(productId);
 
   const [product] = await Product.aggregate([
