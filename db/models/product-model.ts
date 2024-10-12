@@ -155,7 +155,7 @@ const productSchema = new Schema<ProductDocument>(
     sizes: [
       {
         name: { type: String, required: true },
-        inStock: { type: Boolean, required: true }, // Can derive this from sizeStocks for each color
+        inStock: { type: Boolean, required: true }, // legacy
       },
     ],
     description: {

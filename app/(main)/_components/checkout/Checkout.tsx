@@ -170,7 +170,6 @@ export default function Checkout({
           ];
 
           const emailres = await sendEmails(emailsToSend);
-          console.log('email res', emailres);
 
           router.push(`/order-successful/${result?.data?._id}-${user?._id}`);
         } else {
