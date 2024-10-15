@@ -3,10 +3,12 @@ import {
   removeItem,
   updateQuantity,
 } from '@/lib/features/cartSlice';
-import { PlusIcon, MinusIcon, Tag, Truck } from 'lucide-react';
+import { PlusIcon, MinusIcon, Tag } from 'lucide-react';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { Badge } from '@/components/ui/badge';
+import { isOfferDateValidUntil } from '@/lib/utils';
+import Link from 'next/link';
 
 const CartItem = ({ item }: { item: ICartItem }) => {
   const dispatch = useDispatch();
@@ -45,17 +47,13 @@ const CartItem = ({ item }: { item: ICartItem }) => {
     );
   };
 
-  const currentDate = new Date();
   const activeOffers =
-    item.offers?.filter(
-      (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
-    ) || [];
+    item.offers?.filter((offer) => {
+      return offer.isActive && isOfferDateValidUntil(offer.validUntil);
+    }) || [];
 
   const discountOffer = activeOffers.find(
     (offer) => offer.offerType === 'discount'
-  );
-  const shippingOffer = activeOffers.find(
-    (offer) => offer.offerType === 'freeShipping'
   );
 
   const totalPrice = item?.price * item.quantity;
@@ -73,7 +71,11 @@ const CartItem = ({ item }: { item: ICartItem }) => {
       </div>
       <div className="flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-800">{item?.name}</h3>
+          <Link href={`/products/${item?.category}/${item?.productId}`}>
+            <h3 className="text-lg font-semibold text-gray-800 hover:text-brand">
+              {item?.name}
+            </h3>
+          </Link>
           <p className="text-lg font-semibold text-gray-800">
             ${totalPrice.toFixed(2)}
           </p>

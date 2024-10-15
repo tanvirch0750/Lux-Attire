@@ -15,12 +15,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { SizeDescription } from '@/app/(main)/_components/product/SizeDescription';
+
 import { ICategory } from '@/db/models/category-model';
 import { createProductAction } from '@/app/actions/product/product';
 import { IProduct } from '@/db/models/product-model';
 import { toast } from 'react-toastify';
-import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Trash2, X } from 'lucide-react';
 import { CldUploadWidget } from 'next-cloudinary';
 import Image from 'next/image';
 import {
@@ -40,6 +40,13 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const sizeList = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
 
@@ -47,6 +54,7 @@ const sizeStockSchema = z.object({
   size: z.enum(sizeList),
   stock: z.number().min(0, 'Stock must be a non-negative number'),
   isAvailable: z.boolean(),
+  sizeMetric: z.record(z.string(), z.number()).optional(),
 });
 
 const productSchema = z.object({
@@ -100,6 +108,7 @@ export type ProductFormInputs = z.infer<typeof productSchema>;
 
 const ProductForm = ({ categories }: { categories: ICategory[] }) => {
   const [loading, setLoading] = useState(false);
+  const [sizeMetrics, setSizeMetrics] = useState<string[]>([]);
   const {
     control,
     handleSubmit,
@@ -126,6 +135,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
             size,
             stock: 0,
             isAvailable: false,
+            sizeMetric: {},
           })),
         },
       ],
@@ -188,6 +198,37 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddSizeMetric = (metric: string) => {
+    const formattedMetric = metric.trim().toLowerCase().replace(/\s+/g, '_');
+    if (formattedMetric && !sizeMetrics.includes(formattedMetric)) {
+      setSizeMetrics([...sizeMetrics, formattedMetric]);
+      colorFields.forEach((_, colorIndex) => {
+        sizeList.forEach((_, sizeIndex) => {
+          setValue(
+            `colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric.${formattedMetric}`,
+            0
+          );
+        });
+      });
+    }
+  };
+
+  const handleRemoveSizeMetric = (metricToRemove: string) => {
+    setSizeMetrics(sizeMetrics.filter((metric) => metric !== metricToRemove));
+    colorFields.forEach((_, colorIndex) => {
+      sizeList.forEach((_, sizeIndex) => {
+        const currentSizeMetrics = {
+          ...watchedColors[colorIndex].sizeStocks[sizeIndex].sizeMetric,
+        };
+        delete currentSizeMetrics[metricToRemove];
+        setValue(
+          `colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric`,
+          currentSizeMetrics
+        );
+      });
+    });
   };
 
   return (
@@ -299,7 +340,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                     <div className="relative">
                       <Input
                         {...register(`images.${index}.color` as const)}
-                        placeholder="Product Color (#ffff)"
+                        placeholder="Product Color (#ffffff)"
                       />
                       <div
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border"
@@ -399,7 +440,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
             {colorFields.map((field, colorIndex) => (
               <Card key={field.id} className="mb-4">
                 <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <Input
                       {...register(`colors.${colorIndex}.name` as const)}
                       placeholder="Color Name"
@@ -435,42 +476,112 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-brand">
-                      Size and Stocks (unit number) for {field.name} (
-                      <SizeDescription />)
-                    </Label>
-                    {sizeList.map((size, sizeIndex) => (
-                      <div
-                        key={size}
-                        className="grid grid-cols-3 gap-2 items-center"
-                      >
-                        <Input value={size} readOnly className="w-16" />
-                        <Controller
-                          name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.stock`}
-                          control={control}
-                          render={({ field }) => (
-                            <NumberInput
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              // @ts-ignore
-                              placeholder="Stock"
-                            />
+                    <div className="flex items-center justify-between">
+                      <Label className="text-brand">
+                        Sizes and Stocks (unit number)
+                      </Label>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline">Add Metric Fields</Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-white">
+                          <DialogHeader>
+                            <DialogTitle>Add Size Metric</DialogTitle>
+                          </DialogHeader>
+                          <Input
+                            placeholder="Enter metric name (e.g., chest, waist)"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                handleAddSizeMetric(e.currentTarget.value);
+                                e.currentTarget.value = '';
+                              }
+                            }}
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+
+                    <div className="grid gap-4 text-sm md:text-base">
+                      {sizeList.map((size, sizeIndex) => (
+                        <div
+                          key={size}
+                          className="grid gap-2 items-center rounded-md border p-1 md:p-5"
+                        >
+                          <div className="grid grid-cols-3 gap-2 items-center">
+                            <div>
+                              <Label>Size</Label>
+                              <Input value={size} readOnly className="w-full" />
+                            </div>
+                            <div>
+                              <Label>Unit</Label>
+                              <Controller
+                                name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.stock`}
+                                control={control}
+                                render={({ field }) => (
+                                  <NumberInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                  />
+                                )}
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Controller
+                                name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.isAvailable`}
+                                control={control}
+                                render={({ field }) => (
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    id={`isAvailable-${colorIndex}-${sizeIndex}`}
+                                  />
+                                )}
+                              />
+                              <Label>Is Available</Label>
+                            </div>
+                          </div>
+                          {sizeMetrics.length > 0 && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-2">
+                              {sizeMetrics.map((metric) => (
+                                <div
+                                  key={metric}
+                                  className="space-y-1 relative"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Label>{metric} (inch)</Label>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200"
+                                      onClick={() =>
+                                        handleRemoveSizeMetric(metric)
+                                      }
+                                    >
+                                      <X className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <Controller
+                                      name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric.${metric}`}
+                                      control={control}
+                                      render={({ field }) => (
+                                        <NumberInput
+                                          value={field.value}
+                                          onChange={field.onChange}
+                                          onBlur={field.onBlur}
+                                        />
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           )}
-                        />
-                        <Controller
-                          name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.isAvailable`}
-                          control={control}
-                          render={({ field }) => (
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                              id={`isAvailable-${colorIndex}-${sizeIndex}`}
-                            />
-                          )}
-                        />
-                      </div>
-                    ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <Button
                     variant="destructive"
@@ -496,6 +607,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
                     size,
                     stock: 0,
                     isAvailable: false,
+                    sizeMetric: {},
                   })),
                 })
               }
@@ -504,12 +616,34 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
             </Button>
           </div>
 
+          {/* Size Metrics */}
+          <div className="space-y-2">
+            <Label className="text-brand">Size Metrics</Label>
+            <div className="flex flex-wrap gap-2">
+              {sizeMetrics.map((metric) => (
+                <div
+                  key={metric}
+                  className="flex items-center bg-gray-100 rounded-full px-3 py-1"
+                >
+                  <span>{metric}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="ml-2 h-5 w-5 p-0"
+                    onClick={() => handleRemoveSizeMetric(metric)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Sizes */}
           <div className="space-y-2">
-            <Label className="text-brand">
-              Global Sizes | Legacy field (<SizeDescription />)
-            </Label>
-            <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-4">
+            <Label className="text-brand">Global Sizes | Legacy field</Label>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {sizeList.map((size, index) => (
                 <div key={size} className="flex items-center space-x-2">
                   <Input value={size} className="w-16" readOnly />
@@ -532,7 +666,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
 
           {/* Details */}
           <div className="space-y-2">
-            <Label className=" text-brand">Fabric Details</Label>
+            <Label className="text-brand">Product Details</Label>
             {detailFields.map((field, index) => (
               <div key={field.id} className="flex items-center space-x-2">
                 <Input
@@ -561,7 +695,7 @@ const ProductForm = ({ categories }: { categories: ICategory[] }) => {
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description" className=" text-brand">
+            <Label htmlFor="description" className="text-brand">
               Description
             </Label>
             <Textarea

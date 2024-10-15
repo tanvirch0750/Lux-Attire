@@ -17,6 +17,7 @@ import { IWishlistItem } from '@/lib/features/wishListSlice';
 import { Badge } from '@/components/ui/badge';
 import { Truck } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { isOfferDateValidUntil } from '@/lib/utils';
 
 // Utility function to calculate discounted price based on offers
 const calculateDiscountedPrice = (originalPrice: number, discount: number) => {
@@ -75,20 +76,14 @@ export default function AddToCart({
     ? 'Select size and color'
     : 'Add to cart';
 
-  const currentDate = new Date();
   const activeOffers =
     offers?.filter(
-      (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+      (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
     ) || [];
 
   const shippingOffer = activeOffers.find(
     (offer) => offer.offerType === 'freeShipping'
   );
-
-  // Calculate discounted price (if a discount offer exists)
-  // const discountOffer = activeOffers.find(
-  //   (offer) => offer.offerType === 'discount'
-  // );
 
   const handleAddToCart = () => {
     if (!isButtonDisabled) {
@@ -104,6 +99,7 @@ export default function AddToCart({
         image: selectedImage,
         quantity: 1,
         offers: offers,
+        category: category,
       };
 
       dispatch(addItem(cartProduct)); // Dispatch updated cart product

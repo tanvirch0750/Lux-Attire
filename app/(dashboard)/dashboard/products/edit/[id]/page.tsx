@@ -43,6 +43,7 @@ const productSchema = z.object({
               size: z.enum(sizeList),
               stock: z.number().min(0, 'Stock must be a non-negative number'),
               isAvailable: z.boolean(),
+              sizeMetric: z.record(z.string(), z.number()).optional(),
             })
           )
           .nonempty('At least one size stock is required'),
@@ -92,16 +93,18 @@ export default async function UpdateProductPage({
         name: color?.name || '',
         bgColor: color?.bgColor || '',
         selectedColor: color?.selectedColor || '',
-        sizeStocks: sizeList.map((size) => ({
-          size,
-          stock:
-            color?.sizeStocks?.find((ss: any) => ss.size === size)?.stock || 0,
-          isAvailable:
-            color?.sizeStocks?.find((ss: any) => ss.size === size)
-              ?.isAvailable || false,
-        })),
+        sizeStocks: sizeList.map((size) => {
+          const sizeStock = color?.sizeStocks?.find(
+            (ss: any) => ss.size === size
+          );
+          return {
+            size,
+            stock: sizeStock?.stock || 0,
+            isAvailable: sizeStock?.isAvailable || false,
+            sizeMetric: sizeStock?.sizeMetric || {},
+          };
+        }),
       })) || [],
-
     sizes:
       product?.sizes.map((size: any) => ({
         name: size?.name || '',

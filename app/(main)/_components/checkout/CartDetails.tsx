@@ -5,23 +5,17 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from '@/lib/features/cartSlice';
+import { isOfferDateValidUntil } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function CartDetails({ cartItems }: { cartItems: ICartItem[] }) {
   const dispatch = useDispatch();
 
-  const calculateDiscountedPrice = (
-    price: number,
-    discountPercentage: number
-  ) => {
-    return price - (price * discountPercentage) / 100;
-  };
-
   const allItemsHaveFreeShipping = cartItems.every((item) => {
-    const currentDate = new Date();
     const activeOffers =
-      item.offers?.filter(
-        (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
-      ) || [];
+      item.offers?.filter((offer) => {
+        return offer.isActive && isOfferDateValidUntil(offer.validUntil);
+      }) || [];
     return activeOffers.some((offer) => offer.offerType === 'freeShipping');
   });
 
@@ -59,11 +53,10 @@ export default function CartDetails({ cartItems }: { cartItems: ICartItem[] }) {
         </div>
       )}
       {cartItems?.map((item, index) => {
-        const currentDate = new Date();
+        // const currentDate = new Date();
         const activeOffers =
           item.offers?.filter(
-            (offer) =>
-              offer.isActive && new Date(offer.validUntil) > currentDate
+            (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
           ) || [];
 
         const discountOffer = activeOffers.find(
@@ -87,7 +80,12 @@ export default function CartDetails({ cartItems }: { cartItems: ICartItem[] }) {
             <div className="flex flex-1 flex-col space-y-1">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold text-sm">{item?.name}</h3>
+                  <Link href={`/products/${item?.category}/${item?.productId}`}>
+                    <h3 className="font-semibold text-sm hover:text-brand">
+                      {item?.name}
+                    </h3>
+                  </Link>
+
                   <div className="flex items-center text-xs text-gray-600 space-x-2 mt-1">
                     <span className="flex items-center">
                       Color:

@@ -26,6 +26,7 @@ import {
 import { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { CarouselApi } from '@/components/ui/carousel';
+import { isOfferDateValidUntil } from '@/lib/utils';
 
 export default function ProductCard({ product }: { product: TProduct }) {
   const [api, setApi] = useState<CarouselApi>();
@@ -64,11 +65,10 @@ export default function ProductCard({ product }: { product: TProduct }) {
     category: product?.category?.label,
   };
 
-  const currentDate = new Date();
   const activeOffers =
-    product.offers?.filter(
-      (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
-    ) || [];
+    product.offers?.filter((offer) => {
+      return offer.isActive && isOfferDateValidUntil(offer.validUntil);
+    }) || [];
 
   const discountOffer = activeOffers.find(
     (offer) => offer.offerType === 'discount'

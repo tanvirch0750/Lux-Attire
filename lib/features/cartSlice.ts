@@ -1,5 +1,6 @@
 import { IOffer, TProduct } from '@/db/models/product-model';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { isOfferDateValidUntil } from '../utils';
 
 export interface ICartItem {
   productId: string;
@@ -11,6 +12,7 @@ export interface ICartItem {
   size: string;
   offers: IOffer[];
   oldPrice?: number;
+  category: string;
 }
 
 interface CartState {
@@ -31,9 +33,8 @@ const calculateDiscountedPrice = (
 };
 
 const getActiveOffers = (offers: IOffer[]) => {
-  const currentDate = new Date();
   return offers.filter(
-    (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+    (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
   );
 };
 
@@ -51,6 +52,9 @@ const cartSlice = createSlice({
 
       // Get active offers and calculate discounted price
       const activeOffers = getActiveOffers(action.payload.offers);
+
+      console.log('inside redux cart', activeOffers);
+
       const discountOffer = activeOffers.find(
         (offer) => offer.offerType === 'discount'
       );

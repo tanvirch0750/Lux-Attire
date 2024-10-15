@@ -11,6 +11,7 @@ export interface ISizeStock {
   size: string;
   stock: number;
   isAvailable: boolean;
+  sizeMetric?: Map<string, number>;
 }
 
 export interface IColorStock {
@@ -89,11 +90,11 @@ const sizeStockSchema = new Schema<ISizeStock>({
   size: { type: String, required: true },
   stock: { type: Number, required: true }, // Stock for this specific size in a specific color
   isAvailable: { type: Boolean, default: true }, // Availability specific to this size
-});
-
-const colorStockSchema = new Schema<IColorStock>({
-  color: { type: String, required: true },
-  sizeStocks: [sizeStockSchema], // Array of size stock for each color
+  sizeMetric: {
+    type: Map,
+    of: Number,
+    required: false, // Optional since some sizes may not have metrics
+  },
 });
 
 // Define the Mongoose schema for Settings

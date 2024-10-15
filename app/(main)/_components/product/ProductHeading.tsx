@@ -1,5 +1,6 @@
 import { IOffer } from '@/db/models/product-model';
 import { ProductDetailReviews, ReviewStats } from './ProductDetailReviews';
+import { isOfferDateValidUntil } from '@/lib/utils';
 
 export function ProductHeading({
   name,
@@ -12,9 +13,8 @@ export function ProductHeading({
   offers: IOffer[];
   reviewDetails: ReviewStats;
 }) {
-  const currentDate = new Date();
   const activeOffers = offers.filter(
-    (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+    (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
   );
 
   const discountOffer = activeOffers.find(

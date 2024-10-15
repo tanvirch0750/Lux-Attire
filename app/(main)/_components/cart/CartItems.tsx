@@ -2,22 +2,21 @@ import { ICartItem } from '@/lib/features/cartSlice';
 import CartItem from './CartItem';
 import { Badge } from '@/components/ui/badge';
 import { Truck, AlertCircle } from 'lucide-react';
+import { isOfferDateValidUntil } from '@/lib/utils';
 
 export const CartItems = ({ cartItems }: { cartItems: ICartItem[] }) => {
   const allItemsHaveFreeShipping = cartItems.every((item) => {
-    const currentDate = new Date();
     const activeOffers =
       item.offers?.filter(
-        (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+        (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
       ) || [];
     return activeOffers.some((offer) => offer.offerType === 'freeShipping');
   });
 
   const someItemsHaveFreeShipping = cartItems.some((item) => {
-    const currentDate = new Date();
     const activeOffers =
       item.offers?.filter(
-        (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+        (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
       ) || [];
     return activeOffers.some((offer) => offer.offerType === 'freeShipping');
   });

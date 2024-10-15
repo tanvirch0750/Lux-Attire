@@ -54,3 +54,15 @@ export const formatPrice = (price: number) => {
     currency: 'USD',
   }).format(price);
 };
+
+// Reusable function to compare dates without time
+export const isOfferDateValidUntil = (validUntil: string | Date): boolean => {
+  const stripTime = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  const currentDate = stripTime(new Date());
+  const validUntilDate = stripTime(new Date(validUntil));
+
+  return validUntilDate >= currentDate;
+};

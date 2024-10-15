@@ -2,6 +2,7 @@
 
 import clsx from 'clsx';
 import { RadioGroup } from '@headlessui/react';
+import { SizeDescription } from './SizeDescription';
 // import { SizeDescription } from './SizeDescription';
 
 export function SizePicker({
@@ -21,8 +22,6 @@ export function SizePicker({
       color?.name?.toLowerCase() === selectedColor?.name?.toLowerCase()
   );
 
-  console.log('selected color and  size data', selectedColorData);
-
   // If no color matches, return an empty array
   const availableSizes = selectedColorData ? selectedColorData?.sizeStocks : [];
 
@@ -30,6 +29,9 @@ export function SizePicker({
     <div className="mt-8">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-medium text-gray-900">Size</h2>
+        {availableSizes[0]?.sizeMetric && (
+          <SizeDescription sizes={availableSizes} />
+        )}
         {/* <SizeDescription /> */}
       </div>
 

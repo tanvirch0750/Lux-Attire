@@ -10,7 +10,7 @@ export default async function Header({ userEmail }: { userEmail: string }) {
   const user = await getUserByEmail(userEmail as string);
 
   return (
-    <header className="sticky inset-x-0 top-0 w-full border-b py-2">
+    <header className="sticky inset-x-0 top-0 w-full border-b py-2 z-50 bg-white md:bg-transparent">
       <nav className="flex items-center justify-between px-4 py-2 md:justify-between">
         <div className={cn('block md:!hidden')}>
           <MobileSidebar />

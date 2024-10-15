@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useForm,
   Controller,
@@ -17,11 +17,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 import { ICategory } from '@/db/models/category-model';
-import { SizeDescription } from '@/app/(main)/_components/product/SizeDescription';
 
 import { IProduct } from '@/db/models/product-model';
 import { toast } from 'react-toastify';
-import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Trash2, X } from 'lucide-react';
 import { CldUploadWidget } from 'next-cloudinary';
 import Image from 'next/image';
 import {
@@ -42,6 +41,13 @@ import {
 import { Label } from '@/components/ui/label';
 import { updateProdcutAction } from '@/app/actions/product/product';
 import Link from 'next/link';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const sizeList = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
 
@@ -49,6 +55,7 @@ const sizeStockSchema = z.object({
   size: z.enum(sizeList),
   stock: z.number().min(0, 'Stock must be a non-negative number'),
   isAvailable: z.boolean(),
+  sizeMetric: z.record(z.string(), z.number()).optional(),
 });
 
 const productSchema = z.object({
@@ -111,11 +118,13 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
   categories,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [sizeMetrics, setSizeMetrics] = useState<string[]>([]);
   const {
     control,
     handleSubmit,
     register,
     formState: { errors },
+    setValue,
   } = useForm<ProductFormInputs>({
     resolver: zodResolver(productSchema),
     defaultValues: initialData,
@@ -178,8 +187,76 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
     }
   };
 
+  const handleAddSizeMetric = (metric: string) => {
+    const formattedMetric = metric.trim().toLowerCase().replace(/\s+/g, '_');
+    if (formattedMetric && !sizeMetrics.includes(formattedMetric)) {
+      setSizeMetrics([...sizeMetrics, formattedMetric]);
+      colorFields.forEach((_, colorIndex) => {
+        sizeList.forEach((_, sizeIndex) => {
+          setValue(
+            `colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric.${formattedMetric}`,
+            0
+          );
+        });
+      });
+    }
+  };
+
+  const handleRemoveSizeMetric = (metricToRemove: string) => {
+    setSizeMetrics(sizeMetrics.filter((metric) => metric !== metricToRemove));
+    colorFields.forEach((_, colorIndex) => {
+      sizeList.forEach((_, sizeIndex) => {
+        const currentSizeMetrics = {
+          ...watchedColors[colorIndex].sizeStocks[sizeIndex].sizeMetric,
+        };
+        delete currentSizeMetrics[metricToRemove];
+        setValue(
+          `colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric`,
+          currentSizeMetrics
+        );
+      });
+    });
+  };
+
+  useEffect(() => {
+    // Extract all unique size metrics from the initial data
+    const metrics = new Set<string>();
+    initialData.colors.forEach((color) => {
+      color.sizeStocks.forEach((sizeStock) => {
+        if (sizeStock.sizeMetric) {
+          Object.keys(sizeStock.sizeMetric).forEach((metric) =>
+            metrics.add(metric)
+          );
+        }
+      });
+    });
+    setSizeMetrics(Array.from(metrics));
+  }, [initialData]);
+
+  useEffect(() => {
+    // Populate sizeMetric data for each color and size
+    colorFields.forEach((_, colorIndex) => {
+      sizeList.forEach((_, sizeIndex) => {
+        const currentSizeMetrics =
+          initialData.colors[colorIndex]?.sizeStocks[sizeIndex]?.sizeMetric ||
+          {};
+        sizeMetrics.forEach((metric) => {
+          if (!(metric in currentSizeMetrics)) {
+            setValue(
+              `colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric.${metric}`,
+              0
+            );
+          }
+        });
+      });
+    });
+  }, [colorFields, sizeMetrics, setValue, initialData.colors]);
+
   return (
-    <form onSubmit={handleSubmit(handleUpdateProduct)} className="space-y-8">
+    <form
+      onSubmit={handleSubmit(handleUpdateProduct)}
+      className="space-y-8 mb-8"
+    >
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-1">
@@ -198,7 +275,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
           {/* Name and Price */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className=" text-brand">
+              <Label htmlFor="name" className="text-brand">
                 Product Name
               </Label>
               <Input
@@ -211,7 +288,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price" className=" text-brand">
+              <Label htmlFor="price" className="text-brand">
                 Price
               </Label>
               <Controller
@@ -234,7 +311,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
           {/* Category and Availability */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="category" className=" text-brand">
+              <Label htmlFor="category" className="text-brand">
                 Category
               </Label>
               <Controller
@@ -263,7 +340,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="isAvailable" className=" text-brand">
+              <Label htmlFor="isAvailable" className="text-brand">
                 Product Availability
               </Label>
               <div className="flex items-center space-x-2">
@@ -285,7 +362,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
 
           {/* Images */}
           <div className="space-y-2">
-            <Label className=" text-brand">Images</Label>
+            <Label className="text-brand">Images</Label>
             {imageFields.map((field, index) => (
               <Card key={field.id} className="mb-4">
                 <CardContent className="pt-6">
@@ -299,10 +376,6 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
                         {...register(`images.${index}.color` as const)}
                         placeholder="Product Color (#ffffff)"
                       />
-                      {/* <div
-                        className="absolute right-2 top-[20px] transform -translate-y-1/2 w-6 h-6 rounded-full border"
-                        style={{ backgroundColor: field.color }}
-                      /> */}
                       <div
                         className="absolute right-2 top-[20px] transform -translate-y-1/2 w-6 h-6 rounded-full border"
                         style={{
@@ -390,30 +463,22 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
 
           {/* Colors and Size Stocks */}
           <div className="space-y-2">
-            <Label className=" text-brand">Colors and Size Stocks</Label>
+            <Label className="text-brand">Colors and Size Stocks</Label>
             {colorFields.map((field, colorIndex) => (
               <Card key={field.id} className="mb-4">
                 <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <Label>Color Name</Label>
-                      <Input
-                        {...register(`colors.${colorIndex}.name` as const)}
-                        placeholder="Color Name"
-                      />
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <Input
+                      {...register(`colors.${colorIndex}.name` as const)}
+                      placeholder="Color Name"
+                    />
                     <div className="relative">
-                      <Label>Main Color</Label>
                       <Input
                         {...register(`colors.${colorIndex}.bgColor` as const)}
-                        placeholder="Background Color (#ffffff)"
+                        placeholder="#fffff (background-color)"
                       />
-                      {/* <div
-                        className="absolute right-2 top-[45px] transform -translate-y-1/2 w-6 h-6 rounded-full border"
-                        style={{ backgroundColor: field.bgColor }}
-                      /> */}
                       <div
-                        className="absolute right-2  top-[45px] transform -translate-y-1/2 w-6 h-6 rounded-full border"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border"
                         style={{
                           backgroundColor:
                             watchedColors[colorIndex]?.bgColor || 'transparent',
@@ -421,19 +486,14 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
                       />
                     </div>
                     <div className="relative">
-                      <Label>Selected Color (as a border)</Label>
                       <Input
                         {...register(
                           `colors.${colorIndex}.selectedColor` as const
                         )}
-                        placeholder="Selected Color (#f0f0f0)"
+                        placeholder="#f0f0f0 (Selected Color)"
                       />
-                      {/* <div
-                        className="absolute right-2 top-[45px] transform -translate-y-1/2 w-6 h-6 rounded-full border"
-                        style={{ backgroundColor: field.selectedColor }}
-                      /> */}
                       <div
-                        className="absolute right-2 top-[45px] transform -translate-y-1/2 w-6 h-6 rounded-full border"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border"
                         style={{
                           backgroundColor:
                             watchedColors[colorIndex]?.selectedColor ||
@@ -443,42 +503,112 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Size and Stocks (unit) for {field.name}</Label>
-                    {sizeList.map((size, sizeIndex) => (
-                      <div
-                        key={size}
-                        className="grid grid-cols-3 gap-2 items-center"
-                      >
-                        <Input value={size} readOnly className="w-16" />
-                        <Controller
-                          name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.stock`}
-                          control={control}
-                          defaultValue={0}
-                          render={({ field }) => (
-                            <NumberInput
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                            />
-                          )}
-                        />
-                        <div className="flex items-center gap-2">
-                          <Controller
-                            name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.isAvailable`}
-                            control={control}
-                            defaultValue={false}
-                            render={({ field }) => (
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id={`isAvailable-${colorIndex}-${sizeIndex}`}
-                              />
-                            )}
+                    <div className="flex items-center justify-between">
+                      <Label className="text-brand">
+                        Sizes and Stocks (unit number)
+                      </Label>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline">Add Metric Fields</Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-white">
+                          <DialogHeader>
+                            <DialogTitle>Add Size Metric</DialogTitle>
+                          </DialogHeader>
+                          <Input
+                            placeholder="Enter metric name (e.g., chest, waist)"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                handleAddSizeMetric(e.currentTarget.value);
+                                e.currentTarget.value = '';
+                              }
+                            }}
                           />
-                          <Label>Is Available</Label>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+
+                    <div className="grid gap-4 text-sm md:text-base">
+                      {sizeList.map((size, sizeIndex) => (
+                        <div
+                          key={size}
+                          className="grid gap-2 items-center rounded-md border p-1 md:p-5"
+                        >
+                          <div className="grid grid-cols-3 gap-2 items-center">
+                            <div>
+                              <Label>Size</Label>
+                              <Input value={size} readOnly className="w-full" />
+                            </div>
+                            <div>
+                              <Label>Unit</Label>
+                              <Controller
+                                name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.stock`}
+                                control={control}
+                                render={({ field }) => (
+                                  <NumberInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                  />
+                                )}
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Controller
+                                name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.isAvailable`}
+                                control={control}
+                                render={({ field }) => (
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    id={`isAvailable-${colorIndex}-${sizeIndex}`}
+                                  />
+                                )}
+                              />
+                              <Label>Is Available</Label>
+                            </div>
+                          </div>
+                          {sizeMetrics.length > 0 && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-2">
+                              {sizeMetrics.map((metric) => (
+                                <div
+                                  key={metric}
+                                  className="space-y-1 relative"
+                                >
+                                  <div className=" flex items-center gap-2">
+                                    <Label>{metric} (inch)</Label>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className=" h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200"
+                                      onClick={() =>
+                                        handleRemoveSizeMetric(metric)
+                                      }
+                                    >
+                                      <X className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <Controller
+                                      name={`colors.${colorIndex}.sizeStocks.${sizeIndex}.sizeMetric.${metric}`}
+                                      control={control}
+                                      render={({ field }) => (
+                                        <NumberInput
+                                          value={field.value}
+                                          onChange={field.onChange}
+                                          onBlur={field.onBlur}
+                                        />
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                   <Button
                     variant="destructive"
@@ -504,6 +634,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
                     size,
                     stock: 0,
                     isAvailable: false,
+                    sizeMetric: {},
                   })),
                 })
               }
@@ -512,11 +643,33 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
             </Button>
           </div>
 
+          {/* Size Metrics */}
+          <div className="space-y-2">
+            <Label className="text-brand">Size Metrics</Label>
+            <div className="flex flex-wrap gap-2">
+              {sizeMetrics.map((metric) => (
+                <div
+                  key={metric}
+                  className="flex items-center bg-gray-100 rounded-full px-3 py-1"
+                >
+                  <span>{metric}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="ml-2 h-5 w-5 p-0"
+                    onClick={() => handleRemoveSizeMetric(metric)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Sizes */}
           <div className="space-y-2">
-            <Label className=" text-brand">
-              Global Sizes | legacy field (<SizeDescription />)
-            </Label>
+            <Label className="text-brand">Global Sizes | Legacy field</Label>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {sizeList.map((size, index) => (
                 <div key={size} className="flex items-center space-x-2">
@@ -540,7 +693,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
 
           {/* Details */}
           <div className="space-y-2">
-            <Label className=" text-brand">Product Details</Label>
+            <Label className="text-brand">Product Details</Label>
             {detailFields.map((field, index) => (
               <div key={field.id} className="flex items-center space-x-2">
                 <Input
@@ -569,7 +722,7 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description" className=" text-brand">
+            <Label htmlFor="description" className="text-brand">
               Description
             </Label>
             <Textarea
@@ -586,22 +739,20 @@ const UpdateProductForm: React.FC<UpdateProductFormProps> = ({
           </div>
         </CardContent>
         <CardFooter>
-          <div>
-            <Button
-              type="submit"
-              className="w-fit bg-brand hover:bg-brand/90"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating Product
-                </>
-              ) : (
-                'Update Product'
-              )}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            className="w-fit bg-brand hover:bg-brand/90"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Updating Product
+              </>
+            ) : (
+              'Update Product'
+            )}
+          </Button>
         </CardFooter>
       </Card>
     </form>

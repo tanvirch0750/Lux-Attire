@@ -33,7 +33,7 @@ export default async function DashboardLayout({
         <Sidebar />
         <main className="w-full flex-1 md:overflow-y-hidden  bg-primary-foreground h-screen">
           <Header userEmail={session?.user?.email as string} />
-          {children}
+          <div className=" ">{children}</div>
         </main>
       </Providers>
     </div>

@@ -21,6 +21,7 @@ import { createCheckoutSession } from '@/app/actions/stripe/stripe';
 import LoadingButton from '@/components/LodingButton';
 import { sendEmails } from '@/lib/email';
 import { IShippingMethod } from '@/db/models/settings-model';
+import { isOfferDateValidUntil } from '@/lib/utils';
 
 export default function Checkout({
   user,
@@ -104,10 +105,9 @@ export default function Checkout({
   );
 
   const allItemsHaveFreeShipping = cartItems.items.every((item) => {
-    const currentDate = new Date();
     const activeOffers =
       item.offers?.filter(
-        (offer) => offer.isActive && new Date(offer.validUntil) > currentDate
+        (offer) => offer.isActive && isOfferDateValidUntil(offer.validUntil)
       ) || [];
     return activeOffers.some((offer) => offer.offerType === 'freeShipping');
   });
@@ -119,7 +119,7 @@ export default function Checkout({
       ? shippingObject.stripe
       : paymentMethod === 'cashOnDelivery'
       ? shippingObject['cash-on-delivery']
-      : 8;
+      : 0;
 
     return {
       user: user?._id,
@@ -420,8 +420,8 @@ export default function Checkout({
                     const shippingCost = allItemsHaveFreeShipping
                       ? 0
                       : formData.paymentMethod === 'cash'
-                      ? shippingObject['cash-on-delivery'] || 8.0
-                      : shippingObject['stripe'] || 8.0;
+                      ? shippingObject['cash-on-delivery'] || 0
+                      : shippingObject['stripe'] || 0;
 
                     return shippingCost.toFixed(2);
                   })()}
@@ -431,23 +431,25 @@ export default function Checkout({
           </div>
           <div className="mt-6 flex items-center justify-between">
             <p className="text-sm font-medium text-gray-900">Total</p>
+            {formData?.paymentMethod && (
+              <p className="text-2xl font-semibold text-gray-900">
+                $
+                {(() => {
+                  // Determine the shipping cost based on the allItemsHaveFreeShipping function and payment method
+                  const shippingCost = allItemsHaveFreeShipping
+                    ? 0
+                    : formData.paymentMethod === 'cash'
+                    ? shippingObject['cash-on-delivery'] || 0
+                    : shippingObject['stripe'] || 0;
 
-            <p className="text-2xl font-semibold text-gray-900">
-              $
-              {(() => {
-                // Determine the shipping cost based on the allItemsHaveFreeShipping function and payment method
-                const shippingCost = allItemsHaveFreeShipping
-                  ? 0
-                  : formData.paymentMethod === 'cash'
-                  ? shippingObject['cash-on-delivery'] || 8
-                  : shippingObject['stripe'] || 8;
+                  // Calculate the total price
+                  const totalPrice =
+                    (cartItems?.totalPrice || 0) + shippingCost;
 
-                // Calculate the total price
-                const totalPrice = (cartItems?.totalPrice || 0) + shippingCost;
-
-                return totalPrice.toFixed(2);
-              })()}
-            </p>
+                  return totalPrice.toFixed(2);
+                })()}
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}

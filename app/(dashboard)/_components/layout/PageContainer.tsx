@@ -29,7 +29,9 @@ export default function PageContainer({
           <div className="min-w-full p-4 md:px-8">{children}</div>
         </ScrollArea>
       ) : (
-        <div className="min-w-full p-4 md:px-8 overflow-x-auto">{children}</div>
+        <div className="min-w-full p-4 md:px-8 overflow-x-auto h-full">
+          {children}
+        </div>
       )}
     </>
   );
