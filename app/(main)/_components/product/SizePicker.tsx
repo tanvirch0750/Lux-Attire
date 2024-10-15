@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import { RadioGroup } from '@headlessui/react';
-import { SizeDescription } from './SizeDescription';
+// import { SizeDescription } from './SizeDescription';
 
 export function SizePicker({
   sizes,
@@ -30,7 +30,7 @@ export function SizePicker({
     <div className="mt-8">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-medium text-gray-900">Size</h2>
-        <SizeDescription />
+        {/* <SizeDescription /> */}
       </div>
 
       {selectedColor?.name ? (
